@@ -1,0 +1,19 @@
+module FE
+
+using Base
+using StaticArrays
+
+include("agents.jl")
+include("assets.jl")
+include("functions.jl")
+include("model.jl")
+include("steps.jl")
+include("stock.jl")
+
+export Model
+
+# Globals
+const YEAR = 12
+const BONDT = 5 * YEAR
+
+end
