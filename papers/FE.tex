@@ -131,23 +131,23 @@ $V$ is the Net Worth of the sector.
 \makebox[\textwidth][c]{
 	\begin{tabularx}{\textwidth}{@{} Y|ccccccc|l @{}}
 		\toprule
-		                      & $H$      & $F_E$        & $F_O$        & $F_K$        & $B$      & $G$      & $C$      & Tot. \\
+		                      & $H$      & $F_E$        & $F_O$        & $F_K$              & $B$      & $G$      & $C$      & Tot. \\
 		\midrule
-		Essential Consumption & $-p F_H$ & $+p F$       &              &              &          & $-p F_G$ &          & 0    \\
-		Other Consumption     & $-p O$   &              & $+p O$       &              &          &          &          & 0    \\
-		Investment            &          & $-p K_{F_E}$ & $-p K_{F_O}$ & $+p K$       &          &          &          & 0    \\
-		Wages                 & $+W$     & $-W^{F_E}$   & $-W^{F_O}$   & $-W^{F_K}$   &          &          &          & 0    \\
-		Taxes                 & $-T$     &              &              &              &          & $+T$     &          & 0    \\
-		Transfers             & $+M$     &              &              &              &          & $-M$     &          & 0    \\
+		Essential Consumption & $-p E_H$ & $+p E$       &              &                    &          & $-p E_G$ &          & 0    \\
+		Other Consumption     & $-p O$   &              & $+p O$       &                    &          &          &          & 0    \\
+		Investment            &          & $-p K_{F_E}$ & $-p K_{F_O}$ & $+p (K - K_{F_K})$ &          &          &          & 0    \\
+		Wages                 & $+W$     & $-W^{F_E}$   & $-W^{F_O}$   & $-W^{F_K}$         &          &          &          & 0    \\
+		Taxes                 & $-T$     &              &              &                    &          & $+T$     &          & 0    \\
+		Transfers             & $+M$     &              &              &                    &          & $-M$     &          & 0    \\
 		\midrule
-		$F$ Profits           &          & $-\Pi^{F_E}$ & $-\Pi^{F_O}$ & $-\Pi^{F_K}$ & $+\Pi$   &          &          & 0    \\
-		$C$ Profits           &          &              &              &              &          & $+\Pi$   & $-\Pi$   & 0    \\
+		$F$ Profits           &          & $-\Pi^{F_E}$ & $-\Pi^{F_O}$ & $-\Pi^{F_K}$       & $+\Pi$   &          &          & 0    \\
+		$C$ Profits           &          &              &              &                    &          & $+\Pi$   & $-\Pi$   & 0    \\
 
 
 		\midrule
-		$S$ Interests         & $+r S$   &              &              &              & $-r S$   &          &          & 0    \\
-		$L$ Interests         &          & $-r L^{F_E}$ & $-r L^{F_O}$ & $-r L^{F_K}$ & $+r L$   &          &          & 0    \\
-		$T$ Interests         &          &              &              &              & $+r T_B$ & $-r T$   & $+r T_C$ & 0    \\
+		$S$ Interests         & $+r S$   &              &              &                    & $-r S$   &          &          & 0    \\
+		$L$ Interests         &          & $-r L^{F_E}$ & $-r L^{F_O}$ & $-r L^{F_K}$       & $+r L$   &          &          & 0    \\
+		$T$ Interests         &          &              &              &                    & $+r T_B$ & $-r T$   & $+r T_C$ & 0    \\
 		\bottomrule
 	\end{tabularx}
 }\\
@@ -157,14 +157,36 @@ $V$ is the Net Worth of the sector.
 In this model the core agent (consumer, worker, capitalist) represents a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care work, where the gender asymmetries become very relevant.
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gain experience when working in the same sector (Capital/Essential/Other) without employment gap.
-The education level is assigned with a probability related to the inherited wealth.
+The education level is assigned with a probability related to the inherited wealth, and provide the starting skill level.
+Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\tau)^\delta s_{t-1}$ where $\delta=1$ if the households is employed in the same sector of the previous time step, $\delta=0$ if the households is still employed but in a different sector, $\delta=-1$ if the households is unemployed.
+
+\begin{enh}[Training]
+	Two factors in the development of the skills can be introduced.
+
+	One on the welfare policies side is the possibility for the government to organize training programs for unemployed to prevent the loss of skills on even increase them.
+
+	The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closed to the skill level, while demoted and over qualified workers have lower chances to learn new skills. This can be included in the model making $\tau \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
+\end{enh}
 
 Households face two choice: if work and which proportion of their income they should consume.
 
-Regarding the first, the choice is only dependent on the amount of financial income expected from Bank's Bonds held, i.e. if $\mathbb{E}(rS) >> \mathbb{E}(W)$, where $W$ is the wage, the households exits the labour market or stop to search for a job.
+Households flows' balance is $I = W + M + rS = C + T + \Delta S + \Delta D$.
+I assume, as heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated constant respect the previous time period.
+Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = p_E E + p_O O$) as insurance against unexpected increasing in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interest paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
+Subtracting two consecutive time periods and ignoring second order differences, the in-flow income becomes $\Delta I = \Delta W + \Delta r S + r \Delta S$, and calling $\eta$ the marginal propensity to consume it becomes $\eta \Delta C \approx \Delta W + \Delta r S + r \Delta S$.
+Fixed the income level $I$ we can write $0 = \Delta C + \Delta D + \Delta S = (1+\rho) \Delta C + \Delta S$ to express the choice the household faces between consumption and saving.
+Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r (1+\rho) \Delta C$ and so $\Delta C \approx \frac{\Delta W + \Delta r S}{\eta + r (1+\rho)}$, which provides an adaptive rule for monetary consumption.
 
-Households aim to consume a fixed quantity of Essential Goods before start consuming the Other Goods. Moreover, they keep as deposits a fixed multiple of the expected expenses (i.e. $D = k \mathbb{E}(p)\mathbb{E}(E+O)$) and invest the remaining liquidity in Bank Bonds.
-\hl{The desired consumption con be either a (decreasing) fraction of the expected income or an adaptive choice depending on the expected variation of income and the consumption in the previous tick. In either cases at least the fixed amount of Essential Goods is desired.}
+To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (p_O G) \approx \Delta(p_O) G + p_O \Delta G \approx p_O (\pi G + \Delta G)$, where $\pi$ is some measure of inflation. The reason of using $p_O$ and ignoring $p_E$ will be clear in the next paragraphs, but relies on the hypotheses that essential goods are a macroscopic part of consumptions at lower incomes, where the consumption behaviour is close to hand-to-mouth. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{p_O(\eta + r (1+\rho))} - \pi G$
+
+$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to chose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{<p_O>},\frac{W}{<p_O>})$, where the average price of the other goods is used to get a-dimensional values.
+
+From this relation we can model the two choices.
+
+First a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p_O \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevent a loss of consumption, i.e. if $\Delta r S - p_O \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p_O \pi (\eta + r (1+\rho)) G > 0$.
+
+Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G))$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $S = D_0 + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D_0$ is the value of the deposit at the beginning of the time step, i.e. when the decision is taken, opposite to $D$ which is the desired deposit before payment of Bank Bonds.
+
 
 
 \begin{enh}[Gender, Care work and Feminist Economics]
