@@ -185,9 +185,7 @@ From this relation we can model the two choices.
 
 First a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p_O \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevent a loss of consumption, i.e. if $\Delta r S - p_O \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p_O \pi (\eta + r (1+\rho)) G > 0$.
 
-Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G))$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $S = D_0 + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D_0$ is the value of the deposit at the beginning of the time step, i.e. when the decision is taken, opposite to $D$ which is the desired deposit before payment of Bank Bonds.
-
-
+Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G))$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximate individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder-care, housekeeping, ...).
@@ -230,11 +228,11 @@ Bank is required to maintain at least a given liability ($D$) over liquidity ($R
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
 \subsection{Central Bank}
-In the model the role of Central Bank is to fix the Government's Bonds interest rate and the Advances interest rate.
+In the model the role of Central Bank is to fix the Government's Bonds interest rate according a Taylor rule $i = \pi + \alpha_1 (\pi - \pi^*) + \alpha_2 (u - u^*)$, where $\pi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, and starred variables are the targets.
 
-Additionally, it passively buys and sells Government's Bonds on request and guarantees all the Advances needed by banks. Reserves and Government's Account do not grant interests.
+Additionally, it passively buys and sells Government's Bonds on request to the Bank and the Government. Reserves do not grant interests.
 
-In other words, the Central Bank is a lender of last resort for the Government, which then has no accounting limits to spending, and prevent any speculative attacks on debt.
+In other words, the Central Bank is a lender of last resort for the Government, which then has no accounting limits to spending.
 
 \section{Real Assets}
 \subsection{Essential Goods}
@@ -269,12 +267,12 @@ Other Goods are, by exclusion, all the non-Essential Goods.
 Deposits represent liquidity for Households and Firms and are not interest-bearing. Bank satisfies any transaction as long as the balance of the account remains positive.
 
 \subsection{Bank Bonds}
-Bank Bonds are sold and bought at their nominal value and expires after a fixed number of periods. Bank satisfies every transaction, as long as the accounts remain positive. Households can buy Bank Bonds only at the beginning of each period. At the end of period, interests are paid, according to the rate fixed by the Bank at the time of emission.
+Bank Bonds are sold and bought at their nominal value and does not expire. Bank satisfies every transaction, as long as the accounts remain positive. Households can buy or sell Bank Bonds only at the beginning of each period. At the end of period, interests are paid, according to the rate fixed by the Bank at the beginning of the period.
 
 \subsection{Loans}
 
 \subsection{Government Bonds}
-Government Bonds are sold and bought at their nominal value and expires after a fixed number of periods. Central Bank satisfies every transaction. Bank can buy Government Bonds only at the beginning of each period. At the end of period, interests are paid only to the Bank, according to the rate fixed by the Central Bank at the time of emission.
+Government Bonds are sold and bought at their nominal value and does not expire. Central Bank satisfies every transaction. Bank can buy Government Bonds only at the beginning of each period. At the end of period, interests are paid only to the Bank, according to the rate fixed by the Central Bank at the time beginning of the period.
 
 \subsection{Reserves}
 Reserves represent liquidity for Bank and Government and are not interest-bearing. Central Bank satisfies any transaction as long as the balance of the account remains positive.
@@ -316,8 +314,6 @@ Reserves represent liquidity for Bank and Government and are not interest-bearin
 
 
 \end{steps}
-
-\section{Equations}
 
 \section{Parameters}
 
