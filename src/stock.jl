@@ -32,38 +32,38 @@ function get_L(m::Model)::Float64
     return get_L(m.FF) + get_L(m.FO) + get_L(m.FK)
 end
 
-# BB
-function get_BB(h::Household)::Float64
-    return sum(h.BB)
+# S
+function get_S(h::Household)::Float64
+    return sum(h.S)
 end
 
-function get_BB(b::Bank)::Float64
-    return get_BB(b.M)
+function get_S(b::Bank)::Float64
+    return get_S(b.M)
 end
 
-function get_BB(as::Vector{Agent})
-    return sum(map(a -> get_BB(a), as))
+function get_S(as::Vector{Agent})
+    return sum(map(a -> get_S(a), as))
 end
 
-function get_BB(m::Model)::Float64
-    return get_BB(m.H)
+function get_S(m::Model)::Float64
+    return get_S(m.H)
 end
 
-# GB
-function get_GB(b::Bank)::Float64
-    return sum(b.GB)
+# T
+function get_T(b::Bank)::Float64
+    return sum(b.T)
 end
 
-function get_GB(cb::CentralBank)::Float64
-    return sum(cb.GB)
+function get_T(c::CentralBank)::Float64
+    return sum(c.T)
 end
 
-function get_GB(g::Government)::Float64
-    return get_GB(g.M)
+function get_T(g::Government)::Float64
+    return get_T(g.M)
 end
 
-function get_GB(m::Model)::Float64
-    return get_GB(m.B) + get_GB(m.CB)
+function get_T(m::Model)::Float64
+    return get_T(m.B) + get_T(m.C)
 end
 
 # R
@@ -75,8 +75,8 @@ function get_R(g::Government)::Float64
     return g.R
 end
 
-function get_R(cb::CentralBank)::Float64
-    return get_R(cb.M)
+function get_R(c::CentralBank)::Float64
+    return get_R(c.M)
 end
 
 function get_R(m::Model)::Float64
@@ -104,18 +104,18 @@ function get_stock_matrix(m::Model)::StaticMatrix{5,7,Float64}
     sm[1, 3] = get_D(m.FO)
     sm[1, 4] = get_D(m.FK)
     sm[1, 5] = -get_D(m.B)
-    sm[2, 1] = get_BB(m.H)
-    sm[2, 5] = -get_BB(m.B)
+    sm[2, 1] = get_S(m.H)
+    sm[2, 5] = -get_S(m.B)
     sm[3, 2] = -get_L(m.FF)
     sm[3, 3] = -get_L(m.FO)
     sm[3, 4] = -get_L(m.FK)
     sm[3, 5] = get_L(m.B)
-    sm[4, 5] = get_GB(m.B)
-    sm[4, 6] = -get_GB(m.G)
-    sm[4, 7] = get_GB(m.CB)
+    sm[4, 5] = get_T(m.B)
+    sm[4, 6] = -get_T(m.G)
+    sm[4, 7] = get_T(m.C)
     sm[5, 5] = get_R(m.B)
     sm[5, 6] = get_R(m.G)
-    sm[5, 7] = -get_R(m.CB)
+    sm[5, 7] = -get_R(m.C)
     sm[6, 2] = get_GK(m.FF)
     sm[6, 3] = get_GK(m.FO)
     sm[6, 4] = get_GK(m.FK)

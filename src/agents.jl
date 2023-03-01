@@ -6,9 +6,9 @@ abstract type Firm <: Agent end
     const M::Model
     const id::Int
     D::Float64
-    BB::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
-    GF::Float64
-    GO::Float64
+    S::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
+    F::Float64
+    O::Float64
     w::Float64
 end
 
@@ -17,8 +17,8 @@ end
     const id::Int
     D::Float64
     L::Vector{Loan} = []
-    GK::Vector{CapitalGood} = []
-    GF::Float64
+    K::Vector{CapitalGood} = []
+    F::Float64
     W::Vector{Household} = []
 end
 
@@ -27,8 +27,8 @@ end
     const id::Int
     D::Float64
     L::Vector{Loan} = []
-    GK::Vector{CapitalGood} = []
-    GO::Float64
+    K::Vector{CapitalGood} = []
+    O::Float64
     W::Vector{Household} = []
 end
 
@@ -37,7 +37,7 @@ end
     const id::Int
     D::Float64
     L::Vector{Loan} = []
-    GK::Vector{CapitalGood} = []
+    K::Vector{CapitalGood} = []
     W::Vector{Household} = []
 end
 
@@ -45,7 +45,7 @@ end
     const M::Model
     const id::Int
     R::Float64
-    GB::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
+    T::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
     i::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
 end
 
@@ -58,7 +58,7 @@ end
 @kwdef mutable struct CentralBank <: Agent
     const M::Model
     const id::Int
-    GB::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
+    T::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
     i::MVector{BONDT,Float64} = MVector{BONDT,Float64}(0)
     π::Float64 = 0.02
     α::Float64 = 0.5
