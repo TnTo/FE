@@ -1,0 +1,304 @@
+% !TeX spellcheck = en_GB
+\documentclass[a4paper, headings=standardclasses]{scrartcl}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{etoolbox}
+\usepackage{authblk}
+\renewcommand{\Affilfont}{\small}
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\usepackage[style=authoryear, backend=biber, sorting=nyt, useprefix=true]{biblatex}
+\usepackage[autostyle=false, style=english]{csquotes}
+\MakeOuterQuote{"}
+\usepackage[british]{babel}
+\usepackage[modulo]{lineno}
+\linenumbers
+\usepackage{framed}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{cleveref}
+
+\addbibresource{FE.bib}
+
+\newenvironment{enh}[1][]{\begin{framed}\noindent\textbf{Enhancement: #1}\par}{\end{framed}}
+
+\newcommand{\todo}[1]{\par \textbf{ToDo:} #1}
+
+\newlist{steps}{enumerate}{1}
+\setlist[steps]{noitemsep,label=(\arabic*)}
+
+\crefname{stepsi}{step}{steps}
+\Crefname{stepsi}{Step}{Steps}
+
+
+%opening
+\title{A PK AB-SFC Macroeconomic Model to study Foundational Economy\let\thefootnote\relax\footnotetext{
+	%This version is intended to be submitted to the XV ESHET Conference
+	An updated version of this paper and all the source code and the instructions required to replicate the paper are available at \url{https://github.com/TnTo/FE/}
+
+	\hl{Highlighted} parts of the text indicate substantial choices to be taken.
+  }}
+\subtitle{Working Notes}
+\author{Michele Ciruzzi\thanks{mciruzzi@uninsubria.it - \url{https://orcid.org/0000-0003-1485-1204}}}
+
+\begin{document}
+
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\section{Introduction}
+\subsection{Aims}
+The long term goal of this model is to highlight the macroeconomic and distributional effects of some welfare policies.
+The focus is put in particular on some (recent) policies yet unapplied in real world as Universal Basic Income, Job Guarantee schemes or the presence of only cooperative firms.
+
+To do so, I attempt to better characterize the differences of behaviour among low and high income households.
+The theoretical framework used is the Foundational Economy one \parencite{arcidiacono2018}, which suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures\footnote{\textit{"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality."} \parencite{arcidiacono2018}}.
+This idea should allow characterizing better the dynamic of consumption for lower income households.
+
+How to model in a macroeconomic context the idea of a Foundational Economy is discussed later.
+
+\begin{enh}[Welfare policies]
+	The first version of the model will be as simple as possible to create a robust baseline.
+	Subsequent iterations of the model will explore different welfare policies and how to model them.
+\end{enh}
+
+\section{General Hypothesis}
+\subsection{Time}
+The timescale of the first version of the model should be relevant to calibration the model on real data.
+
+It is possible that an adaptive approach for the agents' behaviour works better using a higher frequency model that cover a shorter timespan (e.g. one month per tick, 15 years length, 180 time step in total), because of the smaller variations expected at each tick.
+
+Moreover, in future version of the model, the simulation's timespan has to be long enough to observe the effects of introducing a policy. But, at the same time, it is unreasonable to keep the simulation running over 5-10 years after the policy's introduction because, in any real world context, a government is able to tune or revert the policy afterwards.
+
+\subsection{Close Economy}
+The assumption of a close economy strongly reduce the complexity of the model, but prevent to observe some economic phenomena like an export-led growth (such as Italy or Germany) or the offshoring labour-intensive productions.
+Nevertheless, this is a common hypothesis which is used also in this model.
+
+\begin{enh}[Multi-Country Model]
+	A compromise for a future development is to model in a AB-SFC setting the main economy of the model while keeping aggregated (SFC only) the other economies.
+\end{enh}
+
+\subsection{Sectors}
+The model includes the core sector of most SFC models \parencite{nikiforos2017}. Of those, three (Banks ($B$), Government ($G$) and Central Bank ($C$)) are represented by a single agent because unique in the model or described as aggregate sector, while the remaining two (Households ($H$) and Firms ($F$)) are disaggregated and constitute the Agent-Based part of the model.
+
+Firms are considered as different sectors in the model matrices depending on the good produced.
+
+\subsection{Real Assets}
+The model comprises three kind of real assets: Capital Goods ($K$), Essential Consumption Goods ($E$) (those Foundational Economy is about) and Other Consumption Goods ($O$).
+The only durable one is the Capital Goods.
+
+\subsection{Financial Assets}
+The model includes five different financial assets.
+Bank Deposits ($D$) of Households and Firms, which are not interest-bearing.
+Loans ($L$) issued by the Banks to Firms, which interest rate is Firm-specific and fixed by the Bank.
+Bank Bonds ($S$, like shares) hold by Households, which interest rate is fixed each period by the Bank.
+Banks Reserves and Government Account at the Central Bank ($R$), which are not interest-bearing.
+Government's Bonds ($T$, like treasure's bond) hold by Bank and Central Bank, which interest rate is fixed by the Central Bank.
+
+\section{Matrices}
+\subsection{Balance Sheet Matrix}
+\makebox[\textwidth][c]{
+	\begin{tabular}{l|ccccccc|l}
+		\toprule
+		     & $H$    & $F_E$        & $F_O$        & $F_K$        & $B$    & $G$    & $C$    & Tot.   \\
+		\midrule
+		$D$  & $+D_H$ & $+D_{F_E}$   & $+D_{F_O}$   & $+D_{F_K}$   & $-D$   &        &        & 0      \\
+		$S$  & $+S_H$ &              &              &              & $-S$   &        &        & 0      \\
+		$L$  &        & $-L^{F_E}$   & $-L^{F_O}$   & $-L^{F_K}$   & $+L$   &        &        & 0      \\
+		$T$  &        &              &              &              & $+T_B$ & $-T$   & $+T_C$ & 0      \\
+		$R$  &        &              &              &              & $+R_B$ & $+R_G$ & $-R$   & 0      \\
+		$K$  &        & $+p K_{F_E}$ & $+p K_{F_O}$ & $+p K_{F_K}$ &        &        &        & $+p K$ \\
+		\midrule
+		Tot. & $+V_H$ & $+V_{F_E}$   & $+V_{F_O}$   & $+V_{F_K}$   & $+V_B$ & $+V_G$ & $+V_C$ & $+p K$ \\
+		\bottomrule
+	\end{tabular}
+}\\ \\
+$V$ is the Net Worth of the sector.
+
+\subsection{Transactions Matrix}
+\makebox[\textwidth][c]{
+	\begin{tabularx}{\textwidth}{@{} Y|ccccccc|l @{}}
+		\toprule
+		                      & $H$      & $F_E$        & $F_O$        & $F_K$        & $B$      & $G$      & $C$      & Tot. \\
+		\midrule
+		Essential Consumption & $-p F_H$ & $+p F$       &              &              &          & $-p F_G$ &          & 0    \\
+		Other Consumption     & $-p O$   &              & $+p O$       &              &          &          &          & 0    \\
+		Investment            &          & $-p K_{F_E}$ & $-p K_{F_O}$ & $+p K$       &          &          &          & 0    \\
+		Wages                 & $+W$     & $-W^{F_E}$   & $-W^{F_O}$   & $-W^{F_K}$   &          &          &          & 0    \\
+		Taxes                 & $-T$     &              &              &              &          & $+T$     &          & 0    \\
+		Transfers             & $+M$     &              &              &              &          & $-M$     &          & 0    \\
+		\midrule
+		$F$ Profits           &          & $-\Pi^{F_E}$ & $-\Pi^{F_O}$ & $-\Pi^{F_K}$ & $+\Pi$   &          &          & 0    \\
+		$C$ Profits           &          &              &              &              &          & $+\Pi$   & $-\Pi$   & 0    \\
+
+
+		\midrule
+		$S$ Interests         & $+r S$   &              &              &              & $-r S$   &          &          & 0    \\
+		$L$ Interests         &          & $-r L^{F_E}$ & $-r L^{F_O}$ & $-r L^{F_K}$ & $+r L$   &          &          & 0    \\
+		$T$ Interests         &          &              &              &              & $+r T_B$ & $-r T$   & $+r T_C$ & 0    \\
+		\bottomrule
+	\end{tabularx}
+}\\
+
+\section{Sectors}
+\subsection{Households}
+In this model the core agent (consumer, worker, capitalist) represents a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care work, where the gender asymmetries become very relevant.
+
+Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gain experience when working in the same sector (Capital/Essential/Other) without employment gap.
+The education level is assigned with a probability related to the inherited wealth.
+
+Households face two choice: if work and which proportion of their income they should consume.
+
+Regarding the first, the choice is only dependent on the amount of financial income expected from Bank's Bonds held, i.e. if $\mathbb{E}(rS) >> \mathbb{E}(W)$, where $W$ is the wage, the households exits the labour market or stop to search for a job.
+
+Households aim to consume a fixed quantity of Essential Goods before start consuming the Other Goods. Moreover, they keep as deposits a fixed multiple of the expected expenses (i.e. $D = k \mathbb{E}(p)\mathbb{E}(E+O)$) and invest the remaining liquidity in Bank Bonds.
+\hl{The desired consumption con be either a (decreasing) fraction of the expected income or an adaptive choice depending on the expected variation of income and the consumption in the previous tick. In either cases at least the fixed amount of Essential Goods is desired.}
+
+
+\begin{enh}[Gender, Care work and Feminist Economics]
+	Approximate individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder-care, housekeeping, ...).
+	Gender is an important factor in creating inequalities: for example unemployment and wages shows a strong gender effect (which in both cases penalizes women).
+
+	Adding a gender perspective will be an improvement in the model (with relevant policy's implication) and will require to explicitly model education and childcare (which in this first draft is only sketched), the complete life-time of an agent (here reduced to the working age) and family choices (marriage, pregnancy, ...).
+\end{enh}
+
+\subsection{Firms}
+Firms are characterized by their position in the supply chain (either Capital or Consumption), the supply chain in which they are insert (either Essential or Luxury) and the holder of their equities (either Government or Financial Intermediaries).
+
+The kind of supply chain does not influence the behaviour of a firm, it simply changes the market on which the firm operates.
+
+\subsubsection{Capital Firms}
+
+\subsubsection{Consumption Firms}
+
+\begin{enh}[Firms' governance]
+
+\end{enh}
+
+\begin{enh}[Public Firms]
+\end{enh}
+
+
+\subsection{Bank}
+Bank agent represent the aggregate banking sector.
+
+Bank fixes the interest rates on Bank Bonds.
+
+They chose when granting loans to other Firms (based on the balance sheet of the applicant) and fix a different interest rate for each loan. The duration of Loans is fixed.
+
+Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
+
+Bank is required to maintain at least a given liability ($D$) over liquidity ($R+T$) ratio.
+
+\subsection{Government}
+\hl{Government fixes the fiscal policies, by adjusting tax rates.} It determines the amount to be transfer to Households (both as monetary and non-monetary, as Essential Goods).
+
+When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
+
+\subsection{Central Bank}
+In the model the role of Central Bank is to fix the Government's Bonds interest rate and the Advances interest rate.
+
+Additionally, it passively buys and sells Government's Bonds on request and guarantees all the Advances needed by banks. Reserves and Government's Account do not grant interests.
+
+In other words, the Central Bank is a lender of last resort for the Government, which then has no accounting limits to spending, and prevent any speculative attacks on debt.
+
+\section{Real Assets}
+\subsection{Essential Goods}
+The exact definition of essential good (and service) it is not easy to be give. An intuition can be provided by the Foundational Economy approach \parencite{arcidiacono2018}: \begin{quote}
+	The sphere of the foundational was then demarcated by three criteria: these goods and services were necessary to everyday life; were consumed daily by all citizens regardless of income; and were distributed according to population through branches and networks. They were partly non-market, generally sheltered and one way or another politically franchised.
+\end{quote}
+
+Operationally, we can image the essential goods in the model as the ones included in the basket used by national statistics offices to determinate the poverty line. In this sense, it is a set of goods which continuously mutate to adapt to new life needs.
+
+\begin{enh}[Housing]
+	Among essential goods one should require ad hoc modelling: houses. Houses are special for three reasons.
+
+	First, they are very heterogeneous in prices and quality, and both are strongly related to the position. In other words, including houses requires (quite always) to make the model spatially explicit.
+
+	Second, the expenses for housing, in form of rent or mortgage, account for a significant part of monthly consumptions for poor individuals (up to one half).
+
+	Third, real estate properties are an important form of rent extraction and an important tool of investment, and so another important channel of redistribution.
+\end{enh}
+
+\subsection{Other Goods}
+Other Goods are, by exclusion, all the non-Essential Goods.
+
+\begin{enh}[Diversified Goods]
+	A subsequent version of the model can include different (abstract) goods to be produced and consumed. This will  create two different innovation processes (better technology for existing goods, or technology for new goods) and will account for the empirical fact that higher the income more diversified the consumptions are \parencite[cfr.][§2]{didomenico2022}.
+\end{enh}
+
+\subsection{Capital Goods}
+
+\section{Financial Assets}
+
+\subsection{Deposits}
+Deposits represent liquidity for Households and Firms and are not interest-bearing. Bank satisfies any transaction as long as the balance of the account remains positive.
+
+\subsection{Bank Bonds}
+Bank Bonds are sold and bought at their nominal value and expires after a fixed number of periods. Bank satisfies every transaction, as long as the accounts remain positive. Households can buy Bank Bonds only at the beginning of each period. At the end of period, interests are paid, according to the rate fixed by the Bank at the time of emission.
+
+\subsection{Loans}
+
+\subsection{Government Bonds}
+Government Bonds are sold and bought at their nominal value and expires after a fixed number of periods. Central Bank satisfies every transaction. Bank can buy Government Bonds only at the beginning of each period. At the end of period, interests are paid only to the Bank, according to the rate fixed by the Central Bank at the time of emission.
+
+\subsection{Reserves}
+Reserves represent liquidity for Bank and Government and are not interest-bearing. Central Bank satisfies any transaction as long as the balance of the account remains positive.
+
+\section{Model steps}
+\begin{steps}
+	\item \label{C1} Every Q times, Central Bank updates interest rates []
+	\item \label{G1} Every T times, Government update tax policies []
+	\item \label{I1} Financial Intermediaries set target rate of return [\cref{C1}]
+	\item \label{B1} Banks check the liquidity requirement and set rates and Loans' requirements [\cref{C1,I1}]
+	\item \label{G2} Government set target output for Public Sector Consumption Firms []
+	\item \label{F1} Consumption Firms set desired output and order Capital goods to Capital Firms [\cref{G1,G2}]
+	\item \label{F2} Capital Firms set desired output [\cref{C1,F1,I1}]
+	\item \label{F3} Firms acquire Loans from Banks [\cref{F2,G1}]
+	\item \label{F4} Firms open job vacancies [\cref{F3}]
+	\item \label{H1} Households set demand for Consumption Goods and chose if enter or exit job market []
+	\item \label{F5} Firms hire [\cref{F3,H1}]
+	\item \label{H2} Households set demand for Financial Intermediaries' Shares [\cref{F4,I1,H1}]
+	\item \label{F6} Wages are paid and tax on wages are collected [\cref{F5}]
+	\item \label{F7} Production takes place [\cref{F6}]
+	\item \label{G3} Government buys Public Sector Output and needed Private sector output, paying VAT [\cref{F7,G2,G1}]
+	\item \label{G4} Government make transfers to households both monetary and non-monetary  [\cref{G3}]
+	\item \label{H3} Households buy desired goods paying VAT [\cref{G4}]
+	\item \label{H4} Households buy and sell Financial Intermediaries' Shares [\cref{H3}]
+	\item \label{F8} Consumption Firms acquire ordered Capital Goods, if produced [\cref{F7,G3}]
+	\item \label{B2} Households and Firms move deposits [\cref{H4,B1}]
+	\item \label{I2} Financial Intermediaries put sell and buy order on Equities' market, Firms and Banks emit new equities [\cref{I1,B1,F1,F2}]
+	\item \label{I3} Financial Intermediaries complete the investment portfolio [\cref{I2}]
+	\item \label{B3} Banks complete the investment portfolio [\cref{I2}]
+	\item \label{F9} Innovation investments deliver (available technologies updated) [\cref{F7}]
+	\item \label{C2} Central Bank pays its profits to the Government [\cref{G3,I3,B3}]
+	\item \label{G5} Government pays Bonds' interests [\cref{C2}]
+	\item \label{B4} Households and Firms pay interest on loans and eventually part of the capital [\cref{H3,F8}]
+	\item \label{B5} Banks paying interests on Deposits and Advances [\cref{G5,B4}]
+	\item \label{I4} Firms and Banks pay Equities interest [\cref{B4,I3}]
+	\item \label{I5} Every Q Shares' plusvalue taxes are collected [\cref{I4}]
+	\item \label{I6} Financial Intermediaries pays Shares' dividends and the relative taxes [\cref{I5}]
+	\item \label{G6} Every Y taxes are arbitraged [\cref{F6,G3,H3,I5,I6}]
+
+
+\end{steps}
+
+\section{Equations}
+
+\section{Parameters}
+
+\printbibliography
+
+\end{document}
