@@ -60,8 +60,8 @@
 
 \section{Introduction}
 \subsection{Aims}
-The long term goal of this model is to highlight the macroeconomic and distributional effects of some welfare policies.
-The focus is put in particular on some (recent) policies yet unapplied in real world as Universal Basic Income, Job Guarantee schemes or the presence of only cooperative firms.
+The long-term goal of this model is to highlight the macroeconomic and distributional effects of some welfare policies.
+The focus is put in particular on some (recent) policies yet unapplied in the real world as Universal Basic Income, Job Guarantee schemes, or the presence of only cooperative firms.
 
 To do so, I attempt to better characterize the differences of behaviour among low and high income households.
 The theoretical framework used is the Foundational Economy one \parencite{arcidiacono2018}, which suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures\footnote{\textit{"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality."} \parencite{arcidiacono2018}}.
@@ -179,13 +179,13 @@ Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r 
 
 To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (p_O G) \approx \Delta(p_O) G + p_O \Delta G \approx p_O (\pi G + \Delta G)$, where $\pi$ is some measure of inflation. The reason of using $p_O$ and ignoring $p_E$ will be clear in the next paragraphs, but relies on the hypotheses that essential goods are a macroscopic part of consumptions at lower incomes, where the consumption behaviour is close to hand-to-mouth. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{p_O(\eta + r (1+\rho))} - \pi G$
 
-$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to chose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{<p_O>},\frac{W}{<p_O>})$, where the average price of the other goods is used to get a-dimensional values.
+$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to chose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\langle p_O \rangle},\frac{W}{\langle p_O \rangle})$, where the average price of the other goods is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
 
 From this relation we can model the two choices.
 
 First a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p_O \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevent a loss of consumption, i.e. if $\Delta r S - p_O \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p_O \pi (\eta + r (1+\rho)) G > 0$.
 
-Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G))$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
+Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximate individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder-care, housekeeping, ...).
@@ -212,15 +212,22 @@ The kind of supply chain does not influence the behaviour of a firm, it simply c
 
 
 \subsection{Bank}
-Bank agent represent the aggregate banking sector.
+Bank agent represents the aggregate banking sector.
 
-Bank fixes the interest rates on Bank Bonds.
-
-They chose when granting loans to other Firms (based on the balance sheet of the applicant) and fix a different interest rate for each loan. The duration of Loans is fixed.
+Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a capital ratio ($\Gamma = \frac{V}{L}$).
 
 Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
 
-Bank is required to maintain at least a given liability ($D$) over liquidity ($R+T$) ratio.
+Bank fixes the interest rates on Bank Bonds as $r_S = i + \lambda(\Gamma - \Gamma^*)$, where $i$ is the Central Bank interest rate. In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology and needed a way to avoid excessive capitalization. So, it is not possible to have $r_S(\Lambda)$ (because it will be constant) and to make $r_S(\Gamma)$ approximate a profit distribution, without in a bond-like market (rather than a stock-like ownership model).
+
+\begin{enh}[Competitive credit market]
+	There are difficulties in setting the Bank Bonds interest rate, because in the credit market there is not competition for Households savings and Central Bank provides free from interest liquidity.
+	The first possibility is to disaggregate the sector and making interest rate on Bank Bonds a tool of competition.
+	The other is to allow Central Bank to ration the access to liquidity, charging an interest rate on Advances (adding a financial stock in the model).
+\end{enh}
+
+It also chooses when granting loans to Firms (based on the balance sheet of the applicant) and fixes a different interest rate for each loan. The duration of Loans is fixed.
+Bank is willing to provide loans to a firm $F$ up to $\hat{l} = k (D^F+pK^F) - L^F$, at a firm-specific interest rate $r_L^F = i + \gamma_1 (\Gamma - \Gamma^*) + \gamma_2 (\frac{L^F}{V^F}) - \gamma_3 (\frac{\Pi^F}{L^F})$.
 
 \subsection{Government}
 \hl{Government fixes the fiscal policies, by adjusting tax rates.} It determines the amount to be transfer to Households (both as monetary and non-monetary, as Essential Goods).
@@ -228,7 +235,7 @@ Bank is required to maintain at least a given liability ($D$) over liquidity ($R
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
 \subsection{Central Bank}
-In the model the role of Central Bank is to fix the Government's Bonds interest rate according a Taylor rule $i = \pi + \alpha_1 (\pi - \pi^*) + \alpha_2 (u - u^*)$, where $\pi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, and starred variables are the targets.
+In the model the role of Central Bank is to fix the Government's Bonds interest rate according a Taylor rule $i = \pi + \alpha_1 (\pi - \pi^*) + \alpha_2 (c - c^*) - \alpha_3 (u - u^*)$, where $\pi$ is the inflation rate, $c$ is the capacity utilization measured as the fraction of capital goods used in production, $u$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets.
 
 Additionally, it passively buys and sells Government's Bonds on request to the Bank and the Government. Reserves do not grant interests.
 
@@ -260,7 +267,7 @@ Other Goods are, by exclusion, all the non-Essential Goods.
 \end{enh}
 
 \subsection{Capital Goods}
-Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. Each period they have a fixed probability to broke and disappear from the model, equal to $<N>^{-1}$, where $<N>$ is the expected life of the machinery.
+Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. Each period they have a fixed probability to broke and disappear from the model, equal to $\langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
 
 \section{Financial Assets}
 
