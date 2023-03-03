@@ -107,6 +107,14 @@ Bank Bonds ($S$, like shares) hold by Households, which interest rate is fixed e
 Banks Reserves and Government Account at the Central Bank ($R$), which are not interest-bearing.
 Government's Bonds ($T$, like treasure's bond) hold by Bank and Central Bank, which interest rate is fixed by the Central Bank.
 
+\subsection{Price index}
+Including two different goods in the model makes computing a price index (and so inflation) a non-obvious task.
+Luckily, the way I will model the consumption preferences of the Households makes them easy to order by total consumption (in material terms), without accounting for which kind of good has been effectively consumed.
+It is possible to define, for a given time interval $T$ the average price for each kind of good simply by taking the weighted average of every transaction in the model (obtaining $\langle p_E \rangle_T$, $\langle p_O \rangle_T$, $\langle p_K \rangle_T$).
+
+Then the consumer price index can be computed by taking the median consumption of goods in the given timespan ($\bar{E}$, $\bar{O}$) and multiplying for the average prices, obtaining $\psi = \langle p_E \rangle_T \bar{E} + \langle p_O \rangle_T \bar{O}$. The inflation rate would then be $\pi = \frac{\psi_{T + \Delta T} - \psi_T}{\psi_T}$.
+
+
 \section{Matrices}
 \subsection{Balance Sheet Matrix}
 \makebox[\textwidth][c]{
@@ -172,20 +180,20 @@ Households face two choice: if work and which proportion of their income they sh
 
 Households flows' balance is $I = W + M + rS = C + T + \Delta S + \Delta D$.
 I assume, as heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated constant respect the previous time period.
-Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = p_E E + p_O O$) as insurance against unexpected increasing in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interest paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
+Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = \langle p_E \rangle E + \langle p_O \rangle O$) as insurance against unexpected increasing in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interest paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
 Subtracting two consecutive time periods and ignoring second order differences, the in-flow income becomes $\Delta I = \Delta W + \Delta r S + r \Delta S$, and calling $\eta$ the marginal propensity to consume it becomes $\eta \Delta C \approx \Delta W + \Delta r S + r \Delta S$.
 Fixed the income level $I$ we can write $0 = \Delta C + \Delta D + \Delta S = (1+\rho) \Delta C + \Delta S$ to express the choice the household faces between consumption and saving.
 Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r (1+\rho) \Delta C$ and so $\Delta C \approx \frac{\Delta W + \Delta r S}{\eta + r (1+\rho)}$, which provides an adaptive rule for monetary consumption.
 
-To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (p_O G) \approx \Delta(p_O) G + p_O \Delta G \approx p_O (\pi G + \Delta G)$, where $\pi$ is some measure of inflation. The reason of using $p_O$ and ignoring $p_E$ will be clear in the next paragraphs, but relies on the hypotheses that essential goods are a macroscopic part of consumptions at lower incomes, where the consumption behaviour is close to hand-to-mouth. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{p_O(\eta + r (1+\rho))} - \pi G$
+To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (\psi G) \approx \Delta(\psi) G + \psi \Delta G \approx \psi (\pi G + \Delta G)$. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{\psi (\eta + r (1+\rho))} - \pi G$
 
-$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to chose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\langle p_O \rangle},\frac{W}{\langle p_O \rangle})$, where the average price of the other goods is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
+$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\psi},\frac{W}{\psi})$, where the price index is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
 
-From this relation we can model the two choices.
+From this relations we can model the two choices.
 
-First a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p_O \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevent a loss of consumption, i.e. if $\Delta r S - p_O \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p_O \pi (\eta + r (1+\rho)) G > 0$.
+First a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - \psi \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if $\Delta r S - \psi \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - \psi \pi (\eta + r (1+\rho)) G > 0$.
 
-Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous time period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = p_0 (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = p_0 (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
+Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = \psi (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \psi (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximate individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder-care, housekeeping, ...).
@@ -227,10 +235,11 @@ Bank fixes the interest rates on Bank Bonds as $r_S = i + \lambda(\Gamma - \Gamm
 \end{enh}
 
 It also chooses when granting loans to Firms (based on the balance sheet of the applicant) and fixes a different interest rate for each loan. The duration of Loans is fixed.
-Bank is willing to provide loans to a firm $F$ up to $\hat{l} = k (D^F+pK^F) - L^F$, at a firm-specific interest rate $r_L^F = i + \gamma_1 (\Gamma - \Gamma^*) + \gamma_2 (\frac{L^F}{V^F}) - \gamma_3 (\frac{\Pi^F}{L^F})$.
+Bank is willing to provide loans to a firm $F$ up to $\hat{l} = \min (\chi_0 (D^F+pK^F) - L^F, \max((\chi_1 N_F)^{-1} L (\frac{\Gamma}{\Gamma^*}-1),0))$, at a firm-specific interest rate $r_L^F = i + \gamma_1 (\Gamma - \Gamma^*) + \gamma_2 (\frac{L^F}{V^F}) - \gamma_3 (\frac{\Pi^F}{L^F})$.
+These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
 
 \subsection{Government}
-\hl{Government fixes the fiscal policies, by adjusting tax rates.} It determines the amount to be transfer to Households (both as monetary and non-monetary, as Essential Goods).
+\hl{Government fixes the fiscal policies, by adjusting tax rates.} It determines the amount to be transferred to Households (both as monetary and non-monetary, as Essential Goods).
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
