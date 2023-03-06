@@ -67,7 +67,7 @@ To do so, I attempt to better characterize the differences in behaviour among lo
 The theoretical framework used is the Foundational Economy one \parencite{arcidiacono2018}, which suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures\footnote{\textit{"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality."} \parencite{arcidiacono2018}}.
 This idea should allow for characterizing better the dynamic of consumption for lower-income households.
 
-How to model in the macroeconomic context the idea of a Foundational Economy is discussed later.
+How to model the idea of a Foundational Economy in a macroeconomic context is discussed later.
 
 \begin{enh}[Welfare policies]
 	The first version of the model will be as simple as possible to create a robust baseline.
@@ -78,12 +78,12 @@ How to model in the macroeconomic context the idea of a Foundational Economy is 
 \subsection{Time}
 The timescale of the first version of the model should be relevant to calibrate the model on real data.
 
-It is possible that an adaptive approach for the agents' behaviour works better using a higher frequency model that covers a shorter timespan (e.g. one month per tick, 15 years length, 180 time step in total), because of the smaller variations expected at each tick.
+It is possible that an adaptive approach for the agents' behaviour works better using a higher frequency model that covers a shorter timespan (e.g. one month per tick, 15 years length, 180 time steps in total), because of the smaller variations expected at each tick.
 
 Moreover, in a future version of the model, the simulation's timespan has to be long enough to observe the effects of introducing a policy. But, at the same time, it is unreasonable to keep the simulation running over 5-10 years after the policy's introduction because, in any real-world context, a government can tune or revert the policy afterwards.
 
 \subsection{Close Economy}
-The assumption of a close economy strongly reduces the complexity of the model, but prevents observing some economic phenomena like export-led growth (such as for Italy or Germany) or the offshoring of labour-intensive productions.
+The assumption of a close economy strongly reduces the complexity of the model but prevents observing some economic phenomena like export-led growth (such as for Italy or Germany) or the offshoring of labour-intensive productions.
 Nevertheless, this is a common hypothesis which is used also in this model.
 
 \begin{enh}[Multi-Country Model]
@@ -96,7 +96,7 @@ The model includes the core sector of most SFC models \parencite{nikiforos2017}.
 Firms are considered as different sectors in the model matrices depending on the goods produced.
 
 \subsection{Real Assets}
-The model comprises three kinds of real assets: Capital Goods ($K$), Essential Consumption Goods ($E$) (those Foundational Economy is about) and Other Consumption Goods ($O$).
+The model comprises three kinds of real assets: Capital Goods ($K$), Essential Consumption Goods ($E$) (those what Foundational Economy is about) and Other Consumption Goods ($O$).
 The only durable one is the Capital Goods.
 
 \subsection{Financial Assets}
@@ -165,21 +165,21 @@ $V$ is the Net Worth of the sector.
 In this model, the core agents (consumer, worker, capitalist) represent a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care work, where the gender asymmetries become very relevant.
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working in the same sector (Capital/Essential/Other) without an employment gap.
-The education level is assigned with a probability related to the inherited wealth, and provides the starting skill level.
-Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\tau)^\delta s_{t-1}$ where $\delta=1$ if the household is employed in the same sector of the previous time step, $\delta=0$ if the household is still employed but in a different sector, $\delta=-1$ if the household is unemployed.
+The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
+Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\phi)^\delta s_{t-1}$ where $\delta=1$ if the household is employed in the same sector of the previous time step, $\delta=0$ if the household is still employed but in a different sector, $\delta=-1$ if the household is unemployed.
 
 \begin{enh}[Training]
 	Two factors in the development of the skills can be introduced.
 
 	One on the welfare policies side is the possibility for the government to organize training programs for the unemployed to prevent the loss of skills on even increase them.
 
-	The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closer to the skill level, while demoted and overqualified workers have lower chances to learn new skills. This can be included in the model making $\tau \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
+	The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closer to the skill level, while demoted and overqualified workers have lower chances to learn new skills. This can be included in the model making $\phi \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
 \end{enh}
 
 Households face two choices: if work and which proportion of their income they should consume.
 
 Households flows' balance is $I = W + M + rS = C + T + \Delta S + \Delta D$.
-I assume, as a heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated constant with respect the previous period.
+I assume, as a heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated as constant from the previous period.
 Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = \langle p_E \rangle E + \langle p_O \rangle O$) as insurance against unexpected increases in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interests paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
 Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes $\Delta I = \Delta W + \Delta r S + r \Delta S$, and calling $\eta$ the marginal propensity to consume it becomes $\eta \Delta C \approx \Delta W + \Delta r S + r \Delta S$.
 Fixed the income level $I$ we can write $0 = \Delta C + \Delta D + \Delta S = (1+\rho) \Delta C + \Delta S$ to express the choice the household faces between consumption and saving.
@@ -187,19 +187,19 @@ Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r 
 
 To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (\psi G) \approx \Delta(\psi) G + \psi \Delta G \approx \psi (\pi G + \Delta G)$. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{\psi (\eta + r (1+\rho))} - \pi G$
 
-$\Delta W$ can be approximated by $(1 + \omega) W_{t-1}$ where $\omega$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\psi},\frac{W}{\psi})$, where the price index is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
+$\Delta W$ can be approximated by $(1 + w) W_{t-1}$ where $w$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\psi},\frac{W}{\psi})$, where the price index is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
 
-From this relation we can model the two choices.
+From this relation, we can model the two choices.
 
 First, a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - \psi \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if $\Delta r S - \psi \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - \psi \pi (\eta + r (1+\rho)) G > 0$.
 
-Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = \psi (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \psi (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+\omega) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
+Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = \psi (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \psi (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+w) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
 	Gender is an important factor in creating inequalities: for example, unemployment and wages show a strong gender effect (which in both cases penalizes women).
 
-	Adding a gender perspective will be an improvement in the model (with relevant policy's implication) and will require explicitly modelling education and childcare (which in this first draft is only sketched), the complete life cycle of an agent (here reduced to the working age) and family choices (marriage, pregnancy, ...).
+	Adding a gender perspective will be an improvement in the model (with relevant policy implications) and will require explicitly modelling education and childcare (which in this first draft is only sketched), the complete life cycle of an agent (here reduced to the working age) and family choices (marriage, pregnancy, ...).
 \end{enh}
 
 \subsection{Firms}
@@ -226,11 +226,11 @@ Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a ca
 
 Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
 
-Bank fixes the interest rates on Bank Bonds as $r_S = i + \lambda(\Gamma - \Gamma^*)$, where $i$ is the Central Bank interest rate. In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology and needed a way to avoid excessive capitalization. So, it is not possible to have $r_S(\Lambda)$ (because it will be constant) and to make $r_S(\Gamma)$ approximate a profit distribution, without in a bond-like market (rather than a stock-like ownership model).
+Bank fixes the interest rates on Bank Bonds as $r_S = (1 - \tau_S) (i + \lambda(\Gamma - \Gamma^*))$, where $i$ is the Central Bank interest rate and $\tau_S$ is the constant tax rate on financial income. In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology and needed a way to avoid excessive capitalization. So, it is not possible to have $r_S(\Lambda)$ (because it will be constant) and to make $r_S(\Gamma)$ approximate a profit distribution, without in a bond-like market (rather than a stock-like ownership model).
 
 \begin{enh}[Competitive credit market]
-	There are difficulties in setting the Bank Bonds interest rate because there is no competition in the credit market for Households savings, and Central Bank provides free from interest liquidity.
-	The first possibility is to disaggregate the sector and to make interest rate on Bank Bonds a tool of competition among banks.
+	There are difficulties in setting the Bank Bonds interest rate because there is no competition in the credit market for Household savings, and Central Bank provides free from interest liquidity.
+	The first possibility is to disaggregate the sector and to make interest rates on Bank Bonds a tool of competition among banks.
 	The other is to allow Central Bank to ration the access to liquidity, charging an interest rate on Advances (adding a financial stock in the model).
 \end{enh}
 
@@ -239,9 +239,22 @@ Bank is willing to provide loans to a firm $F$ up to $\hat{l} = \min (\chi_0 (D^
 These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
 
 \subsection{Government}
-\hl{Government fixes the fiscal policies, by adjusting tax rates.} It determines the amount to be transferred to Households (both as monetary and non-monetary, as Essential Goods).
+Government fixes the public expenditure. It additionally collects taxes and pays unemployment benefits. It determines the amount to be transferred to Households (both as monetary and non-monetary, as Essential Goods).
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
+
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes three taxes: a VAT on the purchase of consumption goods with two different rates for Essential ($\tau_E$) and Other ($\tau_O$) goods; a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{\psi} - \tau_T)),0)$.
+
+Fixed unemployment benefit $U = \max(\langle p_E \rangle (\omega E^* - \hat{E}),0)$ is paid to those who have not exited the job market and are not employed.
+
+Each period government buys essential goods which distribute to the Households. Particularly each Household receives an amount of Essential goods equal to $E^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{\psi}})\hat{E}$.
+
+We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_H U$ and $G = \sum_H E^G$.
+
+Assuming a Maastricht-like scenario in which Government has a target deficit $\delta$ to achieve, the expected balance of the next period can be written as $\delta Y (1+g) = (1+\pi) (\mathbb{E}(G) + M) + i T_B(1 + \frac{1}{T^G} \delta Y) - (1+g)(1+\pi) T$ where it is assumed that expenses for unemployment benefits are approximately constant, $T$ are the taxes raised, $T_B$ the stock of Government bonds held by the Bank and $T^G$ is the total stock of Government Bonds.
+
+Then, $\mathbb{E}(G) = (1+g) T + \frac{1+g}{1+\pi}(1-i\frac{T_B}{T^G})\delta Y - \frac{i}{1+\pi}T_B - M$, from which it is possible to write an adaptive rule for Government demand which aims to match the target deficit as $\Delta \hat{E} = q_2 \frac{\mathbb{E}(G)-G}{p_E N^H}$, where $N^H$ is the number of Households agents.
+
 
 \subsection{Central Bank}
 In the model the role of the Central Bank is to fix the Government's Bonds interest rate according to a Taylor rule $i = \pi + \alpha_1 (\pi - \pi^*) + \alpha_2 (c - c^*) - \alpha_3 (u - u^*)$, where $\pi$ is the inflation rate, $c$ is the capacity utilization measured as the fraction of capital goods used in production, $u$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets.
