@@ -201,12 +201,14 @@ Second, each household sets the desired total consumption as $\mathbb{E}(G) = G 
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
+Loans are taken as required. In case of rationed credit, Firms first pay salaries of workers, then pay salaries of researchees, then acquire new machineries and finally repay the Bank of the Loans contracted.
+
 \subsubsection{Consumption Firms}
 Noted $S$ the quantity of goods solds in the previous period, each Firm sets the desired production as $\mathbb{E}(G) = k(1+g+\pi)S$, where $g$ is the GDP growth rate.
 
-The maximum output of the available machinery is defined as $B = \sum_{k \in K} \beta_k$. Each Firm set a desired potential output $\mathbb{E}(B) = \frac{1}{u^*}\mathbb{G} + \delta B$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that $\Delta B = \frac{\mathbb{E}(G)}{u^*} - (1 - \delta) B$ and the expected investment in monetary units is $\mathbb{E}(I) = p_K\frac{\Delta B}{\langle \beta \rangle}$.
+The maximum output of the available machinery is defined as $B = \sum_{k \in K} \beta_k$. Each Firm set a desired potential output $\mathbb{E}(B) = \frac{1}{u^*}\mathbb{E}(G) + \delta B$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that $\Delta B = \max(\frac{\mathbb{E}(G)}{u^*} - (1 - \delta) B, 0)$ and the expected investment in monetary units is $\mathbb{E}(I) = p_K\frac{\Delta B}{\langle \beta \rangle}$.
 
-The expected expense for salaries is $\mathbb{W} = \frac{\mathbb{E}(G)}{\langle \beta \rangle}\langle w \rangle$, where $w$ are the individual salaries paid.
+The expected expense for salaries is $\mathbb{E}(W) = \frac{\mathbb{E}(G)}{\langle \beta \rangle}\langle w \rangle$, where $w$ are the individual salaries paid.
 
 The markup is set equal to $\mu = \mu_{t-1}(1 + \theta \frac{S_{t-1}}{G})$ after that the production happened.
 
@@ -214,8 +216,12 @@ Called $U$ the balance of flows in the period before distributing profits and $D
 
 
 \subsubsection{Capital Firms}
+Capital Firms produce their own machiney, creating a sistem of two simultaneous equations to derminate the desired output.
+We avoid the problem approximating $\mathbb{E}(B) = \frac{k(1+g-\pi)}{u^*}S + \delta B$, and $\mathbb{E}(K) = k(1+g-\pi)S + \Delta B - K$, where $K$ are the unsold capital goods from the previous period. The machinery produced for own use are kept separated from those to be sold.
 
+Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $\mathbb{E}(R) = R(1+\frac{k}{S}\frac{\Pi}{\langle w_R \rangle})$ where $\langle w_R \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$.
 
+Finally we note that $I = 0$ and so $C=W$.
 
 \begin{enh}[Firms' governance]
 
@@ -249,7 +255,7 @@ Government fixes the public expenditure. It additionally collects taxes and pays
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
-As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes three taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$.
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$; an inheritance tax on wealth with constant rate ($\tau_I$).
 
 Fixed unemployment benefit $U_{t+1} = \gamma \max{W, U}$ is paid to those who have not exited the job market and are not employed.
 
@@ -270,12 +276,16 @@ Additionally, it passively buys and sells Government Bonds on request to the Ban
 In other words, the Central Bank is a lender of last resort for the Government, which then has no accounting limits to spending.
 
 \section{Real Assets}
-\subsection{Essential Goods}
-The exact definition of essential good (and service) is not easy to give. An intuition can be provided by the Foundational Economy approach \parencite{arcidiacono2018}: \begin{quote}
-	The sphere of the foundational was then demarcated by three criteria: these goods and services were necessary to everyday life; were consumed daily by all citizens regardless of income; and were distributed according to population through branches and networks. They were partly non-market, generally sheltered and one way or another politically franchised.
-\end{quote}
+\subsection{Consumption Goods}
+Consumption Goods represents all the consumption (goods and services) of Households and are homogeneus and non-durable.
 
-Operationally, we can imagine the essential goods in the model as the ones included in the basket used by national statistics offices to determine the poverty line. In this sense, it is a set of goods which continuously mutate to adapt to new life needs.
+\begin{enh}[Foundational Economy -- 3]
+	The exact definition of Foundational good (and service) is not easy to give. An intuition can be provided by the Foundational Economy approach \parencite{arcidiacono2018}: \begin{quote}
+		The sphere of the foundational was then demarcated by three criteria: these goods and services were necessary to everyday life; were consumed daily by all citizens regardless of income; and were distributed according to population through branches and networks. They were partly non-market, generally sheltered and one way or another politically franchised.
+	\end{quote}
+
+	Operationally, we can imagine the essential goods in a future model as the ones included in the basket used by national statistics offices to determine the poverty line. In this sense, it is a set of goods which continuously mutate to adapt to new life needs.
+\end{enh}
 
 \begin{enh}[Housing]
 	Among essential goods, one should require ad hoc modelling: houses. Houses are special for three reasons.
@@ -286,9 +296,6 @@ Operationally, we can imagine the essential goods in the model as the ones inclu
 
 	Third, real estate properties are an important form of rent extraction and an important tool of investment, and so another important channel of redistribution.
 \end{enh}
-
-\subsection{Other Goods}
-Other Goods are, by exclusion, all the non-Essential Goods.
 
 \begin{enh}[Diversified Goods]
 	A subsequent version of the model can include different (abstract) goods to be produced and consumed. This will create two different innovation processes (better technology for existing goods, or technology for new goods) and will account for the empirical fact that the higher the income more diversified the consumptions are \parencite[cfr.][§2]{didomenico2022}.
@@ -314,42 +321,39 @@ Government Bonds are sold and bought at their nominal value and do not expire. C
 \subsection{Reserves}
 Reserves represent liquidity for Bank and Government and are not interest-bearing. Central Bank satisfies any transaction as long as the balance of the account remains positive.
 
+\section{Dynamics}
+\subsection{Consumption Goods market}
+Each Household sees $\chi_C$ Consumption Firms $\chi_C$ times, each time it buys $\frac{\mathbb{E}(G) - G^G}{\chi_C}$ at the lowest possible price, untill it matches the desired consumption or ends liquidity.
+
+\subsection{Capital Goods market}
+Each Consumption Firm sees $\chi_K$ Capital Firms $\chi_K$ times (including the last one from which it has bought), each time it buys $\frac{\Delta B}{\chi_C}$ machineries chosing the one with the lowest value of $\beta p_C - \langle w_\sigma \rangle - \frac{p_K}{\langle N \rangle}$, untill it matches the desired quantity or ends liquidity.
+
+\subsection{Labour market}
+Households are employed by a Firm untill they are fired, they chose to exit the job market or they accept an offer from another Firm.
+
+Firm can fire workers only when profits turn negative. In that case, Firms fire workes untill the number of workers reaches $u^* K$. Additionally, in the case the Firm is not able to pay a worker, it is fired. In both cases, Firms start to fire from those with the lower skills.
+
+Firms match each employed worker with the most productive machinery they can use, starting from those with higher skills. For this purpose a reasercher is a worker that is assigned to a machinery with productivity $\sigma^*$.
+Then the current potential output (as the sum of the productivity of the used machineries) is computed and vacancies are filled starting from the most productive unused machineries. All research vacancies are filled if possible.
+For each vacancy, the Firm sees $\chi_L$ workers which have the required skills and earn less than the average salary in the model for the skill level. The Firm employs the one with the higher skills offering the average salary in the model for the skill level.
+
+Each vacancies is filled once and new vacancies are not filled.
+
+\begin{enh}[Collective bargain]
+
+\end{enh}
+
+\subsection{Retirement and inheritance}
+
+\subsection{Non Performing Loans}
+
+\subsection{Bankrupt}
+
+\subsection{Innovation}
+
 \section{Model steps}
 \begin{steps}
-	\item \label{C1} Every Q times, Central Bank updates interest rates []
-	\item \label{G1} Every T times, Government update tax policies []
-	\item \label{I1} Financial Intermediaries set target rate of return [\cref{C1}]
-	\item \label{B1} Banks check the liquidity requirement and set rates and Loans' requirements [\cref{C1,I1}]
-	\item \label{G2} Government set target output for Public Sector Consumption Firms []
-	\item \label{F1} Consumption Firms set desired output and order Capital goods to Capital Firms [\cref{G1,G2}]
-	\item \label{F2} Capital Firms set desired output [\cref{C1,F1,I1}]
-	\item \label{F3} Firms acquire Loans from Banks [\cref{F2,G1}]
-	\item \label{F4} Firms open job vacancies [\cref{F3}]
-	\item \label{H1} Households set demand for Consumption Goods and chose if enter or exit job market []
-	\item \label{F5} Firms hire [\cref{F3,H1}]
-	\item \label{H2} Households set demand for Financial Intermediaries' Shares [\cref{F4,I1,H1}]
-	\item \label{F6} Wages are paid and tax on wages are collected [\cref{F5}]
-	\item \label{F7} Production takes place [\cref{F6}]
-	\item \label{G3} Government buys Public Sector Output and needed Private sector output, paying VAT [\cref{F7,G2,G1}]
-	\item \label{G4} Government make transfers to households both monetary and non-monetary  [\cref{G3}]
-	\item \label{H3} Households buy desired goods paying VAT [\cref{G4}]
-	\item \label{H4} Households buy and sell Financial Intermediaries' Shares [\cref{H3}]
-	\item \label{F8} Consumption Firms acquire ordered Capital Goods, if produced [\cref{F7,G3}]
-	\item \label{B2} Households and Firms move deposits [\cref{H4,B1}]
-	\item \label{I2} Financial Intermediaries put sell and buy order on Equities' market, Firms and Banks emit new equities [\cref{I1,B1,F1,F2}]
-	\item \label{I3} Financial Intermediaries complete the investment portfolio [\cref{I2}]
-	\item \label{B3} Banks complete the investment portfolio [\cref{I2}]
-	\item \label{F9} Innovation investments deliver (available technologies updated) [\cref{F7}]
-	\item \label{C2} Central Bank pays its profits to the Government [\cref{G3,I3,B3}]
-	\item \label{G5} Government pays Bonds' interests [\cref{C2}]
-	\item \label{B4} Households and Firms pay interest on loans and eventually part of the capital [\cref{H3,F8}]
-	\item \label{B5} Banks paying interests on Deposits and Advances [\cref{G5,B4}]
-	\item \label{I4} Firms and Banks pay Equities interest [\cref{B4,I3}]
-	\item \label{I5} Every Q Shares' plusvalue taxes are collected [\cref{I4}]
-	\item \label{I6} Financial Intermediaries pays Shares' dividends and the relative taxes [\cref{I5}]
-	\item \label{G6} Every Y taxes are arbitraged [\cref{F6,G3,H3,I5,I6}]
-
-
+	\item
 \end{steps}
 
 \section{Equations}
