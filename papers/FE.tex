@@ -199,13 +199,23 @@ Second, each household sets the desired total consumption as $\mathbb{E}(G) = G 
 \end{enh}
 
 \subsection{Firms}
-Firms are characterized by their position in the supply chain (either Capital or Consumption), the supply chain in which they are inserted (either Essential or Luxury) and the holder of their equities (either Government or Financial Intermediaries).
+Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
-The kind of supply chain does not influence the behaviour of a firm, it simply changes the market in which the firm operates.
+\subsubsection{Consumption Firms}
+Noted $S$ the quantity of goods solds in the previous period, each Firm sets the desired production as $\mathbb{E}(G) = k(1+g+\pi)S$, where $g$ is the GDP growth rate.
+
+The maximum output of the available machinery is defined as $B = \sum_{k \in K} \beta_k$. Each Firm set a desired potential output $\mathbb{E}(B) = \frac{1}{u^*}\mathbb{G} + \delta B$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that $\Delta B = \frac{\mathbb{E}(G)}{u^*} - (1 - \delta) B$ and the expected investment in monetary units is $\mathbb{E}(I) = p_K\frac{\Delta B}{\langle \beta \rangle}$.
+
+The expected expense for salaries is $\mathbb{W} = \frac{\mathbb{E}(G)}{\langle \beta \rangle}\langle w \rangle$, where $w$ are the individual salaries paid.
+
+The markup is set equal to $\mu = \mu_{t-1}(1 + \theta \frac{S_{t-1}}{G})$ after that the production happened.
+
+Called $U$ the balance of flows in the period before distributing profits and $D$ the amount of deposits in the same moment, each firm distributes profits $\Pi = k U \frac{D}{C}$, where $C = I + W$ in the period.
+
 
 \subsubsection{Capital Firms}
 
-\subsubsection{Consumption Firms}
+
 
 \begin{enh}[Firms' governance]
 
@@ -285,7 +295,7 @@ Other Goods are, by exclusion, all the non-Essential Goods.
 \end{enh}
 
 \subsection{Capital Goods}
-Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. Each period they have a fixed probability to break and disappear from the model, equal to $\langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
+Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good \hl{ getting $\beta$ goods as output}\footnote{It is possible that, to balance the model, the output needs to be $\beta$ consumption goods or $b\beta$ capital goods.}. Each period they have a fixed probability to break and disappear from the model, equal to $\delta = \langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
 
 \section{Financial Assets}
 
