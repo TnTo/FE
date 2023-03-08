@@ -42,8 +42,7 @@
 
 
 %opening
-\title{A PK AB-SFC Macroeconomic Model to study Foundational Economy\let\thefootnote\relax\footnotetext{
-	%This version is intended to be submitted to the XV ESHET Conference
+\title{A Hybrid AB-SFC Macroeconomic Model with explicit distribution of income and wealth \let\thefootnote\relax\footnotetext{
 	An updated version of this paper and all the source code and the instructions required to replicate the paper are available at \url{https://github.com/TnTo/FE/}
 
 	\hl{Highlighted} parts of the text indicate substantial choices to be taken.
@@ -63,11 +62,12 @@
 The long-term goal of this model is to highlight the macroeconomic and distributional effects of some welfare policies.
 The focus is put in particular on some (recent) policies yet unapplied in the real world as Universal Basic Income, Job Guarantee schemes, or the presence of only cooperative firms.
 
-To do so, I attempt to better characterize the differences in behaviour among low- and high-income households.
-The theoretical framework used is the Foundational Economy one \parencite{arcidiacono2018}, which suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures\footnote{\textit{"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality."} \parencite{arcidiacono2018}}.
-This idea should allow for characterizing better the dynamic of consumption for lower-income households.
-
-How to model the idea of a Foundational Economy in a macroeconomic context is discussed later.
+\begin{enh}[Foundational Economy -- 1]
+	To better characterize the differences in behaviour among low- and high-income households it is possible to refer to the theoretical framework provided by Foundational Economy \parencite{arcidiacono2018}. It suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures
+	\begin{quote}
+		"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality." \parencite{arcidiacono2018}
+	\end{quote}
+\end{enh}
 
 \begin{enh}[Welfare policies]
 	The first version of the model will be as simple as possible to create a robust baseline.
@@ -96,8 +96,13 @@ The model includes the core sector of most SFC models \parencite{nikiforos2017}.
 Firms are considered as different sectors in the model matrices depending on the goods produced.
 
 \subsection{Real Assets}
-The model comprises three kinds of real assets: Capital Goods ($K$), Essential Consumption Goods ($E$) (those what Foundational Economy is about) and Other Consumption Goods ($O$).
-The only durable one is the Capital Goods.
+The model comprises two kinds of real assets: Capital Goods ($K$) and Consumption Goods ($G$).
+Only the Capital Goods are durable.
+
+\begin{enh}[Foundational Economy -- 2]
+	To model the idea of a Foundational Economy the single representative Consumption Good can be splitted in a representative Foundational Consuption Good and another kind of non-Foundational Consumption Goods.
+	The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally the non-monetary transfers by the Government should comprise only Foundational Goods.
+\end{enh}
 
 \subsection{Financial Assets}
 The model includes five different financial assets.
@@ -107,29 +112,21 @@ Bank Bonds ($S$, like shares) held by Households, which interest rate is fixed e
 Banks Reserves and Government Account at the Central Bank ($R$), which are not interest-bearing.
 Government Bonds ($T$, like treasure bonds) hold by Bank and Central Bank, and which interest rate is fixed by the Central Bank.
 
-\subsection{Price index}
-Including two different goods in the model makes computing a price index (and so inflation) a non-obvious task.
-Luckily, the way I will model the consumption preferences of the Households makes them easy to order by total consumption (in material terms), without accounting for which kind of good has been effectively consumed.
-It is possible to define, for a given time interval $T$ the average price for each kind of good simply by taking the weighted average of every transaction in the model (obtaining $\langle p_E \rangle_T$, $\langle p_O \rangle_T$, $\langle p_K \rangle_T$).
-
-Then the consumer price index can be computed by taking the median consumption of goods in the given timespan ($\bar{E}$, $\bar{O}$) and multiplying for the average prices, obtaining $\psi = \langle p_E \rangle_T \bar{E} + \langle p_O \rangle_T \bar{O}$. The inflation rate would then be $\pi = \frac{\psi_{T + \Delta T} - \psi_T}{\psi_T}$.
-
-
 \section{Matrices}
 \subsection{Balance Sheet Matrix}
 \makebox[\textwidth][c]{
 	\begin{tabular}{l|ccccccc|l}
 		\toprule
-		     & $H$    & $F_E$        & $F_O$        & $F_K$        & $B$    & $G$    & $C$    & Tot.   \\
+		     & $H$    & $F_C$        & $F_K$        & $B$    & $G$    & $C$    & Tot.   \\
 		\midrule
-		$D$  & $+D_H$ & $+D_{F_E}$   & $+D_{F_O}$   & $+D_{F_K}$   & $-D$   &        &        & 0      \\
-		$S$  & $+S_H$ &              &              &              & $-S$   &        &        & 0      \\
-		$L$  &        & $-L^{F_E}$   & $-L^{F_O}$   & $-L^{F_K}$   & $+L$   &        &        & 0      \\
-		$T$  &        &              &              &              & $+T_B$ & $-T$   & $+T_C$ & 0      \\
-		$R$  &        &              &              &              & $+R_B$ & $+R_G$ & $-R$   & 0      \\
-		$K$  &        & $+p K_{F_E}$ & $+p K_{F_O}$ & $+p K_{F_K}$ &        &        &        & $+p K$ \\
+		$D$  & $+D_H$ & $+D_{F_C}$   & $+D_{F_K}$   & $-D$   &        &        & 0      \\
+		$S$  & $+S_H$ &              &              & $-S$   &        &        & 0      \\
+		$L$  &        & $-L^{F_C}$   & $-L^{F_K}$   & $+L$   &        &        & 0      \\
+		$T$  &        &              &              & $+T_B$ & $-T$   & $+T_C$ & 0      \\
+		$R$  &        &              &              & $+R_B$ & $+R_G$ & $-R$   & 0      \\
+		$K$  &        & $+p K_{F_C}$ & $+p K_{F_K}$ &        &        &        & $+p K$ \\
 		\midrule
-		Tot. & $+V_H$ & $+V_{F_E}$   & $+V_{F_O}$   & $+V_{F_K}$   & $+V_B$ & $+V_G$ & $+V_C$ & $+p K$ \\
+		Tot. & $+V_H$ & $+V_{F_C}$   & $+V_{F_K}$   & $+V_B$ & $+V_G$ & $+V_C$ & $+p K$ \\
 		\bottomrule
 	\end{tabular}
 }\\ \\
@@ -139,23 +136,22 @@ $V$ is the Net Worth of the sector.
 \makebox[\textwidth][c]{
 	\begin{tabularx}{\textwidth}{@{} Y|ccccccc|l @{}}
 		\toprule
-		                      & $H$      & $F_E$        & $F_O$        & $F_K$              & $B$      & $G$      & $C$      & Tot. \\
+		              & $H$      & $F_C$        & $F_K$              & $B$      & $G$    & $C$      & Tot.     \\
 		\midrule
-		Essential Consumption & $-p E_H$ & $+p E$       &              &                    &          & $-p E_G$ &          & 0    \\
-		Other Consumption     & $-p O$   &              & $+p O$       &                    &          &          &          & 0    \\
-		Investment            &          & $-p K_{F_E}$ & $-p K_{F_O}$ & $+p (K - K_{F_K})$ &          &          &          & 0    \\
-		Wages                 & $+W$     & $-W^{F_E}$   & $-W^{F_O}$   & $-W^{F_K}$         &          &          &          & 0    \\
-		Taxes                 & $-T$     &              &              &                    &          & $+T$     &          & 0    \\
-		Transfers             & $+M$     &              &              &                    &          & $-M$     &          & 0    \\
+		Consumption   & $-p G_H$ & $+p G$       &                    &          &        & $-p G_G$ &      & 0 \\
+		Investment    &          & $-p K_{F_C}$ & $+p (K - K_{F_K})$ &          &        &          & 0        \\
+		Wages         & $+W$     & $-W^{F_C}$   & $-W^{F_K}$         &          &        &          & 0        \\
+		Taxes         & $-T$     &              &                    &          & $+T$   &          & 0        \\
+		Transfers     & $+M$     &              &                    &          & $-M$   &          & 0        \\
 		\midrule
-		$F$ Profits           &          & $-\Pi^{F_E}$ & $-\Pi^{F_O}$ & $-\Pi^{F_K}$       & $+\Pi$   &          &          & 0    \\
-		$C$ Profits           &          &              &              &                    &          & $+\Pi$   & $-\Pi$   & 0    \\
+		$F$ Profits   &          & $-\Pi^{F_C}$ & $-\Pi^{F_K}$       & $+\Pi$   &        &          & 0        \\
+		$C$ Profits   &          &              &                    &          & $+\Pi$ & $-\Pi$   & 0        \\
 
 
 		\midrule
-		$S$ Interests         & $+r S$   &              &              &                    & $-r S$   &          &          & 0    \\
-		$L$ Interests         &          & $-r L^{F_E}$ & $-r L^{F_O}$ & $-r L^{F_K}$       & $+r L$   &          &          & 0    \\
-		$T$ Interests         &          &              &              &                    & $+r T_B$ & $-r T$   & $+r T_C$ & 0    \\
+		$S$ Interests & $+r S$   &              &                    & $-r S$   &        &          & 0        \\
+		$L$ Interests &          & $-r L^{F_C}$ & $-r L^{F_K}$       & $+r L$   &        &          & 0        \\
+		$T$ Interests &          &              &                    & $+r T_B$ & $-r T$ & $+r T_C$ & 0        \\
 		\bottomrule
 	\end{tabularx}
 }\\
@@ -180,20 +176,20 @@ Households face two choices: if work and which proportion of their income they s
 
 Households flows' balance is $I = W + M + rS = C + T + \Delta S + \Delta D$.
 I assume, as a heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated as constant from the previous period.
-Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = \langle p_E \rangle E + \langle p_O \rangle O$) as insurance against unexpected increases in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interests paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
+Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = \langle p_G \rangle G$) as insurance against unexpected increases in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interests paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
 Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes $\Delta I = \Delta W + \Delta r S + r \Delta S$, and calling $\eta$ the marginal propensity to consume it becomes $\eta \Delta C \approx \Delta W + \Delta r S + r \Delta S$.
 Fixed the income level $I$ we can write $0 = \Delta C + \Delta D + \Delta S = (1+\rho) \Delta C + \Delta S$ to express the choice the household faces between consumption and saving.
 Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r (1+\rho) \Delta C$ and so $\Delta C \approx \frac{\Delta W + \Delta r S}{\eta + r (1+\rho)}$, which provides an adaptive rule for monetary consumption.
 
-To translate this in material terms I introduce the material consumption $G = O + E$. We have $\Delta C = \Delta (\psi G) \approx \Delta(\psi) G + \psi \Delta G \approx \psi (\pi G + \Delta G)$. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{\psi (\eta + r (1+\rho))} - \pi G$
+To translate this in material terms I introduce the material consumption of consumption goods $G$. We have $\Delta C = \Delta (p G) \approx \Delta(p) G + p \Delta G \approx p (\pi G + \Delta G)$. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{p (\eta + r (1+\rho))} - \pi G$
 
-$\Delta W$ can be approximated by $w W_{t-1}$ where $w$ is the average rate at which wages for the given skill level are increased in the last year. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{\psi},\frac{W}{\psi})$, where the price index is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
+\hl{$\Delta W$ can be approximated by $w W_{t-1}$ where $w$ is the average rate at which wages for the given skill level are increased in the last year}\footnote{Or 0 assuming that salaries increase only changing employer which is an unexpected event.}. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{p},\frac{W}{p})$, where the price is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
 
 From this relation, we can model the two choices.
 
-First, a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - \psi \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if $\Delta r S - \psi \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - \psi \pi (\eta + r (1+\rho)) G > 0$.
+First, a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if $\Delta r S - p \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p \pi (\eta + r (1+\rho)) G > 0$.
 
-Second, each household aims firstly to consume a fixed quantity of essential goods $E^*$, which sets the desired total consumption as $\mathbb{E}(G) = \max(G + \Delta G, E^*)$ (using $G$ from the previous period), the desired consumption of essential goods as $\mathbb{E}(E) = \min(E^*, \mathbb{E}(G)) = E^*$ and the desired consumption of other goods as $\mathbb{E}(O) = \max(\mathbb{E}(G) - E^*, 0)$. From which follows $\mathbb{E}(C) = \psi (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \psi (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+w) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
+Second, each household sets the desired total consumption as $\mathbb{E}(G) = G + \Delta G$ (using $G$ from the previous period). From which follows $\mathbb{E}(C) = p (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \rho p (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+w) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
@@ -243,17 +239,17 @@ Government fixes the public expenditure. It additionally collects taxes and pays
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
-As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes three taxes: a VAT on the purchase of consumption goods with two different rates for Essential ($\tau_E$) and Other ($\tau_O$) goods; a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{\psi} - \tau_T)),0)$.
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes three taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$.
 
-Fixed unemployment benefit $U = \max(\langle p_E \rangle (\omega E^* - \hat{E}),0)$ is paid to those who have not exited the job market and are not employed.
+Fixed unemployment benefit $U_{t+1} = \gamma \max{W, U}$ is paid to those who have not exited the job market and are not employed.
 
-Each period government buys essential goods which distribute to the Households. Particularly each Household receives an amount of Essential goods equal to $E^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{\psi}})\hat{E}$.
+Each period government buys Consuption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to $G^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{p}})\hat{G}$.
 
-We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_H U$ and $G = \sum_H E^G$.
+We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_H U$ and $G = \sum_H G^G$.
 
 Assuming a Maastricht-like scenario in which Government has a target deficit $\delta$ to achieve, the expected balance of the next period can be written as $\delta Y (1+g) = (1+\pi) (\mathbb{E}(G) + M) + i T_B(1 + \frac{1}{T^G} \delta Y) - (1+g)(1+\pi) T$ where it is assumed that expenses for unemployment benefits are approximately constant, $T$ are the taxes raised, $T_B$ the stock of Government bonds held by the Bank and $T^G$ is the total stock of Government Bonds.
 
-Then, $\mathbb{E}(G) = (1+g) T + \frac{1+g}{1+\pi}(1-i\frac{T_B}{T^G})\delta Y - \frac{i}{1+\pi}T_B - M$, from which it is possible to write an adaptive rule for Government demand which aims to match the target deficit as $\Delta \hat{E} = q_2 \frac{\mathbb{E}(G)-G}{p_E N^H}$, where $N^H$ is the number of Households agents.
+Then, $\mathbb{E}(G) = (1+g) T + \frac{1+g}{1+\pi}(1-i\frac{T_B}{T^G})\delta Y - \frac{i}{1+\pi}T_B - M$, from which it is possible to write an adaptive rule for Government demand which aims to match the target deficit as $\Delta \hat{G} = q_2 \frac{\mathbb{E}(G)-G}{p N^H}$, where $N^H$ is the number of Households agents.
 
 
 \subsection{Central Bank}
