@@ -42,7 +42,7 @@
 
 
 %opening
-\title{A Hybrid AB-SFC Macroeconomic Model with explicit distribution of income and wealth \let\thefootnote\relax\footnotetext{
+\title{A Hybrid AB-SFC Macroeconomic Model with an explicit distribution of income and wealth \let\thefootnote\relax\footnotetext{
 	An updated version of this paper and all the source code and the instructions required to replicate the paper are available at \url{https://github.com/TnTo/FE/}
 
 	\hl{Highlighted} parts of the text indicate substantial choices to be taken.
@@ -63,7 +63,7 @@ The long-term goal of this model is to highlight the macroeconomic and distribut
 The focus is put in particular on some (recent) policies yet unapplied in the real world as Universal Basic Income, Job Guarantee schemes, or the presence of only cooperative firms.
 
 \begin{enh}[Foundational Economy -- 1]
-	To better characterize the differences in behaviour among low- and high-income households it is possible to refer to the theoretical framework provided by Foundational Economy \parencite{arcidiacono2018}. It suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to address essential needs and to build up shared infrastructures
+	To better characterize the differences in behaviour among low- and high-income households it is possible to refer to the theoretical framework provided by Foundational Economy \parencite{arcidiacono2018}. It suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to addressing essential needs and to building up shared infrastructures
 	\begin{quote}
 		"It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality." \parencite{arcidiacono2018}
 	\end{quote}
@@ -78,7 +78,7 @@ The focus is put in particular on some (recent) policies yet unapplied in the re
 \subsection{Time}
 The timescale of the first version of the model should be relevant to calibrate the model on real data.
 
-It is possible that an adaptive approach for the agents' behaviour works better using a higher frequency model that covers a shorter timespan (e.g. one month per tick, 15 years length, 180 time steps in total), because of the smaller variations expected at each tick.
+An adaptive approach for the agents' behaviour may work better using a higher frequency model that covers a shorter timespan (e.g. one month per tick, 15 years length, 180 time steps in total), because of the smaller variations expected at each tick.
 
 Moreover, in a future version of the model, the simulation's timespan has to be long enough to observe the effects of introducing a policy. But, at the same time, it is unreasonable to keep the simulation running over 5-10 years after the policy's introduction because, in any real-world context, a government can tune or revert the policy afterwards.
 
@@ -97,11 +97,11 @@ Firms are considered as different sectors in the model matrices depending on the
 
 \subsection{Real Assets}
 The model comprises two kinds of real assets: Capital Goods ($K$) and Consumption Goods ($G$).
-Only the Capital Goods are durable.
+Only Capital Goods are durable.
 
 \begin{enh}[Foundational Economy -- 2]
-	To model the idea of a Foundational Economy the single representative Consumption Good can be splitted in a representative Foundational Consuption Good and another kind of non-Foundational Consumption Goods.
-	The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally the non-monetary transfers by the Government should comprise only Foundational Goods.
+	In order to model the idea of a Foundational Economy the single representative Consumption Good can be split into a representative Foundational Consumption Good and another kind of non-Foundational Consumption Goods.
+	The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally, the non-monetary transfers by the Government should comprise only Foundational Goods.
 \end{enh}
 
 \subsection{Financial Assets}
@@ -201,14 +201,16 @@ Second, each household sets the desired total consumption as $\mathbb{E}(G) = G 
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
-Loans are taken as required. In case of rationed credit, Firms first pay salaries of workers, then pay salaries of researchees, then acquire new machineries and finally repay the Bank of the Loans contracted.
+In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery and finally repay the Bank of the Loans contracted.
 
 \subsubsection{Consumption Firms}
-Noted $S$ the quantity of goods solds in the previous period, each Firm sets the desired production as $\mathbb{E}(G) = k(1+g+\pi)S$, where $g$ is the GDP growth rate.
+Noted $S$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbb{E}(G) = k(1+g+\pi)S$, where $g$ is the GDP growth rate.
 
 The maximum output of the available machinery is defined as $B = \sum_{k \in K} \beta_k$. Each Firm set a desired potential output $\mathbb{E}(B) = \frac{1}{u^*}\mathbb{E}(G) + \delta B$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that $\Delta B = \max(\frac{\mathbb{E}(G)}{u^*} - (1 - \delta) B, 0)$ and the expected investment in monetary units is $\mathbb{E}(I) = p_K\frac{\Delta B}{\langle \beta \rangle}$.
 
 The expected expense for salaries is $\mathbb{E}(W) = \frac{\mathbb{E}(G)}{\langle \beta \rangle}\langle w \rangle$, where $w$ are the individual salaries paid.
+
+Loans are required for an amount equal to $\mathbb{E}(L) = \max(\mathbb{E}(I) + \mathbb{E}(W) - D,0)$.
 
 The markup is set equal to $\mu = \mu_{t-1}(1 + \theta \frac{S_{t-1}}{G})$ after that the production happened.
 
@@ -216,18 +218,21 @@ Called $U$ the balance of flows in the period before distributing profits and $D
 
 
 \subsubsection{Capital Firms}
-Capital Firms produce their own machiney, creating a sistem of two simultaneous equations to derminate the desired output.
-We avoid the problem approximating $\mathbb{E}(B) = \frac{k(1+g-\pi)}{u^*}S + \delta B$, and $\mathbb{E}(K) = k(1+g-\pi)S + \Delta B - K$, where $K$ are the unsold capital goods from the previous period. The machinery produced for own use are kept separated from those to be sold.
+Capital Firms produce their own machinery, creating a system of two simultaneous equations to determine the desired output.
+We avoid the problem approximating $\mathbb{E}(B) = \frac{k(1+g-\pi)}{u^*}S + \delta B$, and $\mathbb{E}(K) = k(1+g-\pi)S + \Delta B - K$, where $K$ are the unsold capital goods from the previous period. The machinery produced for own use is kept separate from those to be sold.
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $\mathbb{E}(R) = R(1+\frac{k}{S}\frac{\Pi}{\langle w_R \rangle})$ where $\langle w_R \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$.
 
-Finally we note that $I = 0$ and so $C=W$.
+Finally, we note that $I = 0$ and so $C=W$.
 
 \begin{enh}[Firms' governance]
-
+	In a future version, different models of governance can be introduced, particularly regarding the property (not tradeable shares, shares available on the stock market, cooperative ownership, ...), the choice rules (mostly what is the goal of the Firm, like dividend maximization, share values maximization, market share maximisation, wages maximization, top manager retribution maximization, ...) and the expected profit rate required by the owners.
 \end{enh}
 
 \begin{enh}[Public Firms]
+	The recent literature has highlighted the important role of the state in technological innovation. Additionally, civil servant wages help to set, particularly when public employment share is relevant, an economy-wide reserve wage.
+	To keep the model simple all the firms are owned by the Bank and the government sustains demand in a way similar to public procurement.
+	It is possible to create an additional kind of Capital Firm, which performs publicly sponsored research and development, and of Consumption Firm, which represent the direct role of the government in the economy (which mostly provides infrastructures and services).
 \end{enh}
 
 
@@ -255,11 +260,11 @@ Government fixes the public expenditure. It additionally collects taxes and pays
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
-As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$; an inheritance tax on wealth with constant rate ($\tau_I$).
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$; an inheritance tax on wealth with a constant rate ($\tau_I$).
 
 Fixed unemployment benefit $U_{t+1} = \gamma \max{W, U}$ is paid to those who have not exited the job market and are not employed.
 
-Each period government buys Consuption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to $G^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{p}})\hat{G}$.
+Each period government buys Consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to $G^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{p}})\hat{G}$.
 
 We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_H U$ and $G = \sum_H G^G$.
 
@@ -277,7 +282,7 @@ In other words, the Central Bank is a lender of last resort for the Government, 
 
 \section{Real Assets}
 \subsection{Consumption Goods}
-Consumption Goods represents all the consumption (goods and services) of Households and are homogeneus and non-durable.
+Consumption Goods represent all the consumption (goods and services) of Households and are homogeneous and non-durable.
 
 \begin{enh}[Foundational Economy -- 3]
 	The exact definition of Foundational good (and service) is not easy to give. An intuition can be provided by the Foundational Economy approach \parencite{arcidiacono2018}: \begin{quote}
@@ -302,7 +307,7 @@ Consumption Goods represents all the consumption (goods and services) of Househo
 \end{enh}
 
 \subsection{Capital Goods}
-Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good \hl{ getting $\beta$ goods as output}\footnote{It is possible that, to balance the model, the output needs to be $\beta$ consumption goods or $b\beta$ capital goods.}. Each period they have a fixed probability to break and disappear from the model, equal to $\delta = \langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
+Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good \hl{ getting $\beta$ goods as output}\footnote{It is possible that to balance the model, the output needs to be $\beta$ consumption goods or $b\beta$ capital goods.}. Each period they have a fixed probability to break and disappear from the model, equal to $\delta = \langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
 
 \section{Financial Assets}
 
@@ -323,33 +328,42 @@ Reserves represent liquidity for Bank and Government and are not interest-bearin
 
 \section{Dynamics}
 \subsection{Consumption Goods market}
-Each Household sees $\chi_C$ Consumption Firms $\chi_C$ times, each time it buys $\frac{\mathbb{E}(G) - G^G}{\chi_C}$ at the lowest possible price, untill it matches the desired consumption or ends liquidity.
+Each Household sees $\chi_C$ Consumption Firms $\chi_C$ times, each time it buys $\frac{\mathbb{E}(G) - G^G}{\chi_C}$ at the lowest possible price until it matches the desired consumption or ends liquidity.
 
 \subsection{Capital Goods market}
-Each Consumption Firm sees $\chi_K$ Capital Firms $\chi_K$ times (including the last one from which it has bought), each time it buys $\frac{\Delta B}{\chi_C}$ machineries chosing the one with the lowest value of $\beta p_C - \langle w_\sigma \rangle - \frac{p_K}{\langle N \rangle}$, untill it matches the desired quantity or ends liquidity.
+Each Consumption Firm sees $\chi_K$ Capital Firms $\chi_K$ times (including the last one from which it has bought), each time it buys $\frac{\Delta B}{\chi_C}$ machineries choosing the one with the lowest value of $\beta p_C - \langle w_\sigma \rangle - \frac{p_K}{\langle N \rangle}$ until it matches the desired quantity or ends liquidity.
 
 \subsection{Labour market}
-Households are employed by a Firm untill they are fired, they chose to exit the job market or they accept an offer from another Firm.
+Households are employed by a Firm until they are fired, they chose to exit the job market or they accept an offer from another Firm.
 
-Firm can fire workers only when profits turn negative. In that case, Firms fire workes untill the number of workers reaches $u^* K$. Additionally, in the case the Firm is not able to pay a worker, it is fired. In both cases, Firms start to fire from those with the lower skills.
+Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reachs $u^* K$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
 
-Firms match each employed worker with the most productive machinery they can use, starting from those with higher skills. For this purpose a reasercher is a worker that is assigned to a machinery with productivity $\sigma^*$.
-Then the current potential output (as the sum of the productivity of the used machineries) is computed and vacancies are filled starting from the most productive unused machineries. All research vacancies are filled if possible.
+Firms match each employed worker with the most productive machinery they can use, starting with those with higher skills. For this purpose, a researcher is treated like a worker assigned to a machinery with productivity $\sigma^*$.
+Then the current potential output (as the sum of the productivity of the used machinery) is computed and vacancies are filled starting from the most productive unused machinery. All research vacancies are filled if possible.
 For each vacancy, the Firm sees $\chi_L$ workers which have the required skills and earn less than the average salary in the model for the skill level. The Firm employs the one with the higher skills offering the average salary in the model for the skill level.
 
-Each vacancies is filled once and new vacancies are not filled.
+Each vacancy is filled once and new vacancies are not filled.
 
 \begin{enh}[Collective bargain]
-
+	The average wage in the economy used to define the new salary proposed can be replaced by a "collective bargained" salary which is fixed economy-wide for each skill level (eventually differentiating between productive sectors) which increases with the employment rate and the average firm size.
 \end{enh}
 
 \subsection{Retirement and inheritance}
+When a Household reaches a certain age it is considered retired and is replaced by a new agent in the model which inherits their (taxed) wealth and enters the simulation with a random skill level proportional to the inherited wealth, and a random age proportional to the skill level.
 
 \subsection{Non Performing Loans}
+In the case a Firm is unable to repay the principal of a loan or to pay the interest, the unpaid sum is added to the import of the loan and the duration is increased by one period. Additionally, the loan is marked as non-performing.
 
 \subsection{Bankrupt}
+Once the net value of a Firm becomes negative the Firm declares bankrupt, fires all the employed households and loose all the financial assets (loans and deposits). It is "replaced" by a new firm which inherits the capital stock.
+
+\begin{enh}[Variable number of Firms]
+\end{enh}
+
 
 \subsection{Innovation}
+
+\begin{enh}[Imitation and the frontier]\end{enh}
 
 \section{Model steps}
 \begin{steps}
