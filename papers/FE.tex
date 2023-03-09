@@ -263,7 +263,7 @@ When liquidity is needed, Government emits Bonds and sells them at will to the C
 
 As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$; an inheritance tax on wealth with a constant rate ($\tau_I$).
 
-Fixed unemployment benefit $U_{t+1} = \gamma \max{W, U}$ is paid to those who have not exited the job market and are not employed.
+Fixed unemployment benefit $U_{t+1} = \gamma \max(W, U)$ is paid to those who have not exited the job market and are not employed.
 
 Each period government buys Consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to $G^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{p}})\hat{G}$.
 
@@ -368,12 +368,33 @@ Each Capital Firm can achieve an innovation each period with a probability $p = 
 If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta \propto \text{Beta}(1, b_1)$ and modify the required skills as $\Delta \sigma \propto (\Delta \beta - k \text{Beta}(1, b_2))$.
 
 \begin{enh}[Imitation and the frontier]
-	Catching up with the leading technology is easier than moving the innovation frontier. This empirical evidence can be modelled in two ways: a first one is to model two different innovation processes, the other is to make $p$ decreasing with $\beta - \beta_\text{MAX}$.
+	Catching up with the leading technology is easier than moving the innovation frontier. This empirical evidence can be modelled in two ways: the first one is to model two different innovation processes, and the other is to make $p$ increasing with $\beta_\text{MAX} - \beta$.
 \end{enh}
 
 \section{Model steps}
 \begin{steps}
-	\item
+	\item[A] Statistics are computed at the relevant frequency
+	\item[B] Agents variables independent from other agents' decisions are updated
+	\item[C] [\textsc{quarterly}] Central Bank sets the Government Bonds interest rate
+	\item[D.0] Bank sets the interest rate on Bank Bonds
+	\item[D.1] Bank buys Government Bonds to reach the liquidity requirement
+	\item[E.0] Households set desired consumption and savings
+	\item[E.1] Firms set desired output and investment
+	\item[F.0] Households acquire Bank Bonds
+	\item[F.1] Firms ask the Bank for loans
+	\item[G] Labour market and wages payment
+	\item[H] Production and price setting
+	\item[I] Innovation
+	\item[L.0] Government pays unemployment benefits
+	\item[L.1] Government buys and distributes Consumption Goods
+	\item[M] Households Consumption Goods market
+	\item[N] Capital Goods market
+	\item[O.0] Firms repay loans and interests
+	\item[O.1] Government pays interest on Bonds to the Bank
+	\item[P] Firms distribute dividends
+	\item[Q] Bank pays interests on Bonds
+	\item[R.0] [\textsc{yearly}] Income taxes are arbitraged
+	\item[R.1] Capital depreciation
 \end{steps}
 
 \section{Equations}
