@@ -23,6 +23,7 @@
 \usepackage{tabularx}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{color}
 \usepackage{soul}
 \usepackage{enumitem}
@@ -355,15 +356,20 @@ When a Household reaches a certain age it is considered retired and is replaced 
 In the case a Firm is unable to repay the principal of a loan or to pay the interest, the unpaid sum is added to the import of the loan and the duration is increased by one period. Additionally, the loan is marked as non-performing.
 
 \subsection{Bankrupt}
-Once the net value of a Firm becomes negative the Firm declares bankrupt, fires all the employed households and loose all the financial assets (loans and deposits). It is "replaced" by a new firm which inherits the capital stock.
+Once the net value of a Firm becomes negative the Firm declares bankruptcy, fires all the employed households and loose all the financial assets (loans and deposits). It is "replaced" by a new firm which inherits the capital stock.
 
 \begin{enh}[Variable number of Firms]
+	In this version of the model, the number of Firms is constant in the simulation. It is possible to assume that if the profit rate (or the average markup of a sector) increases over a certain threshold the Bank (or the Firm-owners) starts a new Firm in the sector investing an initial monetary capital.
 \end{enh}
 
-
 \subsection{Innovation}
+Each Capital Firm can achieve an innovation each period with a probability $p = e^{-\xi R}$ where $R$ is the number of employed workers not assigned to a Capital Good with skills at least $sigma^*$.
 
-\begin{enh}[Imitation and the frontier]\end{enh}
+If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta \propto \text{Beta}(1, b_1)$ and modify the required skills as $\Delta \sigma \propto (\Delta \beta - k \text{Beta}(1, b_2))$.
+
+\begin{enh}[Imitation and the frontier]
+	Catching up with the leading technology is easier than moving the innovation frontier. This empirical evidence can be modelled in two ways: a first one is to model two different innovation processes, the other is to make $p$ decreasing with $\beta - \beta_\text{MAX}$.
+\end{enh}
 
 \section{Model steps}
 \begin{steps}
