@@ -270,18 +270,23 @@ Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets 
 
 The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \delta b_{t-1}$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \delta) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){p_\mathbf{K}}_{t-1}\frac{{\Delta b}t}{\langle \beta \rangle}$, where the average is taken on the current capital stock.
 
-The markup is set as $\mu_t = \mu_{t-1}(1 + \theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm.
+The markup is set as $\mu_t = \mu_{t-1}(1 + \theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
 Each firm distributes profits equal to a fraction of the net income from production proportional to the ratio between available liquidity and costs, aiming to self-financing the production in the long run, i.e. $\pi_t = \rho_\pi ({p_\mathbf{C}}_t s_t - w_t - i_t) \frac{\hat{\mathbf{d}}_t}{w_t + i_t}$, where $\hat{\mathbf{d}}$ are the deposits after repaying loans and before distributing profits.
 
 
 \subsubsection{Capital Firms}
 Capital Firms produce their own machinery, creating a system of two simultaneous equations to determine the desired output.
-The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \delta b_{t-1}$, and $\mathbf{k} = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + {\Delta b}_t - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
+The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \delta b_{t-1}$, and $\mathbf{k} = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{\langle w_Q \rangle}) \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$.
 
 Finally, we note that $i_t = 0$ and so $\pi_t = \rho_\psi ({p_\mathbf{K}}_t s_t - w_t) \frac{\hat{\mathbf{d}}_t}{w_t}$.
+
+\begin{enh}[Capital goods market]
+	The approximation that every capital firm produces its own capital goods is chosen to simplify the implementation of the model.
+	A more realistic assumption, which has the potential to introduce interesting market dynamics, is to allow every capital firm to buy its machinery from other firms.
+\end{enh}
 
 \begin{enh}[Firms' governance]
 	In a future version, different models of governance can be introduced, particularly regarding the property (not tradeable shares, shares available on the stock market, cooperative ownership, ...), the choice rules (mostly what is the goal of the Firm, like dividend maximization, share values maximization, market share maximisation, wages maximization, top manager retribution maximization, ...) and the expected profit rate required by the owners.
