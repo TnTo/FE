@@ -262,7 +262,7 @@ Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
-Loans are required as needed and started to be repaid at the end of the period in which they are contracted.
+Loans are required as needed to pay for salaries and to make investments and started to be repaid at the end of the period in which they are contracted.
 In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery and finally repay the bank of the loans contracted.
 
 \subsubsection{Consumption Firms}
@@ -272,7 +272,7 @@ The maximum output of the available machinery is defined as $b = \sum_{\kappa \i
 
 The markup is set as $\mu_t = \mu_{t-1}(1 + \theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
-Each firm distributes profits equal to a fraction of the net income from production proportional to the ratio between available liquidity and costs, aiming to self-financing the production in the long run, i.e. $\pi_t = \rho_\pi ({p_\mathbf{C}}_t s_t - w_t - i_t) \frac{\hat{\mathbf{d}}_t}{w_t + i_t}$, where $\hat{\mathbf{d}}$ are the deposits after repaying loans and before distributing profits.
+Each firm distributes profits equal to a fraction of the net income from production proportional to the ratio between available liquidity and costs, aiming to self-financing the production in the long run, i.e. $\pi_t = \rho_\pi (\frac{{p_\mathbf{C}}_t s_t}{w_t + i_t} - 1) \hat{\mathbf{d}}_t$, where $\hat{\mathbf{d}}$ are the deposits after repaying loans and before distributing profits.
 
 
 \subsubsection{Capital Firms}
@@ -281,7 +281,7 @@ The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{\langle w_Q \rangle}) \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$.
 
-Finally, we note that $i_t = 0$ and so $\pi_t = \rho_\psi ({p_\mathbf{K}}_t s_t - w_t) \frac{\hat{\mathbf{d}}_t}{w_t}$.
+Finally, we note that $i_t = 0$ and so $\pi_t = \rho_\pi (\frac{{p_\mathbf{K}}_t s_t}{w_t} - 1) \hat{\mathbf{d}}_t$.
 
 \begin{enh}[Capital goods market]
 	The approximation that every capital firm produces its own capital goods is chosen to simplify the implementation of the model.
@@ -300,13 +300,13 @@ Finally, we note that $i_t = 0$ and so $\pi_t = \rho_\psi ({p_\mathbf{K}}_t s_t 
 
 
 \subsection{Bank}
-Bank agent represents the aggregate banking sector.
+Bank agent represents the aggregate banking and financial sector.
 
-Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a capital ratio ($\Gamma = \frac{V}{L}$).
+Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a capital ratio ($\Gamma = \frac{V}{L}$) \parencite[see][]{caiani2016}. Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
 
-Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
+Bank fixes the interest rates on Bank Bonds as ${r_\mathbf{S}}_t = (1 - \tau_\mathbf{S}) ({r_\mathbf{B}}_t + \lambda(\Gamma - \Gamma^*))$, where ${r_\mathbf{B}}_t$ is the Central Bank interest rate and $\tau_\mathbf{S}$ is the constant tax rate on financial income.
 
-Bank fixes the interest rates on Bank Bonds as $r_S = (1 - \tau_S) (i + \lambda(\Gamma - \Gamma^*))$, where $i$ is the Central Bank interest rate and $\tau_S$ is the constant tax rate on financial income. In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology and needed a way to avoid excessive capitalization. So, it is not possible to have $r_S(\Lambda)$ (because it will be constant) and to make $r_S(\Gamma)$ approximate a profit distribution, without in a bond-like market (rather than a stock-like ownership model).
+In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology. As a consequence, it needs a way to avoid excessive capitalization that does not depends on $\Lambda$. The proposed behaviour simulates a profit distribution when the Bank is capitalized over the target, without the need to introduce a market for shares.
 
 \begin{enh}[Competitive credit market]
 	There are difficulties in setting the Bank Bonds interest rate because there is no competition in the credit market for Household savings, and Central Bank provides free from interest liquidity.
@@ -314,30 +314,41 @@ Bank fixes the interest rates on Bank Bonds as $r_S = (1 - \tau_S) (i + \lambda(
 	The other is to allow Central Bank to ration the access to liquidity, charging an interest rate on Advances (adding a financial stock in the model).
 \end{enh}
 
-It also chooses when granting loans to Firms (based on the balance sheet of the applicant) and fixes a different interest rate for each loan. The duration of Loans is fixed.
-Bank is willing to provide loans to a firm $F$ up to $\hat{l} = \min (\chi_0 (D^F+pK^F) - L^F, \max((\chi_1 N_F)^{-1} L (\frac{\Gamma}{\Gamma^*}-1),0))$, at a firm-specific interest rate $r_L^F = i + \gamma_1 (\Gamma - \Gamma^*) + \gamma_2 (\frac{L^F}{V^F}) - \gamma_3 (\frac{\psi^F}{L^F})$.
+The Bank rations the credit to Firms, based on the balance sheet of the applicant, and fixes a different interest rate for each loan. The duration of Loans is fixed.
+Bank is willing to provide loans to a firm $f$ up to ${l^f}^*_t = \min (\nu_0 (p_\mathbf{K}{\mathbf{k}_f})_{t-1} - \mathbf{l}^f_t, \max((\nu_1 N_F)^{-1} \mathbf{L}_t (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0))$, at a firm-specific interest rate ${r_\mathbf{L}}^f_t = r_\mathbf{B} + \gamma_1 (\Gamma^* - \Gamma_{t-1}) + \gamma_2 (\frac{\mathbf{l}^f_t}{{v_f}_{t-1}}) - \gamma_3 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_t})$.
 These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
 
 \subsection{Government}
-Government fixes the public expenditure. It additionally collects taxes and pays unemployment benefits. It determines the amount to be transferred to Households (both as monetary and non-monetary, as Essential Goods).
+Government fixes the public expenditure. It additionally collects taxes and pays unemployment benefits. It determines the amount to be transferred to households (both as monetary and non-monetary, as consumption goods).
 
 When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
 
-As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_G$); a flat financial income tax on distributed interests on Bank Bonds ($\tau_S$); a progressive income tax computed as $T_W(W) = W \max(\tau_M \tanh(\tau_F (\frac{W}{p} - \tau_T)),0)$; an inheritance tax on wealth with a constant rate ($\tau_I$).
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_\mathbf{C}$); a flat financial income tax on distributed interests on Bank shares ($\tau_\mathbf{S}$); an inheritance tax on wealth with a constant rate ($\tau_I$); a progressive income tax computed as $t_W(w) = w \max(\tau_M \tanh(\tau_F (\frac{w}{p} - \tau_T)),0)$, where $w$ is the annual wage, $p$ is the average price of consumption goods since the last update. Income taxes are paid by the employer every period and arbitraged once a year.
 
-Fixed unemployment benefit $U_{t+1} = \gamma \max(W, U)$ is paid to those who have not exited the job market and are not employed.
+Fixed unemployment benefit $m_{t} = \phi \max(w_{t-1}, m_{t-1})$ is paid to those who have not exited the job market and are not employed.
 
-Each period government buys Consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to $G^G = ((1 - q_0) + q_0 e^{-q_1\frac{V}{p}})\hat{G}$.
+Each period government buys consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to ${\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t$.
 
-We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_H U$ and $G = \sum_H G^G$.
+We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_{h \in \mathcal{H}} m_h$, $C^\mathcal{G}= \sum_{h \in \mathcal{H}} (p_\mathbf{C} \mathbf{c})^\mathcal{G}_h$ and $G = M + C^\mathcal{G}$.
 
-Assuming a Maastricht-like scenario in which Government has a target deficit $\delta$ to achieve, the expected balance of the next period can be written as $\delta Y (1+g) = (1+\psi) (\mathbb{E}(G) + M) + i T_B(1 + \frac{1}{T^G} \delta Y) - (1+g)(1+\psi) T$ where it is assumed that expenses for unemployment benefits are approximately constant, $T$ are the taxes raised, $T_B$ the stock of Government bonds held by the Bank and $T^G$ is the total stock of Government Bonds.
+Assuming a Maastricht-like scenario in which Government has a target deficit $\delta^*$ to achieve, the expected balance of the next period can be written as
+\begin{align*}
+	(1+g) \delta^* Y_{t-1} & =  {\mathbb{E}(G)}_t + {r_\mathbf{B}}_t ({\mathbf{B}_\mathcal{B}}_{t-1} + \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}} (1+g) \delta^* Y_{t-1}) - (1+g+\psi) T_{t-1} \\
+	\mathbb{E}(G)_t        & = (1+\psi+g) T_{t-1} + (1+g)(1-{r_\mathbf{B}}_t \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}})\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1}
+\end{align*}
+But the expected public expenditure can also be written as
+\begin{align*}
+	\mathbb{E}(G)_t & = \mathbb{E}(M)_t + \mathbb{E}(C^\mathcal{G})_t \approx M_{t-1} + (1+\psi)p\mathbb{E}(\mathbf{C}^\mathcal{G})_t                                                  \\
+	                & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle {\mathbf{c}^\mathcal{G}_h}_t \rangle = \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_t \rangle \Xi_t \\
+	                & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_{t-1} \rangle \Xi_t = M_{t-1} + (1+\psi) p \frac{{\mathbf{C}^\mathcal{G}}_{t-1}}{\Xi_{t-1}} \Xi_t
+\end{align*}
+where it is assumed that expenses for unemployment benefits are approximately constant.
 
-Then, $\mathbb{E}(G) = (1+g) T + \frac{1+g}{1+\psi}(1-i\frac{T_B}{T^G})\delta Y - \frac{i}{1+\psi}T_B - M$, from which it is possible to write an adaptive rule for Government demand which aims to match the target deficit as $\Delta \hat{G} = q_2 \frac{\mathbb{E}(G)-G}{p N^H}$, where $N^H$ is the number of Households agents.
-
+Finally, the public expenditure is regulated by updating regularly $\Xi$ as
+$$\Xi_t  = \frac{\Xi_{t-1}}{{\mathbf{C}^\mathcal{G}}_{t-1}} \frac{\mathbb{E}(G)_t - M_{t-1}}{(1+\psi)p}$$
 
 \subsection{Central Bank}
-In the model the role of the Central Bank is to fix the Government's Bonds interest rate according to a Taylor rule $i = \psi + \alpha_1 (\psi - \psi^*) + \alpha_2 (c - c^*) - \alpha_3 (u - u^*)$, where $\psi$ is the inflation rate, $c$ is the capacity utilization measured as the fraction of capital goods used in production, $u$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets.
+In the model the role of the Central Bank is to fix the Government's Bonds interest rate according to a Taylor rule ${r_\mathbf{B}} = \psi + \alpha_1 (\psi - \psi^*) + \alpha_2 (u - u^*) - \alpha_3 (\omega - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The variables are computed as the average since the last update.
 
 Additionally, it passively buys and sells Government Bonds on request to the Bank and the Government. Reserves do not grant interests.
 
