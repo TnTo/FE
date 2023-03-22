@@ -76,6 +76,7 @@
 \end{abstract}
 
 \section{Introduction}
+
 In recent years Stock-Flow Consistent (SFC) models have been recognized as a valuable tool to model macroeconomics \parencite{nikiforos2017}. Particularly, they can represent the financial side of the economy, which has been recognized as a necessary feature to model after the financial crisis of the 00s.
 
 Those models are aggregate models which can neither describe microeconomic dynamics and behaviours nor, if it is considered necessary, provide a microfoundation for the model.
@@ -116,9 +117,9 @@ Exploiting this, to smooth the dynamics of the model each period represents a mo
 	In a future version of the model, the simulation's timespan has to be long enough to observe the effects of introducing a policy. But, at the same time, it is unreasonable to keep the simulation running over 5-10 years after the policy's introduction because, in any real-world context, a government can tune or revert the policy afterwards.
 \end{enh}
 
-The model includes the six sectors: the Households ($\mathbf{H}$), the Firms which produce consumption goods ($\mathbf{F}_\mathcal{C}$), the Firms which produce Capital goods ($\mathbf{F}_\mathcal{K}$), a consolidated (i.e. aggregated) Banking and financial sector (the Bank, $\mathbf{B}$), the Government ($\mathbf{G}$) and the Central Bank ($\mathbf{C}$). Households and Firms constitute the Agent-Based part of the model.
+The model includes the six sectors: the Households ($\mathcal{H}$), the Firms which produce consumption goods ($\mathcal{F}_{\mathcal{C}}$), the Firms which produce Capital goods ($\mathcal{F}_{\mathbf{K}}$), a consolidated (i.e. aggregated) banking and financial sector (the Bank, $\mathcal{B}$), the Government ($\mathcal{G}$) and the Central Bank ($\mathcal{C}$). Households and Firms constitute the Agent-Based part of the model.
 
-The model comprises two kinds of real assets: Capital Goods ($\mathcal{K}$) and Consumption Goods ($\mathcal{C}$).
+The model comprises two kinds of real assets: Capital Goods ($\mathbf{K}$) and Consumption Goods ($\mathbf{C}$).
 Capital Goods are durable and Consumption Goods are homogeneous.
 
 \begin{enh}[Foundational Economy -- 2]
@@ -127,27 +128,27 @@ Capital Goods are durable and Consumption Goods are homogeneous.
 \end{enh}
 
 The model includes five different financial assets.
-Bank Deposits ($\mathcal{D}$) of Households and Firms, which are not interest-bearing.
-Loans ($\mathcal{L}$) issued by the Banks to Firms, which interest rate is Firm-specific and fixed by the Bank.
-Bank Shares ($\mathcal{S}$) held by Households, which interest rate is fixed each period by the Bank.
-Banks Reserves and Government Account at the Central Bank ($\mathcal{R}$), which are not interest-bearing.
-Government Bonds ($\mathcal{B}$) held by Bank and Central Bank, and which interest rate is fixed by the Central Bank.
+Bank Deposits ($\mathbf{D}$) of Households and Firms, which are not interest-bearing.
+Loans ($\mathbf{L}$) issued by the Banks to Firms, which interest rate is Firm-specific and fixed by the Bank.
+Bank Shares ($\mathbf{S}$) held by Households, which interest rate is fixed each period by the Bank.
+Banks Reserves and Government Account at the Central Bank ($\mathbf{R}$), which are not interest-bearing.
+Government Bonds ($\mathbf{B}$) held by Bank and Central Bank, and which interest rate is fixed by the Central Bank.
 
 \section{Matrices}
 \subsection{Balance Sheet Matrix}
 \makebox[\textwidth][c]{
 	\begin{tabular}{l|cccccc|l}
 		\toprule
-		              & $\mathbf{H}$              & $\mathbf{F}_\mathcal{C}$                              & $\mathbf{F}_\mathcal{K}$                              & $\mathbf{B}$              & $\mathbf{G}$              & $\mathbf{C}$              & Tot.                         \\
+		             & $\mathcal{H}$             & $\mathcal{F}_{\mathbf{C}}$                              & $\mathcal{F}_{\mathbf{K}}$                              & $\mathcal{B}$             & $\mathcal{G}$             & $\mathcal{C}$             & Tot.                         \\
 		\midrule
-		$\mathcal{D}$ & $+\mathcal{D}_\mathbf{H}$ & $+\mathcal{D}_{\mathbf{F}_\mathcal{C}}$               & $+\mathcal{D}_{\mathbf{F}_\mathcal{K}}$               & $-\mathcal{D}$            &                           &                           & 0                            \\
-		$\mathcal{S}$ & $+\mathcal{S}$            &                                                       &                                                       & $-\mathcal{S}$            &                           &                           & 0                            \\
-		$\mathcal{L}$ &                           & $-\mathcal{L}^{\mathbf{F}_\mathcal{C}}$               & $-\mathcal{L}^{\mathbf{F}_\mathcal{K}}$               & $+\mathcal{L}$            &                           &                           & 0                            \\
-		$\mathcal{B}$ &                           &                                                       &                                                       & $+\mathcal{B}_\mathbf{B}$ & $-\mathcal{B}$            & $+\mathcal{B}_\mathbf{C}$ & 0                            \\
-		$\mathcal{R}$ &                           &                                                       &                                                       & $+\mathcal{R}_\mathbf{B}$ & $+\mathcal{R}_\mathbf{G}$ & $-\mathcal{R}$            & 0                            \\
-		$\mathcal{K}$ &                           & $+p_\mathcal{K} \mathcal{K}_{\mathbf{F}_\mathcal{C}}$ & $+p_\mathcal{K} \mathcal{K}_{\mathbf{F}_\mathcal{K}}$ &                           &                           &                           & $+p_\mathcal{K} \mathcal{K}$ \\
+		$\mathbf{D}$ & $+\mathbf{D}_\mathcal{H}$ & $+\mathbf{D}_{\mathcal{F}_{\mathbf{C}}}$                & $+\mathbf{D}_{\mathcal{F}_{\mathbf{K}}}$                & $-\mathbf{D}$             &                           &                           & 0                            \\
+		$\mathbf{S}$ & $+\mathbf{S}$             &                                                         &                                                         & $-\mathbf{S}$             &                           &                           & 0                            \\
+		$\mathbf{L}$ &                           & $-\mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$                & $-\mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+\mathbf{L}$             &                           &                           & 0                            \\
+		$\mathbf{B}$ &                           &                                                         &                                                         & $+\mathbf{B}_\mathcal{B}$ & $-\mathbf{B}$             & $+\mathbf{B}_\mathcal{C}$ & 0                            \\
+		$\mathbf{R}$ &                           &                                                         &                                                         & $+\mathbf{R}_\mathcal{B}$ & $+\mathbf{R}_\mathcal{G}$ & $-\mathbf{R}$             & 0                            \\
+		$\mathbf{K}$ &                           & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$ & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{K}}}$ &                           &                           &                           & $+p_{\mathbf{K}} \mathbf{K}$ \\
 		\midrule
-		Tot.          & $+V_\mathbf{H}$           & $+V_{\mathbf{F}_\mathcal{C}}$                         & $+V_{\mathbf{F}_\mathcal{K}}$                         & $+V_\mathbf{B}$           & $+V_\mathbf{G}$           & $+V_\mathbf{C}$           & $+p_\mathcal{K} \mathcal{K}$ \\
+		Tot.         & $+V_\mathcal{H}$          & $+V_{\mathcal{F}_{\mathbf{C}}}$                         & $+V_{\mathcal{F}_{\mathbf{K}}}$                         & $+V_\mathcal{B}$          & $+V_\mathcal{G}$          & $+V_\mathcal{C}$          & $+p_{\mathbf{K}} \mathbf{K}$ \\
 		\bottomrule
 	\end{tabular}
 }\\ \\
@@ -157,33 +158,34 @@ $V$ is the net worth of the sector.
 \makebox[\textwidth][c]{
 	\begin{tabularx}{\textwidth}{@{} Y|cccccc|l @{}}
 		\toprule
-		                        & $\mathbf{H}$                            & $\mathbf{F}_\mathcal{C}$                              & $\mathbf{F}_\mathcal{K}$                                              & $\mathbf{B}$                 & $\mathbf{G}$                            & $\mathbf{C}$                & Tot. \\
+		                       & $\mathcal{H}$                            & $\mathcal{F}_{\mathbf{C}}$                              & $\mathcal{F}_{\mathbf{K}}$                                             & $\mathcal{B}$                & $\mathcal{G}$                            & $\mathcal{C}$               & Tot. \\
 		\midrule
-		Consumption             & $-p_\mathcal{C} \mathcal{C}_\mathbf{H}$ & $+p_\mathcal{C} \mathcal{C}$                          &                                                                       &                              & $-p_\mathcal{C} \mathcal{C}_\mathbf{G}$ &                             & 0    \\
-		Investment              &                                         & $-p_\mathcal{K} \mathcal{K}_{\mathbf{F}_\mathcal{C}}$ & $+p_\mathcal{K} (\mathcal{K} - \mathcal{K}_{\mathbf{F}_\mathcal{K}})$ &                              &                                         &                             & 0    \\
-		Wages                   & $+W$                                    & $-W^{\mathbf{F}_\mathcal{C}}$                         & $-W^{\mathbf{F}_\mathcal{K}}$                                         &                              &                                         &                             & 0    \\
-		Taxes                   & $-T$                                    &                                                       &                                                                       &                              & $+T$                                    &                             & 0    \\
-		Transfers               & $+M$                                    &                                                       &                                                                       &                              & $-M$                                    &                             & 0    \\
+		Consumption            & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{H}$ & $+p_{\mathbf{C}} \mathbf{C}$                            &                                                                        &                              & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{G}$ &                             & 0    \\
+		Investment             &                                          & $-p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$ & $+p_{\mathbf{K}} (\mathbf{K} - \mathbf{K}_{\mathcal{F}_{\mathbf{K}}})$ &                              &                                          &                             & 0    \\
+		Wages                  & $+W$                                     & $-W^{\mathcal{F}_{\mathbf{C}}}$                         & $-W^{\mathcal{F}_{\mathbf{K}}}$                                        &                              &                                          &                             & 0    \\
+		Taxes                  & $-T$                                     &                                                         &                                                                        &                              & $+T$                                     &                             & 0    \\
+		Transfers              & $+M$                                     &                                                         &                                                                        &                              & $-M$                                     &                             & 0    \\
 		\midrule
-		$\mathbf{F}$ Profits    &                                         & $-\Pi^{\mathbf{F}_\mathcal{C}}_\mathbf{B}$            & $-\Pi^{\mathbf{F}_\mathcal{K}}_\mathbf{B}$                            & $+\Pi_\mathbf{B}$            &                                         &                             & 0    \\
-		$\mathbf{C}$ Profits    &                                         &                                                       &                                                                       &                              & $+\Pi^\mathbf{C}$                       & $-\Pi^\mathbf{C}$           & 0    \\
+		$\mathcal{F}$ Profits  &                                          & $-\Pi^{\mathcal{F}_{\mathbf{C}}}_\mathcal{B}$           & $-\Pi^{\mathcal{F}_{\mathbf{K}}}_\mathcal{B}$                          & $+\Pi_\mathcal{B}$           &                                          &                             & 0    \\
+		$\mathcal{C}$ Profits  &                                          &                                                         &                                                                        &                              & $+\Pi^\mathcal{C}$                       & $-\Pi^\mathcal{C}$          & 0    \\
 
 
 		\midrule
-		$\mathcal{S}$ Interests & $+r_\mathcal{S} \mathcal{S}$            &                                                       &                                                                       & $-r_\mathcal{S} \mathcal{S}$ &                                         &                             & 0    \\
-		$\mathcal{L}$ Interests &                                         & $-r_\mathcal{L} \mathcal{L}^{\mathbf{F}_\mathcal{C}}$ & $-r_\mathcal{L} \mathcal{L}^{\mathbf{F}_\mathcal{K}}$                 & $+r_\mathcal{L} \mathcal{L}$ &                                         &                             & 0    \\
-		$\mathcal{B}$ Interests &                                         &                                                       &                                                                       & $+i \mathcal{B}_\mathbf{B}$  & $-i \mathcal{B}$                        & $+i \mathcal{B}_\mathbf{C}$ & 0    \\
+		$\mathbf{S}$ Interests & $+r_{\mathbf{S}} \mathbf{S}$             &                                                         &                                                                        & $-r_{\mathbf{S}} \mathbf{S}$ &                                          &                             & 0    \\
+		$\mathbf{L}$ Interests &                                          & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$ & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+r_{\mathbf{L}} \mathbf{L}$ &                                          &                             & 0    \\
+		$\mathbf{B}$ Interests &                                          &                                                         &                                                                        & $+i \mathbf{B}_\mathcal{B}$  & $-i \mathbf{B}$                          & $+i \mathbf{B}_\mathcal{C}$ & 0    \\
 		\bottomrule
 	\end{tabularx}
 }\\
 
 \section{Sectors}
 \subsection{Households}
-In this model, the core agents (consumer, worker, capitalist) represent a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care work, where the gender asymmetries become very relevant.
+In this model, the core agents (consumers, workers, capitalists) represent a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care and domestic work, where the gender asymmetries become very relevant.
 
-Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working in the same sector (Capital/Consumption) without an employment gap.
+Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
-Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\phi)^\delta s_{t-1}$ where $\delta=1$ if the household is employed in the same sector of the previous time step, $\delta=0$ if the household is still employed but in a different sector, $\delta=-1$ if the household is unemployed.
+
+Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\phi)^\delta s_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
 
 \begin{enh}[Training]
 	Two factors in the development of the skills can be introduced.
@@ -193,24 +195,62 @@ Skills $s$ evolve like in \textcite{dosi2018}, which means $s_t = (1+\phi)^\delt
 	The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closer to the skill level, while demoted and overqualified workers have lower chances to learn new skills. This can be included in the model making $\phi \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
 \end{enh}
 
-Households face two choices: if work and which proportion of their income they should consume.
+Households face two choices: if work and how many consumption goods they desire to consume.
 
-Households flows' balance is $I = W + M + rS = C + T + \Delta S + \Delta D$.
-I assume, as a heuristic, that Taxes ($T$) and Transfers ($M$) can be approximated as constant from the previous period.
-Additionally, I assume that desired Deposits ($D$) at the end of the period are a fraction of the desired consumption ($C = \langle p_G \rangle G$) as insurance against unexpected increases in prices \hl{or unemployment}\footnote{It is possible to assume that deposits are used only in case of increase in prices, which allows setting $\rho$ smaller than one, assuming that in case of unexpected unemployment a mix of public subsidies and cashing out from Bank Bonds, without getting interests paid, is pursued. Otherwise, if deposits are used also as insurance against unemployment $\rho$ as to be greater than 1.} ($D = \rho~C$, $\rho > 0$).
-Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes $\Delta I = \Delta W + \Delta r S + r \Delta S$, and calling $\eta$ the marginal propensity to consume it becomes $\eta \Delta C \approx \Delta W + \Delta r S + r \Delta S$.
-Fixed the income level $I$ we can write $0 = \Delta C + \Delta D + \Delta S = (1+\rho) \Delta C + \Delta S$ to express the choice the household faces between consumption and saving.
-Putting these together we find $\eta \Delta C \approx \Delta W + \Delta r S - r (1+\rho) \Delta C$ and so $\Delta C \approx \frac{\Delta W + \Delta r S}{\eta + r (1+\rho)}$, which provides an adaptive rule for monetary consumption.
+Households flows balance is $y_t = w_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + t_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates.
 
-To translate this in material terms I introduce the material consumption of consumption goods $G$. We have $\Delta C = \Delta (p G) \approx \Delta(p) G + p \Delta G \approx p (\pi G + \Delta G)$. We can finally rewrite $\Delta G = \frac{\Delta W + \Delta r S}{p (\eta + r (1+\rho))} - \pi G$
+I assume, as a heuristic, that taxes ($t$) and transfers ($m$) can be approximated as constant from the previous period.
+Additionally, I assume that desired deposits ($\mathbf{d}^*_t$) at the end of the period are a fraction of the desired consumption ($c^*_t = \mathbb{E}(p_\mathbf{C}) \mathbf{c}^*_t$) as insurance against unexpected increases in prices ($\mathbf{d}^*_t = \rho_\mathcal{H}c^*_t$, $\rho_\mathcal{H} > 0$).
 
-\hl{$\Delta W$ can be approximated by $w W_{t-1}$ where $w$ is the average rate at which wages for the given skill level are increased in the last year}\footnote{Or 0 assuming that salaries increase only changing employer which is an unexpected event.}. $\Delta r$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data as an exponential or Pareto distribution as $\eta(\frac{S}{p},\frac{W}{p})$, where the price is used to get a-dimensional values \parencite{fisher2020,carroll2017}.
+Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta w}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
+\begin{align*}
+	\eta {\Delta c}_t = {\Delta y}_t & = {\Delta w}_t + {(\Delta r_\mathbf{S} \mathbf{s})}_t                                                                                            \\
+	                                 & = {\Delta w}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - {r_\mathbf{S}}_{t-1} \mathbf{s}_{t-1}                                                         \\
+	                                 & = {\Delta w}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - ({r_\mathbf{S}}_{t} - {\Delta r_\mathbf{S}}_{t}) (\mathbf{s}^*_{t} - {\Delta \mathbf{s}}_{t}) \\
+	                                 & \approx {\Delta w}_t + {r_\mathbf{S}}_t {\Delta \mathbf{s}}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}^*_{t}                                       \\
+	                                 & = {\Delta w}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})\mathbf{s}^*_t - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+\end{align*}
+where $\mathbf{s}^*_t$ is the desired amount of shares to hold in the period.
 
-From this relation, we can model the two choices.
+Looking at the balance of a household between the beginning of the period and the purchase of consumption goods, it is possible to write $\mathbf{s}^*_t + \mathbf{d}^*_t + c^*_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + {\mathbb{E}(m)}_t$, and substituting $\mathbf{s}^*_t$ above it becomes
+\begin{gather*}
+	\begin{align*}
+		\eta {\Delta c}_t & \approx {\Delta w}_t   + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)- {r_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
+		                  & = {\Delta w}_t         + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)              + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}   \\
+		                  & =  {\Delta w}_t        + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1})                                                           \\
+		                  & \qquad - ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}) {\Delta c}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+	\end{align*}\\
+	\begin{align*}
+		(\eta + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})) {\Delta c}_t & \approx  {\Delta w}_t  + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) \\
+		                                                                                           & \qquad + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+	\end{align*}\\
+	{\Delta c}_t \approx \frac{{\Delta w}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
+\end{gather*}
 
-First, a household exits from the labour market if the loss of the wage can anyway grant an increase in consumption, i.e. $\Delta r S - p \pi (\eta + r (1+\rho)) G > W$. Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if $\Delta r S - p \pi (\eta + r (1+\rho)) G < 0$ and $W + \Delta r S - p \pi (\eta + r (1+\rho)) G > 0$.
+To translate this into consumption measured in consumption goods $\mathbf{C}$, calling $\pi$ the inflation rate updated periodically model-wise and $p_\mathbf{C}$ the average purchase price payd by the agent, we have
+\begin{align*}
+	{\Delta c}^*_t          & = \Delta (p_\mathbf{C} \mathbf{c})_t \approx \Delta(p_\mathbf{C})_t \mathbf{c}^*_t + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t                 \\
+	                        & = (\mathbb{E}(p_\mathbf{C})_t - {p_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t   \\
+	                        & = ((1+\pi){p_\mathbf{C}}_{t-1} - {p_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + (1+\pi){p_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t \\
+	                        & = \pi {p_\mathbf{C}}_{t-1} \mathbf{c}_{t-1} + (1+2\pi){p_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t                                                      \\
+	{\Delta \mathbf{c}}^*_t & \approx \frac{\Delta c^*_t}{(1+2\pi){p_\mathbf{C}}_{t-1}} - \frac{\pi}{1+2\pi}{\mathbf{c}_{t-1}}
+\end{align*}
 
-Second, each household sets the desired total consumption as $\mathbb{E}(G) = G + \Delta G$ (using $G$ from the previous period). From which follows $\mathbb{E}(C) = p (1+\pi) \mathbb{E}(G)$, $\mathbb{E}(D) = \rho p (1+\pi) \mathbb{E}(G)$ and $\Delta S = D + (1+w) W + M - (1+\rho) \mathbb{E}(C)$, where $D$ is the value of the deposit at the end of the previous time step.
+It is additionally hypothesized that $w$ can be approximated as constant by assuming that salaries increase only by changing employers, which is an unexpected event. This simplifies the expressions above by making ${\Delta w}_t = 0$ and ${\mathbb{E}(w)}_t = w_{t-1}$.
+
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data \parencite[such as][]{fisher2020,carroll2017} as an exponential or Pareto distribution as $\eta(\frac{\mathbf{s}}{p_\mathbf{C}},\frac{w}{p_\mathbf{C}})$, where the price is used to get a-dimensional values.
+
+From these relations, we can model the two choices of households.
+
+First, a household exits from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
+$$ {\Delta \mathbf{c}}^*_t = \frac{-w_{t-1} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\pi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\pi}{1+2\pi}{\mathbf{c}_{t-1}} \ge 0$$
+Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if
+\begin{multline*}
+	{\Delta \mathbf{c}}^*_t = \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\pi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\pi}{1+2\pi}{\mathbf{c}_{t-1}} < 0 \\
+	{\Delta \mathbf{c}}^*_t = \frac{{\mathbb{E}(w|s)}_{t} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w|s)}_{t} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\pi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\pi}{1+2\pi}{\mathbf{c}_{t-1}} \ge 0
+\end{multline*}
+
+Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \mathbf{c}_{t-1} + {\Delta \mathbf{c}}^*_t$. From which follows $c^*_t = (1+\pi) {p_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + w_{t-1} + m_{t-1} - \mathbf{d}^*_t - c^*_t$.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
@@ -357,7 +397,7 @@ Each Consumption Firm sees $\chi_K$ Capital Firms $\chi_K$ times (including the 
 \subsection{Labour market}
 Households are employed by a Firm until they are fired, they chose to exit the job market or they accept an offer from another Firm.
 
-Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reachs $u^* K$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
+Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reaches $u^* K$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
 
 Firms match each employed worker with the most productive machinery they can use, starting with those with higher skills. For this purpose, a researcher is treated like a worker assigned to a machinery with productivity $\sigma^*$.
 Then the current potential output (as the sum of the productivity of the used machinery) is computed and vacancies are filled starting from the most productive unused machinery. All research vacancies are filled if possible.
@@ -415,6 +455,8 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 	\item[Q] Bank pays interests on Bonds
 	\item[R.0] [\textsc{yearly}] Income taxes are arbitraged
 	\item[R.1] Capital depreciation
+	\item[S.0] Households retire and get substituted
+	\item[S.1] Firms bankrupt and get substituted
 \end{steps}
 
 \section{Equations}
