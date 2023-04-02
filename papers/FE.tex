@@ -267,13 +267,13 @@ Loans are asked to the Bank at the beginning of the period to pay for salaries a
 In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery then they distribute profits, and finally, they repay the bank the loans contracted.
 
 \subsubsection{Consumption Firms}
-Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \rho_\mathbf{C}(1+g-\psi)s_{t-1}$, where $g$ is the GDP growth rate.
+Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \rho_\mathbf{C}(1+g-\psi)s_{t-1} = \rho_\mathbf{C}{\mathbb{E}(s)}_t$, where $g$ is the GDP growth rate.
 
 The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){p_\mathbf{K}}_{t-1}\frac{{\Delta b}_t}{{\langle \beta \rangle}_{t-1}}$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1})$
 
-The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_t-1 (1+g-\psi)s_{t-1} - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
+The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\mathbb{E}(s)}_t - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
 
-The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
+The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
 Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = r_\Pi ({p_\mathbf{C}}_t s_t - w_t)$.
 
