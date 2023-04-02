@@ -31,7 +31,11 @@
 \usepackage{comment}
 
 \newif\ifshow
-\showfalse
+
+%%%%%%%%%
+\showtrue
+%%%%%%%%%
+
 \ifshow
 	\newenvironment{enh}[1][]{\begin{framed}\noindent\textbf{Enhancement: #1}\par}{\end{framed}}
 \else
@@ -166,8 +170,8 @@ $V$ is the net worth of the sector.
 		Taxes                  & $-T$                                     &                                                         &                                                                        &                                        & $+T$                                     &                                        & 0    \\
 		Transfers              & $+M$                                     &                                                         &                                                                        &                                        & $-M$                                     &                                        & 0    \\
 		\midrule
-		$\mathcal{F}$ Profits  &                                          & $-\psi^{\mathcal{F}_{\mathbf{C}}}_\mathcal{B}$          & $-\psi^{\mathcal{F}_{\mathbf{K}}}_\mathcal{B}$                         & $+\psi_\mathcal{B}$                    &                                          &                                        & 0    \\
-		$\mathcal{C}$ Profits  &                                          &                                                         &                                                                        &                                        & $+\psi^\mathcal{C}$                      & $-\psi^\mathcal{C}$                    & 0    \\
+		$\mathcal{F}$ Profits  &                                          & $-\Pi^{\mathcal{F}_{\mathbf{C}}}_\mathcal{B}$           & $-\Pi^{\mathcal{F}_{\mathbf{K}}}_\mathcal{B}$                          & $+\Pi_\mathcal{B}$                     &                                          &                                        & 0    \\
+		$\mathcal{C}$ Profits  &                                          &                                                         &                                                                        &                                        & $+\Pi^\mathcal{C}$                       & $-\Pi^\mathcal{C}$                     & 0    \\
 
 
 		\midrule
@@ -185,7 +189,7 @@ In this model, the core agents (consumers, workers, capitalists) represent a hou
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
 
-Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\phi)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
+Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
 
 \begin{enh}[Training]
 	Two factors in the development of the skills can be introduced.
@@ -197,37 +201,36 @@ Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\phi)^
 
 Households face two choices: if work and how many consumption goods they desire to consume.
 
-Households flows balance is $y_t = w_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + t_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates.
+Households flows balance is $y_t = z_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + t_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the net wage ($z = w (1 - \max(\tau_M \tanh(\tau_F(\frac{w}{p}-\tau_T)),0))$).
 
-I assume, as a heuristic, that taxes ($t$) and transfers ($m$) can be approximated as constant from the previous period.
+I assume, as a heuristic, that taxes ($t$) and wages ($z$) can be approximated as constant from the previous period (because salaries increase only by changing employers, which is an unexpected event), while transfers ($m$) are composed only of unemployment benefits.
 Additionally, I assume that desired deposits ($\mathbf{d}^*_t$) at the end of the period are a fraction of the desired consumption ($c^*_t = \mathbb{E}(p_\mathbf{C}) \mathbf{c}^*_t$) as insurance against unexpected increases in prices ($\mathbf{d}^*_t = \rho_\mathcal{H}c^*_t$, $\rho_\mathcal{H} > 0$).
 
-Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta w}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
+Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta z}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
 \begin{align*}
-	\eta {\Delta c}_t = {\Delta y}_t & = {\Delta w}_t + {(\Delta r_\mathbf{S} \mathbf{s})}_t                                                                                            \\
-	                                 & = {\Delta w}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - {r_\mathbf{S}}_{t-1} \mathbf{s}_{t-1}                                                         \\
-	                                 & = {\Delta w}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - ({r_\mathbf{S}}_{t} - {\Delta r_\mathbf{S}}_{t}) (\mathbf{s}^*_{t} - {\Delta \mathbf{s}}_{t}) \\
-	                                 & \approx {\Delta w}_t + {r_\mathbf{S}}_t {\Delta \mathbf{s}}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}^*_{t}                                       \\
-	                                 & = {\Delta w}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})\mathbf{s}^*_t - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+	\eta {\Delta c}_t = {\Delta y}_t & = {\Delta z}_t + {\Delta (r_\mathbf{S} \mathbf{s})}_t                                                                                            \\
+	                                 & = {\Delta z}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - {r_\mathbf{S}}_{t-1} \mathbf{s}_{t-1}                                                         \\
+	                                 & = {\Delta z}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - ({r_\mathbf{S}}_{t} - {\Delta r_\mathbf{S}}_{t}) (\mathbf{s}^*_{t} - {\Delta \mathbf{s}}_{t}) \\
+	                                 & \approx {\Delta z}_t + {r_\mathbf{S}}_t {\Delta \mathbf{s}}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}^*_{t}                                       \\
+	                                 & = {\Delta z}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})\mathbf{s}^*_t - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
 \end{align*}
 where $\mathbf{s}^*_t$ is the desired amount of shares to hold in the period.
 
-Looking at the balance of a household between the beginning of the period and the purchase of consumption goods, it is possible to write $\mathbf{s}^*_t + \mathbf{d}^*_t + c^*_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + {\mathbb{E}(m)}_t$, and substituting $\mathbf{s}^*_t$ above it becomes
+Looking at the balance of a household between the beginning of the period and the purchase of consumption goods, it is possible to write $\mathbf{s}^*_t + \mathbf{d}^*_t + c^*_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(z)}_t + {\mathbb{E}(m)}_t$, and substituting $\mathbf{s}^*_t$ above it becomes
 \begin{gather*}
 	\begin{align*}
-		\eta {\Delta c}_t & \approx {\Delta w}_t   + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)- {r_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
-		                  & = {\Delta w}_t         + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)              + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}   \\
-		                  & =  {\Delta w}_t        + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1})                                                           \\
+		\eta {\Delta c}_t & \approx {\Delta z}_t   + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(z)}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)- {r_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
+		                  & = ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)              + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}                               \\
+		                  & =  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1})                                                                                      \\
 		                  & \qquad - ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}) {\Delta c}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
 	\end{align*}\\
 	\begin{align*}
-		(\eta + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})) {\Delta c}_t & \approx  {\Delta w}_t  + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) \\
-		                                                                                           & \qquad + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+		(\eta + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})) {\Delta c}_t & \approx ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
 	\end{align*}\\
-	{\Delta c}_t \approx \frac{{\Delta w}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w)}_t + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
+	{\Delta c}_t \approx \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
 \end{gather*}
 
-To translate this into consumption measured in consumption goods $\mathbf{C}$, calling $\psi$ the inflation rate updated periodically model-wise and $p_\mathbf{C}$ the average purchase price payd by the agent, we have
+To translate this into consumption measured in consumption goods $\mathbf{C}$, calling $\psi$ the inflation rate updated periodically model-wise and $p_\mathbf{C}$ the average purchase price paid by the agent, we have
 \begin{align*}
 	{\Delta c}^*_t          & = \Delta (p_\mathbf{C} \mathbf{c})_t \approx \Delta(p_\mathbf{C})_t \mathbf{c}^*_t + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t                   \\
 	                        & = (\mathbb{E}(p_\mathbf{C})_t - {p_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t     \\
@@ -236,21 +239,19 @@ To translate this into consumption measured in consumption goods $\mathbf{C}$, c
 	{\Delta \mathbf{c}}^*_t & \approx \frac{\Delta c^*_t}{(1+2\psi){p_\mathbf{C}}_{t-1}} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}}
 \end{align*}
 
-It is additionally hypothesized that $w$ can be approximated as constant by assuming that salaries increase only by changing employers, which is an unexpected event. This simplifies the expressions above by making ${\Delta w}_t = 0$ and ${\mathbb{E}(w)}_t = w_{t-1}$.
-
-${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data \parencite[such as][]{fisher2020,carroll2017} as an exponential or Pareto distribution as $\eta(\frac{\mathbf{s}}{p_\mathbf{C}},\frac{w}{p_\mathbf{C}})$, where the price is used to get a-dimensional values.
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data \parencite[such as][]{fisher2020,carroll2017} as an exponential or Pareto distribution as $\eta(\frac{\mathbf{s}}{p_\mathbf{C}},\frac{z}{p_\mathbf{C}})$, where the price is used to get a-dimensional values.
 
 From these relations, we can model the two choices of households.
 
 First, a household exits from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
-$$ {\Delta \mathbf{c}}^*_t = \frac{-w_{t-1} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} \ge 0$$
+$$ {\Delta \mathbf{c}}^*_t = \frac{-z_{t-1} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi z_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} \ge 0$$
 Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if
 \begin{multline*}
-	{\Delta \mathbf{c}}^*_t = \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} < 0 \\
-	{\Delta \mathbf{c}}^*_t = \frac{{\mathbb{E}(w|s)}_{t} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w|s)}_{t} + m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} \ge 0
+	{\Delta \mathbf{c}}^*_t = \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} < 0 \\
+	{\Delta \mathbf{c}}^*_t = \frac{{\mathbb{E}(z|s)}_{t} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(z|s)}_{t} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} \ge 0
 \end{multline*}
 
-Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \mathbf{c}_{t-1} + {\Delta \mathbf{c}}^*_t$. From which follows $c^*_t = (1+\psi) {p_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + w_{t-1} + m_{t-1} - \mathbf{d}^*_t - c^*_t$.
+Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \mathbf{c}_{t-1} + {\Delta \mathbf{c}}^*_t$. From which follows $c^*_t = (1+\psi) {p_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - \mathbf{d}^*_t - c^*_t$.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
 	Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
@@ -262,26 +263,28 @@ Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
-Loans are required as needed to pay for salaries and to make investments and started to be repaid at the end of the period in which they are contracted.
-In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery and finally repay the bank of the loans contracted.
+Loans are asked to the Bank at the beginning of the period to pay for salaries and to make investments and started to be repaid in the subsequent period.
+In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery then they distribute profits, and finally, they repay the bank the loans contracted.
 
 \subsubsection{Consumption Firms}
-Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \rho_\mathcal{F}(1+g-\psi)s_{t-1}$, where $g$ is the GDP growth rate.
+Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \rho_\mathbf{C}(1+g-\psi)s_{t-1}$, where $g$ is the GDP growth rate.
 
-The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \delta b_{t-1}$, where $\delta$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \delta) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){p_\mathbf{K}}_{t-1}\frac{{\Delta b}t}{\langle \beta \rangle}$, where the average is taken on the current capital stock.
+The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){p_\mathbf{K}}_{t-1}\frac{{\Delta b}_t}{{\langle \beta \rangle}_{t-1}}$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1})$
 
-The markup is set as $\mu_t = \mu_{t-1}(1 + \theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
+The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_t-1 (1+g-\psi)s_{t-1} - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
 
-Each firm distributes profits equal to a fraction of the net income from production proportional to the ratio between available liquidity and costs, aiming to self-financing the production in the long run, i.e. $\pi_t = \rho_\pi (\frac{{p_\mathbf{C}}_t s_t}{w_t + i_t} - 1) \hat{\mathbf{d}}_t$, where $\hat{\mathbf{d}}$ are the deposits after repaying loans and before distributing profits.
+The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}}{\mathbf{c}_t})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
+
+Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = r_\Pi ({p_\mathbf{C}}_t s_t - w_t)$.
 
 
 \subsubsection{Capital Firms}
 Capital Firms produce their own machinery, creating a system of two simultaneous equations to determine the desired output.
-The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \delta b_{t-1}$, and $\mathbf{k} = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
+The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}$, and $\mathbf{k}_t = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
 
-Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{\langle w_Q \rangle}) \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$.
+Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t^* = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{{\langle w_Q \rangle}_{t-1}}) \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$. This makes $w_t^* = \max(w_{t-1}, \frac{\mathbf{k}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1} + q_t^* {\langle w_Q \rangle}_{t-1})$.
 
-Finally, we note that $i_t = 0$ and so $\pi_t = \rho_\pi (\frac{{p_\mathbf{K}}_t s_t}{w_t} - 1) \hat{\mathbf{d}}_t$.
+Finally, we note that $i_t = 0$ and so $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, 0)$.
 
 \begin{enh}[Capital goods market]
 	The approximation that every capital firm produces its own capital goods is chosen to simplify the implementation of the model.
@@ -304,7 +307,7 @@ Bank agent represents the aggregate banking and financial sector.
 
 Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a capital ratio ($\Gamma = \frac{V}{L}$) \parencite[see][]{caiani2016}. Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
 
-Bank fixes the interest rates on Bank Bonds as ${r_\mathbf{S}}_t = (1 - \tau_\mathbf{S}) ({r_\mathbf{B}}_t + \lambda(\Gamma - \Gamma^*))$, where ${r_\mathbf{B}}_t$ is the Central Bank interest rate and $\tau_\mathbf{S}$ is the constant tax rate on financial income.
+Bank fixes the interest rates on Bank Shares as ${r_\mathbf{S}}_t = (1 - \tau_\mathbf{S}) ({r_\mathbf{B}}_t + \lambda(\Gamma - \Gamma^*))$, where ${r_\mathbf{B}}_t$ is the Central Bank interest rate and $\tau_\mathbf{S}$ is the constant tax rate on financial income.
 
 In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology. As a consequence, it needs a way to avoid excessive capitalization that does not depends on $\Lambda$. The proposed behaviour simulates a profit distribution when the Bank is capitalized over the target, without the need to introduce a market for shares.
 
@@ -315,7 +318,7 @@ In this model the Bank does not distribute profits and can access all the needed
 \end{enh}
 
 The Bank rations the credit to Firms, based on the balance sheet of the applicant, and fixes a different interest rate for each loan. The duration of Loans is fixed.
-Bank is willing to provide loans to a firm $f$ up to ${l^f}^*_t = \min (\nu_0 (p_\mathbf{K}{\mathbf{k}_f})_{t-1} - \mathbf{l}^f_t, \max((\nu_1 N_F)^{-1} \mathbf{L}_t (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0))$, at a firm-specific interest rate ${r_\mathbf{L}}^f_t = r_\mathbf{B} + \gamma_1 (\Gamma^* - \Gamma_{t-1}) + \gamma_2 (\frac{\mathbf{l}^f_t}{{v_f}_{t-1}}) - \gamma_3 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_t})$.
+Bank is willing to provide new loans to a firm $f$ in the period up to $${l^f}^*_t = \min (\nu_0 (p_\mathbf{K}{\mathbf{k}_f})_{t-1} - \mathbf{l}^f_{t-1}, \max((\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0))$$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = r_\mathbf{B} + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
 These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
 
 \subsection{Government}
@@ -325,7 +328,7 @@ When liquidity is needed, Government emits Bonds and sells them at will to the C
 
 As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_\mathbf{C}$); a flat financial income tax on distributed interests on Bank shares ($\tau_\mathbf{S}$); an inheritance tax on wealth with a constant rate ($\tau_I$); a progressive income tax computed as $t_W(w) = w \max(\tau_M \tanh(\tau_F (\frac{w}{p} - \tau_T)),0)$, where $w$ is the annual wage, $p$ is the average price of consumption goods since the last update. Income taxes are paid by the employer every period and arbitraged once a year.
 
-Fixed unemployment benefit $m_{t} = \phi \max(w_{t-1}, m_{t-1})$ is paid to those who have not exited the job market and are not employed.
+Fixed unemployment benefits $m_{t} = \phi \max(w_{t-1}, m_{t-1})$ is paid to those who have not exited the job market and are not employed.
 
 Each period government buys consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to ${\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t$.
 
@@ -338,14 +341,24 @@ Assuming a Maastricht-like scenario in which Government has a target deficit $\d
 \end{align*}
 But the expected public expenditure can also be written as
 \begin{align*}
-	\mathbb{E}(G)_t & = \mathbb{E}(M)_t + \mathbb{E}(C^\mathcal{G})_t \approx M_{t-1} + (1+\psi)p\mathbb{E}(\mathbf{C}^\mathcal{G})_t                                                  \\
-	                & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle {\mathbf{c}^\mathcal{G}_h}_t \rangle = \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_t \rangle \Xi_t \\
+	\mathbb{E}(G)_t & = \mathbb{E}(M)_t + \mathbb{E}(C^\mathcal{G})_t \approx M_{t-1} + (1+\psi)p\mathbb{E}(\mathbf{C}^\mathcal{G})_t                                          \\
+	                & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle {\mathbf{c}^\mathcal{G}_h}_t \rangle = M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_t \rangle \Xi_t \\
 	                & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_{t-1} \rangle \Xi_t = M_{t-1} + (1+\psi) p \frac{{\mathbf{C}^\mathcal{G}}_{t-1}}{\Xi_{t-1}} \Xi_t
 \end{align*}
 where it is assumed that expenses for unemployment benefits are approximately constant.
 
 Finally, the public expenditure is regulated by updating regularly $\Xi$ as
-$$\Xi_t  = \frac{\Xi_{t-1}}{{\mathbf{C}^\mathcal{G}}_{t-1}} \frac{\mathbb{E}(G)_t - M_{t-1}}{(1+\psi)p}$$
+\begin{gather*}
+	\Xi_t          = \frac{\Xi_{t-1}}{\langle {\mathbf{C}^\mathcal{G}} \rangle} \frac{\mathbb{E}(G) - \langle M \rangle}{(1+\psi)p}                                                                                       \\
+	\mathbb{E}(G)  = (1+\psi+g) \langle T \rangle + (1+g)(1-{r_\mathbf{B}}_t \langle \frac{{\mathbf{B}_\mathcal{B}}}{{\mathbf{B}^\mathcal{G}}} \rangle)\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1}
+\end{gather*}
+where the averages are taken since the last update.
+
+\begin{enh}[A Keynesian Government]
+	In this first version of the model, the Government follows an austerity-inspired policy, similar to the one suggested by European Union treaties.
+
+	The behaviour of the Government is, in the end, defined by the target deficit imposed which can be substituted with other targets, like growth, unemployment or poverty rate.
+\end{enh}
 
 \subsection{Central Bank}
 In the model the role of the Central Bank is to fix the Government's Bonds interest rate according to a Taylor rule ${r_\mathbf{B}} = \psi + \alpha_1 (\psi - \psi^*) + \alpha_2 (u - u^*) - \alpha_3 (\omega - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The variables are computed as the average since the last update.
@@ -381,15 +394,15 @@ Consumption Goods represent all the consumption (goods and services) of Househol
 \end{enh}
 
 \subsection{Capital Goods}
-Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good \hl{ getting $\beta$ goods as output}\footnote{It is possible that to balance the model, the output needs to be $\beta$ consumption goods or $b\beta$ capital goods.}. Each period they have a fixed probability to break and disappear from the model, equal to $\delta = \langle N \rangle^{-1}$, where $\langle N \rangle$ is the expected life of the machinery.
+Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good getting $\beta_\mathbf{C}$ consumption goods as output or $\beta_\mathbf{K} = k \beta_\mathbf{C}$ capital goods. Each period they have a fixed probability to break and disappear from the model, equal to $\gamma = \langle N_\mathbf{K} \rangle^{-1}$, where $\langle N_\mathbf{K} \rangle$ is the expected life of the machinery.
 
 \section{Financial Assets}
 
 \subsection{Deposits}
 Deposits represent liquidity for Households and Firms and are not interest-bearing. Bank satisfies any transaction as long as the balance of the account remains positive.
 
-\subsection{Bank Bonds}
-Bank Bonds are sold and bought at their nominal value and do not expire. Bank satisfies every transaction, as long as the accounts remain positive. Households can buy or sell Bank Bonds only at the beginning of each period. At the end of each period, interests are paid, according to the rate fixed by the Bank at the beginning of the period.
+\subsection{Bank Shares}
+Bank Shares are sold and bought at their nominal value. Bank satisfies every transaction both as emission and as buy-back, as long as the accounts remain positive. Households can buy or sell Bank Shares only at the beginning of each period. At the end of each period, interests are paid, according to the rate fixed by the Bank at the beginning of the period.
 
 \subsection{Loans}
 Loans are issued by the Bank to a specific Firm. They have a fixed duration during which an equal share of capital is repaid plus the interest on the remaining debt. Interests are fixed by the Bank at a different value for each Firm at the time of emission.
@@ -402,19 +415,19 @@ Reserves represent liquidity for Bank and Government and are not interest-bearin
 
 \section{Dynamics}
 \subsection{Consumption Goods market}
-Each Household sees $\chi_C$ Consumption Firms $\chi_C$ times, each time it buys $\frac{\mathbb{E}(G) - G^G}{\chi_C}$ at the lowest possible price until it matches the desired consumption or ends liquidity.
+Each Household sees $\chi_\mathbf{C}$ Consumption Firms $\chi_\mathbf{C}$ times, each time it buys $\frac{\mathbf{c}^* - \mathbf{c}^\mathcal{G}_h}{\chi_\mathbf{C}}$ at the lowest offered price until it matches the desired consumption or ends liquidity.
 
 \subsection{Capital Goods market}
-Each Consumption Firm sees $\chi_K$ Capital Firms $\chi_K$ times (including the last one from which it has bought), each time it buys $\frac{\Delta B}{\chi_C}$ machineries choosing the one with the lowest value of $\beta p_C - \langle w_\sigma \rangle - \frac{p_K}{\langle N \rangle}$ until it matches the desired quantity or ends liquidity.
+Each Consumption Firm sees $\chi_\mathbf{K}$ Capital Firms $\chi_\mathbf{K}$ times (including the last one from which it has bought), each time it buys machinery with a total production capacity of $\frac{\Delta b}{\chi_C}$, choosing the one with the lowest value of $\beta p_\mathbf{C} - \langle w_\sigma \rangle - \frac{p_\mathbf{K}}{\langle N_\mathbf{K} \rangle}$ until it matches the desired quantity or ends liquidity.
 
 \subsection{Labour market}
 Households are employed by a Firm until they are fired, they chose to exit the job market or they accept an offer from another Firm.
 
-Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reaches $u^* K$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
+Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reaches $u^* \mathbf{k}$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
 
 Firms match each employed worker with the most productive machinery they can use, starting with those with higher skills. For this purpose, a researcher is treated like a worker assigned to a machinery with productivity $\sigma^*$.
 Then the current potential output (as the sum of the productivity of the used machinery) is computed and vacancies are filled starting from the most productive unused machinery. All research vacancies are filled if possible.
-For each vacancy, the Firm sees $\chi_L$ workers which have the required skills and earn less than the average salary in the model for the skill level. The Firm employs the one with the higher skills offering the average salary in the model for the skill level.
+For each vacancy, the Firm sees $\chi_\mathcal{H}$ workers which have the required skills and earn less than the average salary in the model for the skill level at the end of the previous period. The Firm employs the one with the higher skills offering the average salary in the model for the required skill level.
 
 Each vacancy is filled once and new vacancies are not filled.
 
@@ -436,9 +449,9 @@ Once the net value of a Firm becomes negative the Firm declares bankruptcy, fire
 \end{enh}
 
 \subsection{Innovation}
-Each Capital Firm can achieve an innovation each period with a probability $p = e^{-\xi R}$ where $R$ is the number of employed workers not assigned to a Capital Good with skills at least $sigma^*$.
+Each Capital Firm can achieve an innovation each period with a probability $\theta = e^{-\zeta q}$ where $R$ is the number of employed workers not assigned to a Capital Good with skills at least $\sigma^*$.
 
-If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta \propto \text{Beta}(1, b_1)$ and modify the required skills as $\Delta \sigma \propto (\Delta \beta - k \text{Beta}(1, b_2))$.
+If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta_\mathbf{C} = \text{Beta}(1, b_0)$ and modify the required skills as $\Delta \sigma = (\Delta \beta_\mathbf{C} - b_1 \text{Beta}(1, b_2))$.
 
 \begin{enh}[Imitation and the frontier]
 	Catching up with the leading technology is easier than moving the innovation frontier. This empirical evidence can be modelled in two ways: the first one is to model two different innovation processes, and the other is to make $p$ increasing with $\beta_\text{MAX} - \beta$.
@@ -451,6 +464,7 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 	\item[C] [\textsc{quarterly}] Central Bank sets the Government Bonds interest rate
 	\item[D.0] Bank sets the interest rate on Bank Bonds
 	\item[D.1] Bank buys Government Bonds to reach the liquidity requirement
+	\item[D.2] [\textsc{quarterly}] Government update the public spending policy
 	\item[E.0] Households set desired consumption and savings
 	\item[E.1] Firms set desired output and investment
 	\item[F.0] Households acquire Bank Bonds
@@ -472,9 +486,69 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 	\item[S.1] Firms bankrupt and get substituted
 \end{steps}
 
-\section{Equations}
+%\section{Equations}
 
 \section{Parameters}
+
+\begin{tabularx}{\linewidth}{lXll}
+	\toprule
+	                   & Description                                                & Value & Source \\
+	\midrule
+	$\Sigma$           & Relative skill variation                                   &       &        \\
+	                   & Distribution parameters to assign initial skill level      &       &        \\
+	$\rho_\mathcal{H}$ & Deposits to consumption ratio                              &       &        \\
+	                   & Distribution parameters for marginal propensity to consume &       &        \\
+	$\rho_\mathbf{C}$  & Production over expected sales                             &       &        \\
+	$\rho_\mathcal{F}$ & Liquidity over expected wages and investiment ratio        &       &        \\
+	$u^*$              & Target capacity utilization                                &       &        \\
+	$\Theta$           & Markup growth rate                                         &       &        \\
+	$r_\Pi$            & Profit distribution rate                                   &       &        \\
+	$\rho_Q$           & Number of researcher growth rate                           &       &        \\
+	$\sigma^*$         & Minimum researchers' skill level                           &       &        \\
+	$\Lambda^*$        & Target liquidity ratio                                     &       &        \\
+	$\Gamma^*$         & Target capital ratio                                       &       &        \\
+	$\lambda$          & Bank share premium                                         &       &        \\
+	$\nu_0$            & Loan to capital ratio for firms                            &       &        \\
+	$\nu_1$            & Number of firms correction to compute maximum loan amount  &       &        \\
+	$\nu_2$            & Loan rate premium for Bank capitalization                  &       &        \\
+	$\nu_3$            & Loan rate premium for firms loan to net worth ratio        &       &        \\
+	$\nu_4$            & Loan rate premium for profits to loans ratio               &       &        \\
+	$\tau_\mathbf{C}$  & VAT rate                                                   &       &        \\
+	$\tau_\mathbf{S}$  & Financial income tax rate                                  &       &        \\
+	$\tau_I$           & Inheritance tax rate                                       &       &        \\
+	$\tau_M$           & Maximum labour income tax rate                             &       &        \\
+	$\tau_F$           & Labour income tax progressivity                            &       &        \\
+	$\tau_T$           & Labour income tax threshold                                &       &        \\
+	$\phi$             & Unemployment benefits decay rate                           &       &        \\
+	$\delta^*$         & Target deficit                                             &       &        \\
+	$\alpha_1$         & Inflation coefficient in Taylor rule                       &       &        \\
+	$\alpha_2$         & Capacity utilization coefficient in Taylor rule            &       &        \\
+	$\alpha_2$         & Unemployment coefficient in Taylor rule                    &       &        \\
+	$k$                & Comsumption goods to capital good output                   &       &        \\
+	$\gamma$           & Capital depreciation                                       &       &        \\
+	$\chi_\mathbf{C}$  & Number of Consumption Firms seen                           &       &        \\
+	$\chi_\mathbf{K}$  & Number of Capital Firms seen                               &       &        \\
+	$\chi_\mathcal{H}$ & Number of Households seen                                  &       &        \\
+	$\zeta$            & Innovation speed                                           &       &        \\
+	$b_0$              & Productivity gain distribution parameter                   &       &        \\
+	$b_1$              & Maximum required skill loss                                &       &        \\
+	$b_2$              & Required skill loss distribution parameter                 &       &        \\
+
+
+	\bottomrule
+\end{tabularx}
+
+%\section*{To Do}
+%This working paper outlines the structure of the model and most of the relevant macro- and microeconomic equations.
+
+%The next steps are to implement the model in a suitable programming language, define a strategy to initialize the model and list the stylized facts the model should reproduce and quantify some of them relying on real data.
+
+%By the time of the conference, I'm confident that I will be able to present an implemented version of the model which can reproduce some stylized facts at least in a qualitative way.
+
+%\section{Implementation}
+%\section{Initialization}
+%\section{Results}
+%\section{Discussion}
 
 \printbibliography
 
