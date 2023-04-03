@@ -188,6 +188,9 @@ In this model, the core agents (consumers, workers, capitalists) represent a hou
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
+Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance given the inherited wealth $(\frac{\sigma^M}{e_1})^2$.
+
+Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + s_0$, where $s_0$ is the initial skill level.
 
 Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
 
@@ -239,7 +242,7 @@ To translate this into consumption measured in consumption goods $\mathbf{C}$, c
 	{\Delta \mathbf{c}}^*_t & \approx \frac{\Delta c^*_t}{(1+2\psi){p_\mathbf{C}}_{t-1}} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}}
 \end{align*}
 
-${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is calibrated from empirical data \parencite[such as][]{fisher2020,carroll2017} as an exponential or Pareto distribution as $\eta(\frac{\mathbf{s}}{p_\mathbf{C}},\frac{z}{p_\mathbf{C}})$, where the price is used to get a-dimensional values.
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is defined as one of the following $\eta(z) = e^{-a\frac{z}{p}}$ or $\eta(v) = e^{-a\frac{v}{p}}$ or $\eta(z) = (\frac{z}{p} + 1)^{-a}$ or $\eta(v) = (\frac{v}{p} + 1)^{-a}$, using real data to choose the most suitable form \parencite[such as][]{fisher2020,carroll2017}.
 
 From these relations, we can model the two choices of households.
 
@@ -423,7 +426,7 @@ Each Consumption Firm sees $\chi_\mathbf{K}$ Capital Firms $\chi_\mathbf{K}$ tim
 \subsection{Labour market}
 Households are employed by a Firm until they are fired, they chose to exit the job market or they accept an offer from another Firm.
 
-Firms can fire workers only when profits turn negative. In that case, Firms fire workers until the number of workers reaches $u^* \mathbf{k}$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
+Firms can fire workers only when $w_t - p_t s_t < 0$. In that case, Firms fire workers until the number of workers reaches $u^* \mathbf{k}$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
 
 Firms match each employed worker with the most productive machinery they can use, starting with those with higher skills. For this purpose, a researcher is treated like a worker assigned to a machinery with productivity $\sigma^*$.
 Then the current potential output (as the sum of the productivity of the used machinery) is computed and vacancies are filled starting from the most productive unused machinery. All research vacancies are filled if possible.
@@ -492,47 +495,51 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 
 \begin{tabularx}{\linewidth}{lXll}
 	\toprule
-	                   & Description                                                & Value & Source \\
+	                   & Description                                               & Value & Source \\
 	\midrule
-	$\Sigma$           & Relative skill variation                                   &       &        \\
-	                   & Distribution parameters to assign initial skill level      &       &        \\
-	$\rho_\mathcal{H}$ & Deposits to consumption ratio                              &       &        \\
-	                   & Distribution parameters for marginal propensity to consume &       &        \\
-	$\rho_\mathbf{C}$  & Production over expected sales                             &       &        \\
-	$\rho_\mathcal{F}$ & Liquidity over expected wages and investiment ratio        &       &        \\
-	$u^*$              & Target capacity utilization                                &       &        \\
-	$\Theta$           & Markup growth rate                                         &       &        \\
-	$r_\Pi$            & Profit distribution rate                                   &       &        \\
-	$\rho_Q$           & Number of researcher growth rate                           &       &        \\
-	$\sigma^*$         & Minimum researchers' skill level                           &       &        \\
-	$\Lambda^*$        & Target liquidity ratio                                     &       &        \\
-	$\Gamma^*$         & Target capital ratio                                       &       &        \\
-	$\lambda$          & Bank share premium                                         &       &        \\
-	$\nu_0$            & Loan to capital ratio for firms                            &       &        \\
-	$\nu_1$            & Number of firms correction to compute maximum loan amount  &       &        \\
-	$\nu_2$            & Loan rate premium for Bank capitalization                  &       &        \\
-	$\nu_3$            & Loan rate premium for firms loan to net worth ratio        &       &        \\
-	$\nu_4$            & Loan rate premium for profits to loans ratio               &       &        \\
-	$\tau_\mathbf{C}$  & VAT rate                                                   &       &        \\
-	$\tau_\mathbf{S}$  & Financial income tax rate                                  &       &        \\
-	$\tau_I$           & Inheritance tax rate                                       &       &        \\
-	$\tau_M$           & Maximum labour income tax rate                             &       &        \\
-	$\tau_F$           & Labour income tax progressivity                            &       &        \\
-	$\tau_T$           & Labour income tax threshold                                &       &        \\
-	$\phi$             & Unemployment benefits decay rate                           &       &        \\
-	$\delta^*$         & Target deficit                                             &       &        \\
-	$\alpha_1$         & Inflation coefficient in Taylor rule                       &       &        \\
-	$\alpha_2$         & Capacity utilization coefficient in Taylor rule            &       &        \\
-	$\alpha_2$         & Unemployment coefficient in Taylor rule                    &       &        \\
-	$k$                & Comsumption goods to capital good output                   &       &        \\
-	$\gamma$           & Capital depreciation                                       &       &        \\
-	$\chi_\mathbf{C}$  & Number of Consumption Firms seen                           &       &        \\
-	$\chi_\mathbf{K}$  & Number of Capital Firms seen                               &       &        \\
-	$\chi_\mathcal{H}$ & Number of Households seen                                  &       &        \\
-	$\zeta$            & Innovation speed                                           &       &        \\
-	$b_0$              & Productivity gain distribution parameter                   &       &        \\
-	$b_1$              & Maximum required skill loss                                &       &        \\
-	$b_2$              & Required skill loss distribution parameter                 &       &        \\
+	$\Sigma$           & Relative skill variation                                  &       &        \\
+	$\sigma^M$         & Maximum initial skill level                               &       &        \\
+	$e_0$              & Intergenerational social mobility parameter               &       &        \\
+	$e_1$              & Shape parameter for initial skill level                   &       &        \\
+	$A_R$              & Retirement Age                                            &       &        \\
+	$A_0$              & Initial age without education                             &       &        \\
+	$\rho_\mathcal{H}$ & Deposits to consumption ratio                             &       &        \\
+	$a$                & Distribution parameter for marginal propensity to consume &       &        \\
+	$\rho_\mathbf{C}$  & Production over expected sales                            &       &        \\
+	$\rho_\mathcal{F}$ & Liquidity over expected wages and investment ratio        &       &        \\
+	$u^*$              & Target capacity utilization                               &       &        \\
+	$\Theta$           & Markup growth rate                                        &       &        \\
+	$r_\Pi$            & Profit distribution rate                                  &       &        \\
+	$\rho_Q$           & Number of researcher growth rate                          &       &        \\
+	$\sigma^*$         & Minimum researchers' skill level                          &       &        \\
+	$\Lambda^*$        & Target liquidity ratio                                    &       &        \\
+	$\Gamma^*$         & Target capital ratio                                      &       &        \\
+	$\lambda$          & Bank share premium                                        &       &        \\
+	$\nu_0$            & Loan to capital ratio for firms                           &       &        \\
+	$\nu_1$            & Number of firms correction to compute maximum loan amount &       &        \\
+	$\nu_2$            & Loan rate premium for Bank capitalization                 &       &        \\
+	$\nu_3$            & Loan rate premium for firms loan to net worth ratio       &       &        \\
+	$\nu_4$            & Loan rate premium for profits to loans ratio              &       &        \\
+	$\tau_\mathbf{C}$  & VAT rate                                                  &       &        \\
+	$\tau_\mathbf{S}$  & Financial income tax rate                                 &       &        \\
+	$\tau_I$           & Inheritance tax rate                                      &       &        \\
+	$\tau_M$           & Maximum labour income tax rate                            &       &        \\
+	$\tau_F$           & Labour income tax progressivity                           &       &        \\
+	$\tau_T$           & Labour income tax threshold                               &       &        \\
+	$\phi$             & Unemployment benefits decay rate                          &       &        \\
+	$\delta^*$         & Target deficit                                            &       &        \\
+	$\alpha_1$         & Inflation coefficient in Taylor rule                      &       &        \\
+	$\alpha_2$         & Capacity utilization coefficient in Taylor rule           &       &        \\
+	$\alpha_2$         & Unemployment coefficient in Taylor rule                   &       &        \\
+	$k$                & Comsumption goods to capital good output                  &       &        \\
+	$\gamma$           & Capital depreciation                                      &       &        \\
+	$\chi_\mathbf{C}$  & Number of Consumption Firms seen                          &       &        \\
+	$\chi_\mathbf{K}$  & Number of Capital Firms seen                              &       &        \\
+	$\chi_\mathcal{H}$ & Number of Households seen                                 &       &        \\
+	$\zeta$            & Innovation speed                                          &       &        \\
+	$b_0$              & Productivity gain distribution parameter                  &       &        \\
+	$b_1$              & Maximum required skill loss                               &       &        \\
+	$b_2$              & Required skill loss distribution parameter                &       &        \\
 
 
 	\bottomrule
