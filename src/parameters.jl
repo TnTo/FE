@@ -1,0 +1,11 @@
+seed = 8686
+NCapitalFirms::Int = 20
+NConsumptionFirms::Int = 10
+NHouseholds::Int = 100
+LoanDuration::Int = 60
+max_initial_skill::Float64 = 10.0
+e0::Float64 = 0.001
+e1::Float64 = 2.0
+minimum_household_age::Int = 192
+retirement_age::Int = 780
+skill_growth_rate::Float64 = 0.01
