@@ -35,7 +35,7 @@ function create_model()
     bank = Bank(id=1)
     government = Government(id=2)
     last_id = 2
-    capitalfirms = [CapitalFirm(id=i + last_id) for i in 1:NCapitalFirms]
+    capitalfirms = [CapitalFirm(id=i + last_id, capital_goods=[CapitalGood(1, 1, 1)]) for i in 1:NCapitalFirms]
     last_id += NCapitalFirms
     consumptiofirms = [ConsumptionFirm(id=i + last_id) for i in 1:NConsumptionFirms]
     last_id += NConsumptionFirms
@@ -44,5 +44,3 @@ function create_model()
     return Model(CentralBank=centralbank, Bank=bank, Government=government, CapitalFirms=capitalfirms, ConsumptionFirms=consumptiofirms, Households=households, last_id=last_id)
 
 end
-
-model = create_model()

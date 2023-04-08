@@ -7,5 +7,4 @@ end
     price::Float64
     productivity::Float64
     minimum_skill::Float64
-    age::Int = 0
 end
