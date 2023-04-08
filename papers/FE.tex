@@ -15,6 +15,7 @@
 \usepackage[autostyle=false, style=english]{csquotes}
 \MakeOuterQuote{"}
 \usepackage[british]{babel}
+\usepackage{appendix}
 \usepackage[modulo]{lineno}
 \linenumbers
 \usepackage{framed}
@@ -188,7 +189,7 @@ In this model, the core agents (consumers, workers, capitalists) represent a hou
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
-Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance given the inherited wealth $(\frac{\sigma^M}{e_1})^2$.
+Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{beta-binomial}.
 
 Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + s_0$, where $s_0$ is the initial skill level.
 
@@ -272,7 +273,7 @@ In the case of rationed credit, Firms first pay the salaries of workers, then th
 \subsubsection{Consumption Firms}
 Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \rho_\mathbf{C}(1+g-\psi)s_{t-1} = \rho_\mathbf{C}{\mathbb{E}(s)}_t$, where $g$ is the GDP growth rate.
 
-The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){p_\mathbf{K}}_{t-1}\frac{{\Delta b}_t}{{\langle \beta \rangle}_{t-1}}$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1})$
+The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){\langle\frac{{p_\mathbf{K}}}{\beta}\rangle}_{t-1}{\Delta b}_t$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1})$
 
 The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\mathbb{E}(s)}_t - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
 
@@ -495,51 +496,56 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 
 \begin{tabularx}{\linewidth}{lXll}
 	\toprule
-	                   & Description                                               & Value & Source \\
+	                             & Description                                                  & Value  & Source \\
 	\midrule
-	$\Sigma$           & Relative skill variation                                  &       &        \\
-	$\sigma^M$         & Maximum initial skill level                               &       &        \\
-	$e_0$              & Intergenerational social mobility parameter               &       &        \\
-	$e_1$              & Shape parameter for initial skill level                   &       &        \\
-	$A_R$              & Retirement Age                                            &       &        \\
-	$A_0$              & Initial age without education                             &       &        \\
-	$\rho_\mathcal{H}$ & Deposits to consumption ratio                             &       &        \\
-	$a$                & Distribution parameter for marginal propensity to consume &       &        \\
-	$\rho_\mathbf{C}$  & Production over expected sales                            &       &        \\
-	$\rho_\mathcal{F}$ & Liquidity over expected wages and investment ratio        &       &        \\
-	$u^*$              & Target capacity utilization                               &       &        \\
-	$\Theta$           & Markup growth rate                                        &       &        \\
-	$r_\Pi$            & Profit distribution rate                                  &       &        \\
-	$\rho_Q$           & Number of researcher growth rate                          &       &        \\
-	$\sigma^*$         & Minimum researchers' skill level                          &       &        \\
-	$\Lambda^*$        & Target liquidity ratio                                    &       &        \\
-	$\Gamma^*$         & Target capital ratio                                      &       &        \\
-	$\lambda$          & Bank share premium                                        &       &        \\
-	$\nu_0$            & Loan to capital ratio for firms                           &       &        \\
-	$\nu_1$            & Number of firms correction to compute maximum loan amount &       &        \\
-	$\nu_2$            & Loan rate premium for Bank capitalization                 &       &        \\
-	$\nu_3$            & Loan rate premium for firms loan to net worth ratio       &       &        \\
-	$\nu_4$            & Loan rate premium for profits to loans ratio              &       &        \\
-	$\tau_\mathbf{C}$  & VAT rate                                                  &       &        \\
-	$\tau_\mathbf{S}$  & Financial income tax rate                                 &       &        \\
-	$\tau_I$           & Inheritance tax rate                                      &       &        \\
-	$\tau_M$           & Maximum labour income tax rate                            &       &        \\
-	$\tau_F$           & Labour income tax progressivity                           &       &        \\
-	$\tau_T$           & Labour income tax threshold                               &       &        \\
-	$\phi$             & Unemployment benefits decay rate                          &       &        \\
-	$\delta^*$         & Target deficit                                            &       &        \\
-	$\alpha_1$         & Inflation coefficient in Taylor rule                      &       &        \\
-	$\alpha_2$         & Capacity utilization coefficient in Taylor rule           &       &        \\
-	$\alpha_2$         & Unemployment coefficient in Taylor rule                   &       &        \\
-	$k$                & Comsumption goods to capital good output                  &       &        \\
-	$\gamma$           & Capital depreciation                                      &       &        \\
-	$\chi_\mathbf{C}$  & Number of Consumption Firms seen                          &       &        \\
-	$\chi_\mathbf{K}$  & Number of Capital Firms seen                              &       &        \\
-	$\chi_\mathcal{H}$ & Number of Households seen                                 &       &        \\
-	$\zeta$            & Innovation speed                                          &       &        \\
-	$b_0$              & Productivity gain distribution parameter                  &       &        \\
-	$b_1$              & Maximum required skill loss                               &       &        \\
-	$b_2$              & Required skill loss distribution parameter                &       &        \\
+	$N_\mathcal{H}$              & Number of Households                                         &        &        \\
+	$N_{\mathcal{F}_\mathbf{C}}$ & Number of Comsumption Firms                                  &        &        \\
+	$N_{\mathcal{F}_\mathbf{K}}$ & Number of Capital Firms                                      &        &        \\
+	$\Sigma$                     & Relative skill variation                                     & 0.01   &        \\
+	$\sigma^M$                   & Maximum initial skill level                                  & 10     &        \\
+	$e_0$                        & Intergenerational social mobility parameter                  &        &        \\
+	$e_1$                        & Shape parameter for initial skill level                      & 1      &        \\
+	$A_R$                        & Retirement Age                                               & 65     &        \\
+	$A_0$                        & Initial age without education                                & 15     &        \\
+	$\rho_\mathcal{H}$           & Deposits to consumption ratio                                &        &        \\
+	$a$                          & Distribution parameter for marginal propensity to consume    &        &        \\
+	$\rho_\mathbf{C}$            & Production over expected sales                               &        &        \\
+	$\rho_\mathcal{F}$           & Liquidity over expected wages and investment ratio           &        &        \\
+	$\Theta$                     & Markup growth rate                                           &        &        \\
+	$r_\Pi$                      & Profit distribution rate                                     & 0.05   &        \\
+	$\rho_Q$                     & Number of researcher growth rate                             &        &        \\
+	$\sigma^*$                   & Minimum researchers' skill level                             &        &        \\
+	$\Lambda^*$                  & Target liquidity ratio                                       &        &        \\
+	$\Gamma^*$                   & Target capital ratio                                         &        &        \\
+	$\lambda$                    & Bank share premium                                           &        &        \\
+	$\nu_0$                      & Loan to capital ratio for firms                              &        &        \\
+	$\nu_1$                      & Number of firms correction to compute maximum loan amount    &        &        \\
+	$\nu_2$                      & Loan rate premium for Bank capitalization                    &        &        \\
+	$\nu_3$                      & Loan rate premium for firms loan to net worth ratio          &        &        \\
+	$\nu_4$                      & Loan rate premium for profits to loans ratio                 &        &        \\
+	$\tau_\mathbf{C}$            & VAT rate                                                     & 0.2    &        \\
+	$\tau_\mathbf{S}$            & Financial income tax rate                                    & 0.25   &        \\
+	$\tau_I$                     & Inheritance tax rate                                         & 0      &        \\
+	$\tau_M$                     & Maximum labour income tax rate                               & 0.5    &        \\
+	$\tau_F$                     & Labour income tax progressivity                              &        &        \\
+	$\tau_T$                     & Labour income tax threshold                                  &        &        \\
+	$\phi$                       & Unemployment benefits decay rate                             & 0.90   &        \\
+	$\delta^*$                   & Target deficit                                               & 0.03   &        \\
+	$\alpha_1$                   & Inflation coefficient in Taylor rule                         &        &        \\
+	$\alpha_2$                   & Capacity utilization coefficient in Taylor rule              &        &        \\
+	$\alpha_2$                   & Unemployment coefficient in Taylor rule                      &        &        \\
+	$\psi^*$                     & Target inflation                                             & 0.02   &        \\
+	$u^*$                        & Target capacity utilization                                  & 0.8    &        \\
+	$\omega^*$                   & Target unemployment rate                                     & 0.05   &        \\
+	$k$                          & Comsumption goods to capital good output                     & 1      &        \\
+	$\gamma$                     & Capital depreciation                                         & 0.0083 &        \\
+	$\chi_\mathbf{C}$            & Number of Consumption Firms seen in Consumption Goods market &        &        \\
+	$\chi_\mathbf{K}$            & Number of Capital Firms seen in Capital Goods market         &        &        \\
+	$\chi_\mathcal{H}$           & Number of Households seen in labour market                   &        &        \\
+	$\zeta$                      & Innovation speed                                             &        &        \\
+	$b_0$                        & Productivity gain distribution parameter                     &        &        \\
+	$b_1$                        & Maximum required skill loss                                  &        &        \\
+	$b_2$                        & Required skill loss distribution parameter                   &        &        \\
 
 
 	\bottomrule
@@ -558,5 +564,27 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 %\section{Discussion}
 
 \printbibliography
+
+\appendix
+
+\section{Beta-Binomial Distribution}
+\label{sec:beta-binomial}
+The Beta-binomial distribution is a probability distribution defined on a discrete and finite support from $0$ to $N$, which describes a Bernoulli process of $N$ trials each with a probability of success drawn from a Beta distribution of parameters $\alpha$ and $\beta$.
+Its probability mass function is $\binom{x}{N}\frac{B(x+\alpha, N-x+\beta)}{B(\alpha,\beta)}$, where $B$ is the Beta function.
+
+It is easy to see that the number of trials is the maximum possible result of a drawn, and so $N=\sigma^M$.
+The relations to define $\alpha$ and $\beta$ as functions of the mean $\mu$ and the variance $s$ are less easy to derive.
+
+First, it is known that $\mu = \frac{N \alpha}{\alpha + \beta}$  and $s=\frac{N\alpha\beta(\alpha + \beta + N)}{(\alpha+\beta)^2(\alpha+\beta+1)}$, from which it follows $\beta = \frac{\alpha}{\mu}(N-\mu)$ and $\alpha + \beta = \frac{N \alpha}{\mu}$.
+$$s=\frac{N\alpha^2\mu^3(N-\mu)(N\alpha-N\mu)}{N^2\alpha^2\mu^2(N\alpha+\mu)} = \frac{\mu(N-\mu)(\alpha-\mu)}{N\alpha+\mu}$$
+$$sN\alpha + s\mu = \mu N\alpha + \mu^2 N - \alpha \mu^2 - \mu^3$$
+$$\alpha(sN -\mu N + \mu^2) = \mu(\mu N - \mu^2 -s)$$
+$$\alpha=\frac{\mu(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
+$$\beta=\frac{(N-\mu)(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
+As additional conditions it must be $\alpha > 0$ and $\beta>0$, given that $N>\mu>0$ and $s>0$, from which it follows
+$$\mu(N-\mu) > s > \frac{\mu}{N}(N-\mu)$$
+To keep the variance small and so to ensure a bell-shaped mass function, $s=\frac{\mu}{N}(N-\mu+e_1)$.
+
+
 
 \end{document}
