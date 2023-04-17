@@ -1,4 +1,4 @@
-abstract type Firm end
+# Household
 
 @kwdef mutable struct Household
     const id::UInt
@@ -35,6 +35,9 @@ function ageHousehold(h::Household)
     h.skill = h.skill * (1 + skill_growth_rate)^net_skill_gained
     return h
 end
+
+# Firms
+abstract type Firm end
 
 @kwdef mutable struct ConsumptionFirm <: Firm
     const id::UInt
@@ -73,10 +76,14 @@ end
     loan_interest_rate::Float64 = 0
 end
 
+# Bank
+
 @kwdef mutable struct Bank
     const id::UInt
     share_interest_rate::Float64 = 0
 end
+
+# Government
 
 @kwdef mutable struct Government
     const id::UInt
@@ -85,6 +92,8 @@ end
     public_nominal_consumption::Float64 = 0
     taxes::Float64 = 0
 end
+
+# CentralBank
 
 @kwdef mutable struct CentralBank
     const id::UInt

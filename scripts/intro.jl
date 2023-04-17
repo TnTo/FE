@@ -4,6 +4,6 @@ using Plots
 
 include(srcdir("model.jl"))
 
-model = create_model()
+model = FE.create_model()
 
 histogram(map(h -> h.skill, model.Households))

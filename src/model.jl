@@ -1,5 +1,6 @@
+module FE
+
 import Base.@kwdef
-import Base.WeakRef
 using Random
 using StaticArrays
 using Distributions
@@ -39,8 +40,9 @@ function create_model()
     last_id += NCapitalFirms
     consumptiofirms = [ConsumptionFirm(id=i + last_id) for i in 1:NConsumptionFirms]
     last_id += NConsumptionFirms
-    households = map(ageHousehold, [newHousehold(i + last_id, rand(Exponential(100))) for i in 1:NHouseholds])
+    households = map(ageHousehold, [newHousehold(i + last_id, rand(Exponential(average_initial_wealth))) for i in 1:NHouseholds])
     last_id += NHouseholds
     return Model(CentralBank=centralbank, Bank=bank, Government=government, CapitalFirms=capitalfirms, ConsumptionFirms=consumptiofirms, Households=households, last_id=last_id)
+end
 
 end
