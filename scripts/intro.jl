@@ -1,9 +1,10 @@
 using DrWatson
-using Plots
+using Logging
 @quickactivate "FE"
 
 include(srcdir("model.jl"))
+include(srcdir("parameters.jl"))
 
-model = FE.create_model()
-
-histogram(map(h -> h.skill, model.Households))
+Base.with_logger(Logging.ConsoleLogger(stderr, Logging.Debug)) do
+    model = FE.create_model(params)
+end
