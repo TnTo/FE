@@ -8,15 +8,27 @@ struct Model
     e0::Float64
     e1::Float64
     skill_growth_rate::Float64
+    # Firms
+    NFirms::Int
+    # Bank
+    cr_coefficient::Float64
+    nu0::Float64
+    nu1::Float64
+    nu2::Float64
+    nu3::Float64
+    nu4::Float64
     # CentralBank
     alpha1::Float64
     alpha2::Float64
     alpha3::Float64
+    # Taxes
+    tax_shares::Float64
     # Target
     target_inflation::Float64
     target_capacity_utilization::Float64
     target_unemployment::Float64
     target_deficit::Float64
+    target_capital_ratio::Float64
 
 end
 
@@ -36,8 +48,13 @@ function create_model(p::Dict{Symbol})
 
     m = Model(
         SQLite.DB(path), p.minimum_household_age, p.retirement_age, p.max_initial_skill,
-        p.e0, p.e1, p.skill_growth_rate, p.alpha1, p.alpha2, p.alpha3,
-        p.target_inflation, p.target_capacity_utilization, p.target_unemployment, p.target_deficit
+        p.e0, p.e1, p.skill_growth_rate,
+        p.NCapitalFirms + p.NConsumptionFirms,
+        p.cr_coefficient, p.nu0, p.nu1, p.nu2, p.nu3, p.nu4,
+        p.alpha1, p.alpha2, p.alpha3,
+        p.tax_shares,
+        p.target_inflation, p.target_capacity_utilization, p.target_unemployment, p.target_deficit,
+        p.target_capital_ratio
     )
     t = 0
 

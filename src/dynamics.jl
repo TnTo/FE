@@ -1,11 +1,17 @@
 function step(m::Model, t::Int)
     @debug "Step $t"
 
+    update_db(m, t)
+
     update_agents_begin(m, t)
 
 
 
     update_statistics(m, t)
+end
+
+function update_db(m::Model, t::Int)
+    DBInterface.execute(m.db, "INSERT INTO Stocks (t, id, Deposits, Shares, Loans, Bonds, Reserves, CapitalGoods) SELECT $t, id, Deposits, Shares, Loans, Bonds, Reserves, CapitalGoods FROM Stocks WHERE t == $(t-1) AND id IN (SELECT id FROM Agents WHERE death IS NULL)")
 end
 
 function update_statistics(m::Model, t::Int)
@@ -49,7 +55,7 @@ function compute_inflation(m::Model, t::Int, p1::Float64)::Float64
 end
 
 function compute_gdp(m::Model, t::Int)
-    res = fetch_one(m.db, "SELECT SUM(price*quantity) AS gdp FROM Transactions WHERE (class == $(Int(Consumption)) OR class == $(Int(Investiment))) AND (t <= $t AND t > $(t-12))")
+    res = fetch_one(m.db, "SELECT SUM(price*quantity) AS gdp FROM Transactions WHERE class IN ($(Int(Consumption)), $(Int(Investiment))) AND (t <= $t AND t > $(t-12))")
     return res.gdp
 end
 
@@ -76,11 +82,14 @@ end
 
 
 function update_agents_begin(m::Model, t::Int)
+    @debug "Update Agents"
     update_centralbank_begin(m, t)
     update_government_begin(m, t)
+    update_bank_begin(m, t)
 end
 
 function update_centralbank_begin(m::Model, t::Int)
+    @debug "Update CB"
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(CentralBank))").id
     if t > 1 & quarterly(t - 1)
         res = fetch_one(m.db, "SELECT inflation, capacity_utilization, unemployment FROM Statistics WHERE t == $(t-1)")
@@ -93,6 +102,7 @@ function update_centralbank_begin(m::Model, t::Int)
 end
 
 function update_government_begin(m::Model, t::Int)
+    @debug "Update Government"
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(Government))").id
     expenditure = fetch_one(m.db, "SELECT expenditure FROM Governments WHERE t == $(t-1)").expenditure
     if t > 1 & quarterly(t - 1)
@@ -115,4 +125,38 @@ function update_government_begin(m::Model, t::Int)
         expenditure = expenditure * (expected_spending - avg_transfert) / ((1 + inflation) * cprice * avg_real_consumption)
     end
     DBInterface.execute(m.db, "INSERT INTO Governments(t,id,expenditure) VALUES ($t,$id,$expenditure)")
+end
+
+function update_bank_begin(m::Model, t::Int)
+    @debug "Update Bank"
+    id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(Bank))").id
+    res = fetch_one(m.db, "SELECT Loans + Bonds + Reserves - Shares - Deposits AS net_worth, Loans FROM Stocks WHERE id == $id AND t == $(t-1)")
+    net_worth = res.net_worth
+    loans = res.Loans
+    capital_ratio = loans == 0.0 ? 2.0 : (net_worth / loans)
+    cb_rate = fetch_one(m.db, "SELECT rate FROM CentralBanks WHERE t == $t").rate # Exploiting uniqueness
+    rate = (1 - m.tax_shares) * (cb_rate + m.cr_coefficient * (capital_ratio - m.target_capital_ratio))
+    DBInterface.execute(m.db, "INSERT INTO Banks(t,id,rate) VALUES ($t,$id,$rate)")
+    if t == 1
+        global_loan_limit = (capital_ratio - m.target_capital_ratio) / (m.target_capital_ratio * m.nu1 * m.NFirms)
+    else
+        global_loan_limit = max(0, loans * (capital_ratio - m.target_capital_ratio) / (m.target_capital_ratio * m.nu1 * m.NFirms))
+    end
+    res = DBInterface.execute(m.db, "SELECT id FROM Agents WHERE death IS NULL AND class IN ($(Int(CapitalFirm)), $(Int(ConsumptionFirm)))")
+    for r in res
+        idF = r.id
+        resF = fetch_one(m.db, "SELECT Deposits, Loans, CapitalGoods FROM Stocks WHERE id == $idF AND t == $(t-1)")
+        loansF = resF.Loans
+        capitalF = resF.CapitalGoods
+        depositsF = resF.Deposits
+        resF = fetch_one(m.db, "SELECT SUM(price) AS profits FROM Transactions WHERE class == $(Int(Profit)) AND t == $(t-1) AND buyer == $idF")
+        profitsF = resF.profits
+        firm_loan_limit = min(global_loan_limit, m.nu0 * capitalF - loansF)
+        if t == 1
+            rateF = cb_rate + m.nu2 * (m.target_capital_ratio - capital_ratio)
+        else
+            rateF = cb_rate + m.nu2 * (m.target_capital_ratio - capital_ratio) + m.nu3 * (loansF / (depositsF - loansF + capitalF)) - m.nu4 * (profitsF / loansF)
+        end
+        DBInterface.execute(m.db, "INSERT INTO Credit (t, bank, firm, rate, loanslimit) VALUES ($t, $id, $idF, $rateF, $firm_loan_limit)")
+    end
 end
