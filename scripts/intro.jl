@@ -2,7 +2,7 @@ using DrWatson
 using Logging
 @quickactivate "FE"
 
-include(srcdir("model.jl"))
+include(srcdir("DAS.jl"))
 include(srcdir("parameters.jl"))
 
 Base.with_logger(Logging.ConsoleLogger(stderr, Logging.Debug)) do
