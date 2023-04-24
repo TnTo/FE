@@ -82,8 +82,8 @@ end
 
 function update_centralbank_begin(m::Model, t::Int)
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(CentralBank))").id
-    if quarterly(t)
-        res = fetchone(m.db, "SELECT inflation, capacity_utilization, unemployment FROM Statistics WHERE t == $t")
+    if t > 1 & quarterly(t - 1)
+        res = fetch_one(m.db, "SELECT inflation, capacity_utilization, unemployment FROM Statistics WHERE t == $(t-1)")
         rate = res.inflation + m.alpha1 * (res.inflation - m.target_inflation) + m.alpha2 * (res.unemployment - m.target_unemployment) - m.alpha3 * (res.capacity_utilization - m.target_capacity_utilization)
     else
         res = fetch_one(m.db, "SELECT rate FROM CentralBanks WHERE t == $(t-1)")
@@ -95,8 +95,8 @@ end
 function update_government_begin(m::Model, t::Int)
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(Government))").id
     expenditure = fetch_one(m.db, "SELECT expenditure FROM Governments WHERE t == $(t-1)").expenditure
-    if quarterly(t)
-        res = fetch_one(m.db, "SELECT (inflation, cprice, gdp, growth_rate) FROM Statistics WHERE t == $t")
+    if t > 1 & quarterly(t - 1)
+        res = fetch_one(m.db, "SELECT inflation, cprice, gdp, growth_rate FROM Statistics WHERE t == $t")
         inflation = res.inflation
         cprice = res.cprice
         gdp = res.gdp

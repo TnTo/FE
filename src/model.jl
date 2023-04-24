@@ -27,11 +27,10 @@ function create_model(p::Dict{Symbol})
     @unpack seed = p
     Random.seed!(seed)
     save_params = @dict seed
-    # @tagsave(datadir("sims", savename(save_params, "jld2")), tostringdict(p), safe = true)
-    @tagsave(datadir("sims", savename(save_params, "jld2")), tostringdict(p), safe = false)
+    @tagsave(datadir("sims", savename(save_params, "jld2")), tostringdict(p), safe = true)
     path = datadir("db", savename("db", save_params, "db"))
     mkpath(dirname(path))
-    # DrWatson.recursively_clear_path(path)
+    DrWatson.recursively_clear_path(path)
 
     p = dict2ntuple(p)
 
