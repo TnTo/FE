@@ -16,6 +16,7 @@ struct Model
     target_inflation::Float64
     target_capacity_utilization::Float64
     target_unemployment::Float64
+    target_deficit::Float64
 
 end
 
@@ -37,7 +38,7 @@ function create_model(p::Dict{Symbol})
     m = Model(
         SQLite.DB(path), p.minimum_household_age, p.retirement_age, p.max_initial_skill,
         p.e0, p.e1, p.skill_growth_rate, p.alpha1, p.alpha2, p.alpha3,
-        p.target_inflation, p.target_capacity_utilization, p.target_unemployment
+        p.target_inflation, p.target_capacity_utilization, p.target_unemployment, p.target_deficit
     )
     t = 0
 

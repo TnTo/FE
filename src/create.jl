@@ -42,12 +42,12 @@ function create_capitalfirm(m::Model, t::Int, id::Int, minimum_skill::Float64, p
     price_stmt = SQLite.Stmt(m.db, "SELECT price FROM CapitalGoods WHERE id = ?")
     for good_id in capitalgoods
         DBInterface.execute(owner_stmt, (id, false, good_id))
-        value = first(DBInterface.execute(price_stmt), (good_id,)).price
+        value = fetch_one(price_stmt, (good_id,)).price
         DBInterface.execute(stock_stmt, (value, id, t))
     end
     for good_id in inventory
         DBInterface.execute(owner_stmt, (id, true, good_id))
-        value = first(DBInterface.execute(price_stmt), (good_id,)).price
+        value = fetch_one(price_stmt, (good_id,)).price
         DBInterface.execute(stock_stmt, (value, id, t))
     end
     return id

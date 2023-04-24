@@ -23,6 +23,7 @@ params = Dict{Symbol,Any}(
     :target_inflation => 0.02,
     :target_capacity_utilization => 0.8,
     :target_unemployment => 0.05,
+    :target_deficit => 0.03,
     :alpha1 => 0.5,
     :alpha2 => 0.25,
     :alpha3 => 0.25,

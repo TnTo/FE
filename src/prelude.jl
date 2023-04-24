@@ -40,5 +40,9 @@ function execute_file(db::SQLite.DB, file::String)
     return DBInterface.execute(db, read(file, String))
 end
 
+function fetch_one(args...)
+    return first(DBInterface.execute(args...))
+end
+
 initial(t::Int) = t == 1
 quarterly(t::Int) = t % 4 == 0
