@@ -29,7 +29,7 @@ struct Model
     target_unemployment::Float64
     target_deficit::Float64
     target_capital_ratio::Float64
-
+    target_liquidity_ratio::Float64
 end
 
 function create_model(p::Dict{Symbol})
@@ -54,7 +54,7 @@ function create_model(p::Dict{Symbol})
         p.alpha1, p.alpha2, p.alpha3,
         p.tax_shares,
         p.target_inflation, p.target_capacity_utilization, p.target_unemployment, p.target_deficit,
-        p.target_capital_ratio
+        p.target_capital_ratio, p.target_liquidity_ratio
     )
     t = 0
 

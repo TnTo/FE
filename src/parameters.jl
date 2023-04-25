@@ -31,6 +31,7 @@ params = Dict{Symbol,Any}(
     :target_unemployment => 0.05,
     :target_deficit => 0.03,
     :target_capital_ratio => 0.2, # 0.18 in BenchmarkModel
+    :target_liquidity_ratio => 0.25,
     :alpha1 => 0.5,
     :alpha2 => 0.25,
     :alpha3 => 0.25,

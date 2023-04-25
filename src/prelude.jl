@@ -15,7 +15,6 @@ using Logging
 end
 
 @enum Stocks begin
-    None
     CapitalGoods
     ConsumptionGoods
     Deposits
@@ -32,6 +31,7 @@ end
     Transfer
     Profit
     Interest
+    StockAdjustment
 end
 
 # SQLite
