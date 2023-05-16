@@ -243,7 +243,7 @@ To translate this into consumption measured in consumption goods $\mathbf{C}$, c
 	{\Delta \mathbf{c}}^*_t & \approx \frac{\Delta c^*_t}{(1+2\psi){p_\mathbf{C}}_{t-1}} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}}
 \end{align*}
 
-${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. $\eta$ is defined as one of the following $\eta(z) = e^{-a\frac{z}{p}}$ or $\eta(v) = e^{-a\frac{v}{p}}$ or $\eta(z) = (\frac{z}{p} + 1)^{-a}$ or $\eta(v) = (\frac{v}{p} + 1)^{-a}$, using real data to choose the most suitable form \parencite[such as][]{fisher2020,carroll2017}.
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. Following \textcite{fisher2020} $\eta$ is considered dependent on the wealth and since it declines fast in the first quantile, but way slower for wealthy households, it will be defined as $\eta(v) = (\frac{v}{p} + 1)^{-a}$.
 
 From these relations, we can model the two choices of households.
 
@@ -463,31 +463,31 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 
 \section{Model steps}
 \begin{steps}
-	% \item[A] Agents variables independent from other agents' decisions are updated
-	\item[B] [\textsc{quarterly}] Central Bank sets the Government Bonds interest rate
-	\item[C.0] Bank sets the interest rate on Bank Bonds
-	\item[C.1] Bank buys Government Bonds to reach the liquidity requirement
-	\item[C.2] [\textsc{quarterly}] Government update the public spending policy
-	\item[D.0] Households set desired consumption and savings
-	\item[D.1] Firms set desired output and investment
-	\item[E.0] Households acquire Bank Bonds
-	\item[E.1] Firms ask the Bank for loans
-	\item[F] Labour market and wages payment
-	\item[G] Production and price setting
-	\item[H] Innovation
-	\item[I.0] Government pays unemployment benefits
-	\item[I.1] Government buys and distributes Consumption Goods
-	\item[J] Households Consumption Goods market
-	\item[K] Capital Goods market
-	\item[L.0] Firms repay loans and interests
-	\item[L.1] Government pays interest on Bonds to the Bank
-	\item[M] Firms distribute dividends
-	\item[N] Bank pays interests on Bonds
-	\item[O.0] [\textsc{yearly}] Income taxes are arbitraged
-	\item[O.1] Capital depreciation
-	\item[P.0] Households retire and get substituted
-	\item[P.1] Firms bankrupt and get substituted
-	\item[Q] Statistics are computed at the relevant frequency
+	\item[A] [\textsc{quarterly}] Central Bank sets the Government Bonds interest rate
+	\item[B] Bank sets the interest rate on Bank Bonds
+	\item[C] Bank buys Government Bonds to reach the liquidity requirement
+	\item[D] [\textsc{quarterly}] Government update the public spending policy
+	\item[E.0] Firms bankrupt and get substituted
+	\item[E.1] Firms set desired output and investment
+	\item[E.2] Firms ask the Bank for loans
+	\item[F.0] Households retire and get substituted
+	\item[F.1] Households set desired consumption and savings
+	\item[F.2] Households acquire Bank Shares
+	\item[G.0] Firms open vacancies
+	\item[G.1] Labour market and wages payment
+	\item[H] Production and price setting
+	\item[I] Innovation
+	\item[J.0] Government pays unemployment benefits
+	\item[J.1] Government buys and distributes Consumption Goods
+	\item[K] Households Consumption Goods market
+	\item[L.0] Capital depreciation
+	\item[L.1] Capital Goods market
+	\item[M] Firms repay loans and interests
+	\item[N] Government pays interest on Bonds to the Bank
+	\item[0] Firms distribute dividends
+	\item[P] Bank pays interests on Shares
+	\item[Q] [\textsc{yearly}] Income taxes are arbitraged
+	\item[R] Statistics are computed at the relevant frequency
 \end{steps}
 
 %\section{Equations}
@@ -551,6 +551,25 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 	\bottomrule
 \end{tabularx}
 
+\section{Implementation}
+This model has to be solved computationally, and, as a consequence, it has to be implemented as software.
+
+It has often been noticed that agents closely resemble the concept of object in Object-Oriented Programming. Both are logically independent pieces of information, which evolve through the execution (the simulation) updating themself in response to external stimuli (the calls of their methods from other agents).
+
+For this reason, some models are implemented using this paradigm, using different patterns for agent communication and different frameworks for generic Agent-Based or Multi-Agetn models, leveraging OOP programming languages such as C++ or Java. An example in the stream of literature of interest is \textcite{caiani2016}.
+
+A different approach relies on linear algebra routines and represents each variable of the model as a vector whose indexes are each associated with a different agent. Such representation levelers the ability of some libraries and programming languages to apply a function to each element of the vector (i.e. to each agent) in an optimized way. Programming languages suitable to this approach are R, Julia, Fortran or linear algebra libraries like Python's Numpy.
+
+It is interesting to highlight that both these approaches are widely diffused in video game development as Object-Oriented and Entity-Component-System patterns. The industrial investment in improving libraries and frameworks for game development is way bigger than the academic one on simulation models in Economics, and so borrowing the software infrastructure from game development can be an interesting path in case of computationally expensive models (i.e. large-scale or high interactions).
+
+In both cases, the simulation relies only on the current state of the model not storing, in principle, the intermediate states the model has traversed. Practically, it requires one to plan what data from the intermediate states of the model have to be preserved and log them separately. As a consequence, to enhance the analysis of the model and focus on previously ignored questions it is necessary to edit the simulation code and run it again.
+
+An alternative approach is to continuously store the states and transactions of the model in a database and to use an auxiliary programming language to update the database, being able to observe the full evolution of the simulation.
+This is the chosen way for this exploratory phase of the model development, at the moment implemented using Julia and SQLite. A significant quality-of-life improvement in this paradigm is the adoption of an ORM, probably still in the context of a functional-like or purely functional programming language (like Julia, Rust or Haskell).
+
+The last observation is about the need of writing parallelized code, for example, to run simulations with a huge number of agents in High-Performance Clusters. While this idea appears interesting at first look, it is probably an unnecessary overhead, since writing parallel code in the context of interacting objects is a very difficult task.
+Instead, the same computation capacity can be used to run in parallel multiple runs of the same single-thread model, for example, to explore the sensitivity to a parameter or to obtain statistically robust analysis by comparing different initializations of the random number generator.
+
 %\section*{To Do}
 %This working paper outlines the structure of the model and most of the relevant macro- and microeconomic equations.
 
@@ -558,12 +577,14 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 
 %By the time of the conference, I'm confident that I will be able to present an implemented version of the model which can reproduce some stylized facts at least in a qualitative way.
 
-%\section{Implementation}
+
 %\section{Initialization}
 %\section{Results}
 %\section{Discussion}
 
 \printbibliography
+
+\clearpage
 
 \appendix
 
@@ -572,7 +593,7 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
 The Beta-binomial distribution is a probability distribution defined on a discrete and finite support from $0$ to $N$, which describes a Bernoulli process of $N$ trials each with a probability of success drawn from a Beta distribution of parameters $\alpha$ and $\beta$.
 Its probability mass function is $\binom{x}{N}\frac{B(x+\alpha, N-x+\beta)}{B(\alpha,\beta)}$, where $B$ is the Beta function.
 
-It is easy to see that the number of trials is the maximum possible result of a drawning, and so $N=\sigma^M$.
+It is easy to see that the number of trials is the maximum possible result of a drawing, and so $N=\sigma^M$.
 The relations to define $\alpha$ and $\beta$ as functions of the mean $\mu$ and the variance $s$ are less easy to derive.
 
 First, it is known that $\mu = \frac{N \alpha}{\alpha + \beta}$  and $s=\frac{N\alpha\beta(\alpha + \beta + N)}{(\alpha+\beta)^2(\alpha+\beta+1)}$, from which it follows $\beta = \frac{\alpha}{\mu}(N-\mu)$ and $\alpha + \beta = \frac{N \alpha}{\mu}$.
