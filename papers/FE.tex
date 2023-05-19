@@ -187,7 +187,7 @@ In this model, the core agents (consumers, workers, capitalists) represent a hou
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
-Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{beta-binomial}.
+Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{sec:beta-binomial}.
 
 Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + s_0$, where $s_0$ is the initial skill level.
 
@@ -203,9 +203,10 @@ Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma
 
 Households face two choices: if work and how many consumption goods they desire to consume.
 
-Households flows balance is $y_t = z_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + t_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the net wage ($z = w (1 - \max(\tau_M \tanh(\tau_F(\frac{w}{p}-\tau_T)),0))$).
+Households' flows balance is $y_t = z_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the net wage ($z = w (1 - \max(\tau_M \tanh(\tau_F(\frac{w}{p}-\tau_T)),0))$).
+While at the aggregated level taxes are recorded as an outflow from the household sector, in the model households always receive inflows net of taxes.
 
-I assume, as a heuristic, that taxes ($t$) and wages ($z$) can be approximated as constant from the previous period (because salaries increase only by changing employers, which is an unexpected event), while transfers ($m$) are composed only of unemployment benefits.
+I assume, as a heuristic, that wages ($z$) can be approximated as constant from the previous period (because salaries increase only by changing employers, which is an unexpected event), while transfers ($m$) are composed only of unemployment benefits.
 Additionally, I assume that desired deposits ($\mathbf{d}^*_t$) at the end of the period are a fraction of the desired consumption ($c^*_t = \mathbb{E}(p_\mathbf{C}) \mathbf{c}^*_t$) as insurance against unexpected increases in prices ($\mathbf{d}^*_t = \rho_\mathcal{H}c^*_t$, $\rho_\mathcal{H} > 0$).
 
 Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta z}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
@@ -241,11 +242,11 @@ To translate this into consumption measured in consumption goods $\mathbf{C}$, c
 	{\Delta \mathbf{c}}^*_t & \approx \frac{\Delta c^*_t}{(1+2\psi){p_\mathbf{C}}_{t-1}} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}}
 \end{align*}
 
-${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. Following \textcite{fisher2020} $\eta$ is considered dependent on the wealth and since it declines fast in the first quantile, but way slower for wealthy households, it will be defined as $\eta(v) = (\frac{v}{p} + 1)^{-a}$.
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. Following \textcite{fisher2020} $\eta$ is considered dependent on the wealth and since it declines fast in the first quantiles, but way slower for wealthy households, it will be defined as $\eta(v) = (\frac{v}{p} + 1)^{-a}$.
 
 From these relations, we can model the two choices of households.
 
-First, a household exits from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
+First, a household exit from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
 $$ {\Delta \mathbf{c}}^*_t = \frac{-z_{t-1} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi z_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+2\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+2\psi}{\mathbf{c}_{t-1}} \ge 0$$
 Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if
 \begin{multline*}
@@ -265,7 +266,7 @@ Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
-Loans are asked to the Bank at the beginning of the period to pay for salaries and to make investments and started to be repaid in the subsequent period.
+Loans are asked to the Bank at the beginning of the period to pay for salaries and to make investments and started to be repaid at the end of the period.
 In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery then they distribute profits, and finally, they repay the bank the loans contracted.
 
 \subsubsection{Consumption Firms}
@@ -275,7 +276,7 @@ The maximum output of the available machinery is defined as $b = \sum_{\kappa \i
 
 The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\mathbb{E}(s)}_t - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
 
-The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}})$ and the price ${p_\mathbf{C}}_t = (1+\mu_t+\tau_\mathbf{C})\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
+The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}})$ and the price ${p_\mathbf{C}}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
 Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = r_\Pi ({p_\mathbf{C}}_t s_t - w_t)$.
 
@@ -334,7 +335,8 @@ Fixed unemployment benefits $m_{t} = \phi \max(w_{t-1}, m_{t-1})$ is paid to tho
 
 Each period government buys consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to ${\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t$.
 
-We define $g$ as the growth rate of the GDP (measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) in the previous periods, $M = \sum_{h \in \mathcal{H}} m_h$, $C^\mathcal{G}= \sum_{h \in \mathcal{H}} (p_\mathbf{C} \mathbf{c})^\mathcal{G}_h$ and $G = M + C^\mathcal{G}$.
+We define $g$ as the growth rate of the GDP %(measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) 
+in the previous periods, $M = \sum_{h \in \mathcal{H}} m_h$, $C^\mathcal{G}= \sum_{h \in \mathcal{H}} (p_\mathbf{C} \mathbf{c})^\mathcal{G}_h$ and $G = M + C^\mathcal{G}$.
 
 Assuming a Maastricht-like scenario in which Government has a target deficit $\delta^*$ to achieve, the expected balance of the next period can be written as
 \begin{align*}
