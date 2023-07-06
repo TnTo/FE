@@ -189,9 +189,9 @@ Each agent is characterized by an education level assigned when it enters the si
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
 Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{sec:beta-binomial}.
 
-Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + s_0$, where $s_0$ is the initial skill level.
+Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + \sigma_0$, where $\sigma_0$ is the initial skill level.
 
-Skills $s$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
+Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
 
 \begin{enh}[Training]
 	Two factors in the development of the skills can be introduced.
@@ -274,20 +274,20 @@ Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets 
 
 The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){\langle\frac{{p_\mathbf{K}}}{\beta}\rangle}_{t-1}{\Delta b}_t$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1})$
 
-The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, \mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\mathbb{E}(s)}_t - \rho_\mathcal{F} (w_t^* + i_t^*), 0)$.
+The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, {\mathbb{E}(s)}_t - \rho_\mathcal{F} (w_t^* + i_t^*) - (\mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1}), 0)$.
 
 The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}})$ and the price ${p_\mathbf{C}}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
-Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = r_\Pi ({p_\mathbf{C}}_t s_t - w_t)$.
+Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = \max(r_\Pi ({p_\mathbf{C}}_t s_t - w_t), 0)$.
 
 
 \subsubsection{Capital Firms}
 Capital Firms produce their own machinery, creating a system of two simultaneous equations to determine the desired output.
-The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}$, and $\mathbf{k}_t = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
+The problem is avoided by approximating $b^*_t = \rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}$, and $\mathbf{k}_t^* = \rho_\mathcal{F}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t^* = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{{\langle w_Q \rangle}_{t-1}}) \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$. This makes $w_t^* = \max(w_{t-1}, \frac{\mathbf{k}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1} + q_t^* {\langle w_Q \rangle}_{t-1})$.
 
-Finally, we note that $i_t = 0$ and so $l_t^* = \max(\mathbf{d}_{t-1} - \rho_\mathcal{F} w_t^*, 0)$.
+Finally, we note that $i_t = 0$ and so $l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, 0)$.
 
 \begin{enh}[Capital goods market]
 	The approximation that every capital firm produces its own capital goods is chosen to simplify the implementation of the model.
