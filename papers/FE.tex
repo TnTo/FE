@@ -34,7 +34,7 @@
 \newif\ifshow
 
 %%%%%%%%%
-\showfalse
+\showtrue
 %%%%%%%%%
 
 \ifshow
@@ -87,7 +87,7 @@ Agent-Based Models (ABMs) have been used to add a microeconomic description to t
 
 But in the SB-SFC models literature, very few papers explore the conditions to model a realistic (i.e. fat-tail) distribution of income and wealth among households \parencite[e.g.][]{dafermos2015,kinsella2011}, often relying on a Kaleckian framework which studies the distribution between wages and profits \parencite[e.g.][]{dosi2013a} or a segmented labour-market \parencite[e.g.][]{caiani2019a}.
 
-Modelling personal income and wealth distribution is a needed step to close the gap between this strain of post-Keynesian literature and the literature on inequality pioneered by Atkinson, Piketty, Zucman and Saez, allowing for example to measure the evolution of inequality indexes (like Gini or the Top5/Bottom50) through time or policies changes.
+Modelling personal income and wealth distribution is a needed step to close the gap between this strain of post-Keynesian literature and the literature on inequality pioneered by Atkinson, Piketty, Zucman and Saez, allowing, for example, to measure the evolution of inequality indexes (like Gini or the Top5/Bottom50) through time or policies changes.
 
 Some choices in the model are dictated by its long-term goals, specifically comparing disruptive welfare policies (Universal Basic Income, Universal Basic Service, Job Guarantee, \dots) and focusing on the different consumption patterns between high- and low-income households, including different compositions of the consumption bundle, the relevance of publicly provided goods and services (including infrastructures) in the consumption bundle, following the Foundational Economy framework \parencite{arcidiacono2018}, the incidence of unpaid domestic and care work on the work provided by individuals in the household, especially from a gender perspective.
 
@@ -128,6 +128,9 @@ Capital Goods are durable and Consumption Goods are homogeneous.
 \begin{enh}[Foundational Economy -- 2]
 	To model the idea of a Foundational Economy the single representative Consumption Good can be split into a representative Foundational Consumption Good and another kind of non-Foundational Consumption Goods.
 	The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally, the non-monetary transfers by the Government should comprise only Foundational Goods.
+
+	The idea of a Foundational core of consumption needed to assure at least a given quality of life to the population is closely related to the idea of a (subsistence) wage functional to social reproduction.
+	Furthermore, it is possible to identify, as an approximation, this Foundational domain of consumption with the base goods described by \textcite{sraffa1960}, as they are necessary for the society, and so the worker, to preserve their living standard.
 \end{enh}
 
 The model includes five different financial assets.
@@ -201,6 +204,12 @@ Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\
 	The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closer to the skill level, while demoted and overqualified workers have lower chances to learn new skills. This can be included in the model making $\phi \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
 \end{enh}
 
+\begin{enh}[On real and nominal values]
+	It is unreasonable to assume that the behaviour of the agents depends on the absolute monetary value of the consumption rather than the quantity of goods or the (real) consumption of households with similar income.
+	The usual solution in economics is to divide the nominal value by a price index which, in this case, can be the average price of consumption goods in a given period.
+	An alternative that accounts for the variation in the quality of life (and so, in some way, the implicit transformation of the representative consumption good) is to use the relative poverty threshold (express as a fraction of the median income or wealth) as the normalization factor.
+\end{enh}
+
 Households face two choices: if work and how many consumption goods they desire to consume.
 
 Households' flows balance is $y_t = z_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the net wage ($z = w (1 - \max(\tau_M \tanh(\tau_F(\frac{w}{p}-\tau_T)),0))$).
@@ -263,6 +272,14 @@ Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \
 	Adding a gender perspective will be an improvement in the model (with relevant policy implications) and will require explicitly modelling education and childcare (which in this first draft is only sketched), the complete life cycle of an agent (here reduced to the working age) and family choices (marriage, pregnancy, ...).
 \end{enh}
 
+\begin{enh}[Foundational Economy -- 3]
+	\begin{align*}
+		\mathbf{c}^*_F & = a \bar{\mathbf{c}} \tanh(\frac{\mathbf{c}^*}{b \bar{\mathbf{c}}}) \\
+		\mathbf{c}^*_O & = \mathbf{c}^* - \mathbf{c}^*_F
+	\end{align*}
+	where $\bar{\dot}$ indicates the median and two consumption goods (foundational and other) are considered.
+\end{enh}
+
 \subsection{Firms}
 Firms are characterized by their position in the supply chain (either Capital or Consumption).
 
@@ -278,7 +295,7 @@ The request for loans is set to cover salaries and investments, keeping in accou
 
 The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}})$ and the price ${p_\mathbf{C}}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
 
-Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e. $\pi_t = \max(r_\Pi ({p_\mathbf{C}}_t s_t - w_t), 0)$.
+Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e.  $\pi_t = \max(r_\Pi ({p_\mathbf{C}}_t s_t - w_t), 0)$.
 
 
 \subsubsection{Capital Firms}
