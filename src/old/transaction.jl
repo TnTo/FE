@@ -7,7 +7,7 @@ struct Transaction
     asset::Stocks
 end
 
-function DoubleTransaction(class:Transaction, payer::Int, payee::Int, quantity::Float64, price::Float64, asset::Stocks, ret_quantity::Float64, ret_price::Float64, ret_asset::Asset)
+function DoubleTransaction(class::Transaction, payer::Int, payee::Int, quantity::Float64, price::Float64, asset::Stocks, ret_quantity::Float64, ret_price::Float64, ret_asset::Stocks)
     return [Transaction(class, payer, payee, quantity, price, asset), Transaction(class, payee, payer, ret_quantity, ret_price, ret_asset)]
 end
 

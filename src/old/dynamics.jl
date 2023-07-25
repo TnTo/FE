@@ -3,11 +3,14 @@ function step(m::Model, t::Int)
 
     update_db(m, t)
 
-    update_agents_begin(m, t)
+    update_cb_rate(m, t) # A
+    update_bank_rates(m, t) # B
+    arbitrage_lr(m, t) # C
+    update_government_policy(m, t) # D
 
+    update_households_desire(m, t) # F
 
-
-    update_statistics(m, t)
+    update_statistics(m, t) # R
 end
 
 function update_db(m::Model, t::Int)
@@ -85,20 +88,10 @@ function compute_unemployment(m::Model, t::Int)::Float64
     return res.unemployment
 end
 
-
-function update_agents_begin(m::Model, t::Int)
-    @debug "Update Agents"
-    update_cb_rate(m, t) # B
-    update_bank_rates(m, t) # C.0
-    arbitrage_lr(m, t) # C.1
-    update_government_policy(m, t) # C.2
-
-end
-
 function update_cb_rate(m::Model, t::Int)
     @debug "Update CB"
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(CentralBank))").id
-    if t > 1 & quarterly(t - 1)
+    if !initial(t) && post_quarterly(t)
         res = fetch_one(m.db, "SELECT inflation, capacity_utilization, unemployment FROM Statistics WHERE t == $(t-1)")
         rate = res.inflation + m.alpha1 * (res.inflation - m.target_inflation) + m.alpha2 * (res.unemployment - m.target_unemployment) - m.alpha3 * (res.capacity_utilization - m.target_capacity_utilization)
     else
@@ -118,7 +111,7 @@ function update_bank_rates(m::Model, t::Int)
     cb_rate = fetch_one(m.db, "SELECT rate FROM CentralBanks WHERE t == $t").rate # Exploiting uniqueness
     rate = (1 - m.tax_shares) * (cb_rate + m.cr_coefficient * (capital_ratio - m.target_capital_ratio))
     DBInterface.execute(m.db, "INSERT INTO Banks(t,id,rate) VALUES ($t,$id,$rate)")
-    if t == 1
+    if initial(t)
         global_loan_limit = (capital_ratio - m.target_capital_ratio) / (m.target_capital_ratio * m.nu1 * m.NFirms)
     else
         global_loan_limit = max(0, loans * (capital_ratio - m.target_capital_ratio) / (m.target_capital_ratio * m.nu1 * m.NFirms))
@@ -133,7 +126,7 @@ function update_bank_rates(m::Model, t::Int)
         resF = fetch_one(m.db, "SELECT SUM(price) AS profits FROM Transactions WHERE class == $(Int(Profit)) AND t == $(t-1) AND payer == $idF")
         profitsF = resF.profits
         firm_loan_limit = min(global_loan_limit, m.nu0 * capitalF - loansF)
-        if t == 1
+        if initial(t)
             rateF = cb_rate + m.nu2 * (m.target_capital_ratio - capital_ratio)
         else
             rateF = cb_rate + m.nu2 * (m.target_capital_ratio - capital_ratio) + m.nu3 * (loansF / (depositsF - loansF + capitalF)) - m.nu4 * (profitsF / loansF)
@@ -141,7 +134,7 @@ function update_bank_rates(m::Model, t::Int)
         DBInterface.execute(m.db, "INSERT INTO Credit (t, bank, firm, rate, loanslimit) VALUES ($t, $id, $idF, $rateF, $firm_loan_limit)")
     end
 end
-   
+
 function arbitrage_lr(m::Model, t::Int)
     @debug "Arbitrage Liquidity Ratio"
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(Bank))").id
@@ -157,19 +150,19 @@ function arbitrage_lr(m::Model, t::Int)
             # increse res -> sell bonds
             value = min(delta_reserves, bonds)
             execute_transactions(m, t, DoubleTransaction(StockAdjustment, id, cb_id, value, 1.0, Bonds, value, 1.0, Reserves))
-        else if delta_reserves < 0 
+        elseif delta_reserves < 0
             # decrease res -> buy_bonds
             value = min(-delta_reserves, cb_bonds)
             execute_transactions(m, t, DoubleTransaction(StockAdjustment, id, cb_id, value, 1.0, Reserves, value, 1.0, Bonds))
         end
     end
 end
-    
+
 function update_government_policy(m::Model, t::Int)
     @debug "Update Government"
     id = fetch_one(m.db, "SELECT id FROM Agents WHERE class == $(Int(Government))").id
     expenditure = fetch_one(m.db, "SELECT expenditure FROM Governments WHERE t == $(t-1)").expenditure
-    if t > 1 & quarterly(t - 1)
+    if !initial(t) && post_quarterly(t)
         res = fetch_one(m.db, "SELECT inflation, cprice, gdp, growth_rate FROM Statistics WHERE t == $t")
         inflation = res.inflation
         cprice = res.cprice
@@ -189,4 +182,63 @@ function update_government_policy(m::Model, t::Int)
         expenditure = expenditure * (expected_spending - avg_transfert) / ((1 + inflation) * cprice * avg_real_consumption)
     end
     DBInterface.execute(m.db, "INSERT INTO Governments(t,id,expenditure) VALUES ($t,$id,$expenditure)")
+end
+
+function update_households_desire(m::Model, t::Int)
+    res = DBInterface.execute(m.db, "SELECT id FROM Agents WHERE class == $(Int(Household)) AND death IS NULL")
+    # bank rate and delta -> year to month
+    # inflation
+    # global cprice
+    for r in res
+        id = r.id
+        resH = fetch_one(m.db, "SELECT age, skill, employer, workforce FROM Households WHERE t == $(t-1) AND id == $id")
+        age = resH.age + 1
+        if age == m.retirement_age
+            ### TODO
+            # SET death
+            # CREATE agent
+            # compute wealth and skill and age
+            # reassigning stocks
+            # tax
+
+            employer = nothing
+
+            # previous consumption = 0 ?? [No wage, no unemployment benefit] or get the "parent" one
+            # previous real consumption = 0 
+            # cprice = global cprice
+            # net wage = 0
+            # transfert = 0
+        else
+            if resH.employer === nothing
+                skill = resH.skill / (1 + m.skill_growth_rate)
+            elseif (resH.employer == fetch_one(m.db, "SELECT employer FROM Households WHERE id == $id AND t == $(t-2)".employer))
+                skill = resH.skill * (1 + m.skill_growth_rate)
+            else
+                skill = resH.skill
+            end
+            if fetch_one(m.db, "SELECT death FROM Agents WHERE id == $employer").death === nothing
+                employer = resH.employer
+            else
+                employer = nothing
+            end
+            # cprice
+            # net wage
+            # transfert
+            # consumption
+            # real consumption
+
+        end
+
+        # Shares, deposits, wealth
+
+        if workforce
+
+        else
+            # expected salaty by skill
+        end
+
+        # buy / sell shares
+
+        #insert INTO
+    end
 end

@@ -30,7 +30,7 @@ end
 function create_household(m::Model, t::Int, id::Int, wealth::Float64)::Int
     @debug "Creating Household $id"
     skill = skill_from_wealth(wealth, m)
-    DBInterface.execute(m.db, "INSERT INTO Households(t, id, age, skill) VALUES ($t,$id,$(m.minimum_household_age + floor(12 * skill)),$skill)")
+    DBInterface.execute(m.db, "INSERT INTO Households(t, id, age, skill, desired_real_consumption) VALUES ($t,$id,$(m.minimum_household_age + floor(12 * skill)),$skill,0)")
     return id
 end
 

@@ -27,7 +27,10 @@ end
     Consumption
     Investment
     Wage
-    Tax
+    WageTax
+    CapitalTax
+    VATax
+    InheritanceTax
     Transfer
     Profit
     Interest
@@ -46,3 +49,7 @@ end
 
 initial(t::Int) = t == 1
 quarterly(t::Int) = t % 4 == 0
+post_quarterly(t::Int) = t % 4 == 1
+yearly(t::Int) = t % 12 == 0
+
+yearly2monthly(r::Float64) = (1 + r)^(1 / 12) - 1

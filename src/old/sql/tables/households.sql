@@ -5,5 +5,6 @@ CREATE TABLE Households (
     skill REAL NOT NULL,
     employer INTEGER REFERENCES Agents (id) DEFAULT NULL,
     workforce BOOL DEFAULT TRUE,
+    desired_real_consumption REAL NOT NULL,
     PRIMARY KEY (t, id)
 )
