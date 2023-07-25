@@ -126,7 +126,7 @@ The model comprises two kinds of real assets: Capital Goods ($\mathbf{K}$) and C
 Capital Goods are durable and Consumption Goods are homogeneous.
 
 \begin{enh}[Foundational Economy -- 2]
-	To model the idea of a Foundational Economy the single representative Consumption Good can be split into a representative Foundational Consumption Good and another kind of non-Foundational Consumption Goods.
+	To model the idea of a Foundational Economy the single representative Consumption Good can be split into a representative Foundational Consumption Good and another kind of Others (non-Foundational) Consumption Goods.
 	The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally, the non-monetary transfers by the Government should comprise only Foundational Goods.
 
 	The idea of a Foundational core of consumption needed to assure at least a given quality of life to the population is closely related to the idea of a (subsistence) wage functional to social reproduction.
@@ -207,7 +207,7 @@ Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\
 \begin{enh}[On real and nominal values]
 	It is unreasonable to assume that the behaviour of the agents depends on the absolute monetary value of the consumption rather than the quantity of goods or the (real) consumption of households with similar income.
 	The usual solution in economics is to divide the nominal value by a price index which, in this case, can be the average price of consumption goods in a given period.
-	An alternative that accounts for the variation in the quality of life (and so, in some way, the implicit transformation of the representative consumption good) is to use the relative poverty threshold (express as a fraction of the median income or wealth) as the normalization factor.
+	An alternative that accounts for the variation in the quality of life (and so, in some way, the implicit transformation of the representative (basket of) consumption good) is to use the relative poverty threshold (express as a fraction of the median income or wealth) as the normalization factor.
 \end{enh}
 
 Households face two choices: if work and how many consumption goods they desire to consume.
@@ -273,11 +273,13 @@ Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \
 \end{enh}
 
 \begin{enh}[Foundational Economy -- 3]
+	As stated before, a Foundational setting requires at least two consumption goods, so it is necessary to divide the total desired real consumption $\mathbf{c}^*$ among the two kinds.
+	A possibility is to define asymptotically the desired Foundational consumption as a fraction of the median consumption.
 	\begin{align*}
-		\mathbf{c}^*_F & = a \bar{\mathbf{c}} \tanh(\frac{\mathbf{c}^*}{b \bar{\mathbf{c}}}) \\
+		\mathbf{c}^*_F & = a \hat{\mathbf{c}} \tanh(\frac{\mathbf{c}^*}{b \hat{\mathbf{c}}}) \\
 		\mathbf{c}^*_O & = \mathbf{c}^* - \mathbf{c}^*_F
 	\end{align*}
-	where $\bar{\dot}$ indicates the median and two consumption goods (foundational and other) are considered.
+	where $\hat{\dot}$ indicates the median and two consumption goods (foundational and other) are considered.
 \end{enh}
 
 \subsection{Firms}
