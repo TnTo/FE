@@ -5,7 +5,6 @@ authors = ["Michele Ciruzzi"]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
-Wasabi = "cec542a4-22c5-46cb-8ca4-a46a7737b387"
 
 [compat]
 DrWatson = "2.12.1"
