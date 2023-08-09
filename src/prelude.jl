@@ -1,6 +1,7 @@
 import Base.@kwdef
 using Random
 using Distributions
+using Wasabi
 using SQLite
 using DrWatson
 using Logging
@@ -35,16 +36,6 @@ end
     Profit
     Interest
     StockAdjustment
-end
-
-# SQLite
-function execute_file(db::SQLite.DB, file::String)
-    @debug "SQLite: executing $file"
-    return DBInterface.execute(db, read(file, String))
-end
-
-function fetch_one(args...)
-    return first(DBInterface.execute(args...))
 end
 
 initial(t::Int) = t == 1
