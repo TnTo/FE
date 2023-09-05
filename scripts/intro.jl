@@ -1,11 +1,13 @@
 using DrWatson
-using Logging
-@quickactivate "FE"
+@quickactivate "DAS"
+
+using ProgressBars
 
 include(srcdir("DAS.jl"))
-#include(srcdir("parameters.jl"))
 
-Base.with_logger(Logging.ConsoleLogger(stderr, Logging.Debug)) do
-    model = DAS.Model(DAS.Parameters(8686))
-    #FE.run_model(model, params[:T])
+p = DAS.get_default_parameters()
+m = DAS.create_model(p)
+for t = ProgressBar(1:m.p.T)
+    DAS.step!(m)
 end
+DAS.display_matrices(m.states[end], m.states[end-1], m)
