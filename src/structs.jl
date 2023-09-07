@@ -64,7 +64,6 @@ using OffsetArrays
     v0::Float
     δ0::Float
     p0::Int
-    R0::Int
     K0::Int
     μ0::Float
 end

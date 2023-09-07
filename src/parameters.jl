@@ -16,11 +16,11 @@ function get_default_parameters()::Parameters
         ψ_=0.02,
         u_=0.8,
         ω_=0.05,
-        Γ_=0.2, # 0.18 in BenchmarkModel
+        Γ_=0.2, # 0.18 in BenchmarkModel 0.08 for Basel
         Λ_=0.25,
         δ_=0.03,
         NK=5 * 12,
-        NL=5 * 12,
+        NL=1 * 12,
         τS=0.23,
         τC=0.2,
         τI=0.1,

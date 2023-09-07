@@ -14,11 +14,13 @@ p.α1 = 0.2
 p.α2 = 0.1
 p.α3 = 0.1
 p.ρC = 1.2
+p.ρK = 1.2
 p.ρF = 1.2
 p.ρH = 2.0
 p.ν0 = 2.0
 p.ν1 = 0.7
 p.NK = 5 * 12
+p.NL = 5 * 12
 p.b0 = 5
 p.b1 = 1
 p.b2 = 10
@@ -50,17 +52,21 @@ plot(
     size=(900, 1600)
 )
 
+t = 100
+
 plot(
-    histogram(map(h -> h.S + h.D, values(m.states[end].Hs)), title="v"),
-    histogram(map(h -> h.z, filter(h -> h.w > 0, collect(values(m.states[end].Hs)))), title="z"),
-    histogram(map(h -> h.z + h.S * m.states[end].B.rS, filter(h -> h.w > 0, collect(values(m.states[t].Hs)))), title="y"),
+    histogram(map(h -> h.S + h.D, values(m.states[t].Hs)), title="v"),
+    histogram(map(h -> h.z, values(m.states[t].Hs)), title="z"),
+    histogram(map(h -> h.z + h.S * m.states[t].B.rS, values(m.states[t].Hs)), title="y"),
     layout=(1, 3),
     size=(900, 300)
 )
 
+using StatsBase
+
 (
-    kurtosis(map(h -> h.S + h.D, values(m.states[end].Hs))),
-    kurtosis(map(h -> h.z + h.S * m.states[end].B.rS, filter(h -> h.w > 0, collect(values(m.states[end].Hs)))))
+    kurtosis(map(h -> h.S + h.D, values(m.states[t].Hs))),
+    kurtosis(map(h -> h.z + h.S * m.states[t].B.rS + h.m, values(m.states[t].Hs)))
 )
 
-scatter(map(h -> h.σ, values(m.states[end].Hs)), map(h -> h.z, values(m.states[end].Hs)),)
+scatter(map(h -> h.σ, valfilter(h -> h.w > 0, collect(values(m.states[t].Hs)))ues(m.states[t].Hs)), map(h -> h.z, values(m.states[t].Hs)),)

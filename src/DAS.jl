@@ -248,7 +248,7 @@ function set_target!(f::CapitalFirm, f1::CapitalFirm, Es::Int, s::State, s1::Sta
     b0 = b(f)
     b_ = max(1, Es / m.p.u_ + (b0 / m.p.NK))
     f.Δb_ = b_ - b0
-    f.k_ = max(0, max(1, ceil(Int, m.p.ρC * Es + f.Δb_ / f1.β)) - length(f.inv))
+    f.k_ = max(0, max(1, ceil(Int, m.p.ρK * Es + f.Δb_ / f1.β)) - length(f.inv))
     avg_wQ = wQ(f, s, s1, m)
     f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.w) / avg_wQ)
     if length(f.K) > 0 && length(f1.employees) > 0
