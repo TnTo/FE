@@ -39,8 +39,8 @@ end
 
 function compute_flow_matrix(s::State, s1::State, m::Model)::NamedArray{Int}
     flow = NamedArray(zeros(Int, 17, 7), ([:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB, :ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK, :Tot], [:H, :FC, :FK, :B, :G, :C, :Tot]))
-    flow[:C, :H] = -floor(Int, mapsum(a -> a.nc, values(s.Hs)) / (1 + m.p.τC))
-    flow[:C, :FC] = floor(Int, mapsum(a -> a.s * a.p, values(s.FCs)) / (1 + m.p.τC))
+    flow[:C, :H] = -mapsum(a -> a.rc * (a.rc == 0 ? 0 : floor(Int, a.nc / a.rc / (1 + m.p.τC))), values(s.Hs)) # This is wrong ?
+    flow[:C, :FC] = mapsum(a -> a.s * floor(Int, a.p / (1 + m.p.τC)), values(s.FCs))
     flow[:C, :G] = -s.G.nC
     flow[:C, :Tot] = sum(flow[:C, :])
     flow[:I, :FC] = -mapsum(a -> a.i, values(s.FCs))

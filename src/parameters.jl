@@ -57,8 +57,12 @@ function get_default_parameters()::Parameters
         b2=1.0,
         ϵ0=0.95,
         ϵ1=1.0,
+        c0=1,
+        μ0=0.5,
         # Initialization
         v0=100,
-        δ0=0.5
+        δ0=0.5,
+        p0=1,
+        K0=1
     )
 end

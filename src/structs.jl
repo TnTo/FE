@@ -59,9 +59,14 @@ using OffsetArrays
     b2::Float
     ϵ0::Float
     ϵ1::Float
+    c0::Int
     # Initialization
     v0::Float
     δ0::Float
+    p0::Int
+    R0::Int
+    K0::Int
+    μ0::Float
 end
 
 @kwdef mutable struct Loan
@@ -207,4 +212,9 @@ mutable struct Model
     states::OffsetArray{State,1}
     id::Int
     t::Int
+end
+
+struct Vacancy
+    fid::Int
+    g::Union{CapitalGood,Researcher}
 end

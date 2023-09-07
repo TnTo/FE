@@ -3,6 +3,8 @@ module DAS
 using Distributions
 using Random
 
+Float = Float64
+
 include("structs.jl")
 include("utils.jl")
 include("create.jl")
@@ -47,24 +49,24 @@ function compute_stats(m::Model)::Stats
         g = (Y - m.states[t0].stats.Y) / m.states[t0].stats.Y
     end
     σM = floor(Int, maximum(map(h -> h.σ, values(m.states[m.t-1].Hs))))
-    Ewσ = ones(σM)
+    Ewσ = ones(Int, σM)
     for i = 1:σM
         hi = filter(h -> i >= h.σ > (i - 1) && h.w > 0, collect(values(m.states[m.t-1].Hs)))
         if length(hi) == 0
             if i == 1
-                Ewσ[i] = 1
+                Ewσ[i] = m.p.p0
             else
                 Ewσ[i] = Ewσ[i-1]
             end
         else
-            Ewσ[i] = ceil(Int, mean(map(h -> h.σ, hi)))
+            Ewσ[i] = ceil(Int, mean(map(h -> h.w, hi)))
         end
     end
     return Stats(ψ, u, ω, p, g, Y, Ewσ)
 end
 
 function stepAlpha!(m::Model)::State
-    #println("0")
+    # println("0")
     s1 = m.states[m.t]
     m.t += 1
     C = CentralBank(id=s1.C.id, B=s1.C.B, R=s1.C.R, rB=0)
@@ -80,7 +82,7 @@ function stepAlpha!(m::Model)::State
 end
 
 function stepA!(state::State, state1::State, m::Model)
-    #println("A")
+    # println("A")
     if quarterly(m.t)
         stats = compute_stats(m)
     else
@@ -90,21 +92,22 @@ function stepA!(state::State, state1::State, m::Model)
 end
 
 function stepB!(state::State, state1::State, m::Model)
-    #println("B")
+    # println("B")
     if quarterly(m.t)
         rB = state.stats.ψ + m.p.α1 * (state.stats.ψ - m.p.ψ_) + m.p.α2 * (state.stats.u - m.p.u_) - m.p.α3 * (state.stats.ω - m.p.ω_)
     else
         rB = state1.C.rB
     end
-    state.C.rB = max(-1, rB)
+    rB = min(0.2, max(-0.05, rB))
+    state.C.rB = rB
 end
 
 function stepCD!(state::State, state1::State, m::Model)
-    #println("CD")
+    # println("CD")
     Γ0 = Γ(state1)
-    if v(state1.B) == 0
+    if v(state1.B) <= 0 # Really no meaning
         state.B.rS = max(0, state.C.rB) # yearly
-        state.B.l_ = ceil(state.stats.p * m.p.ν1) # Think it again, it has to be > 0
+        state.B.l_ = ceil(Int, state.stats.p / m.p.ν1) # Think it again, it has to be > 0
         state.B.rL = max(0, state.C.rB) # yearly
     elseif state1.B.L == 0
         state.B.rS = max(0, state.C.rB) # yearly
@@ -130,7 +133,7 @@ function stepCD!(state::State, state1::State, m::Model)
 end
 
 function stepE!(state::State, state1::State, m::Model)
-    #println("E")
+    # println("E")
     if quarterly(m.t)
         t = m.t
         # those are monthly averages in the quarter?
@@ -190,14 +193,14 @@ function fire!(h::Household)
 end
 
 function replace!(f0::ConsumptionFirm, s::State, m::Model)
-    f1 = ConsumptionFirm(id=next_id!(m), D=0, L=Loan[], K=f0.K, c_=0, Δb_=0, l_=0, c=0, s=0, Δb=0, i=0, w=0, il=0, μ=0, p=0, π=0, employees=Int[])
+    f1 = ConsumptionFirm(id=next_id!(m), D=0, L=Loan[], K=f0.K, c_=0, Δb_=0, l_=0, c=0, s=0, Δb=0, i=0, w=0, il=0, μ=0.2, p=0, π=0, employees=Int[])
     s.FCs[f1.id] = f1
     delete!(s.FCs, f0.id)
     return f1
 end
 
 function replace!(f0::CapitalFirm, s::State, m::Model)
-    f1 = CapitalFirm(id=next_id!(m), D=0, L=Loan[], K=f0.K, inv=f0.inv, Q=Researcher[], k_=0, Δb_=0, q_=0, l_=0, k=0, s=0, y=0, w=0, il=0, μ=0, p=0, π=0, σ=f0.σ, β=f0.β, employees=Int[])
+    f1 = CapitalFirm(id=next_id!(m), D=0, L=Loan[], K=f0.K, inv=f0.inv, Q=Researcher[], k_=0, Δb_=0, q_=0, l_=0, k=0, s=0, y=0, w=0, il=0, μ=0.2, p=0, π=0, σ=f0.σ, β=f0.β, employees=Int[])
     s.FKs[f1.id] = f1
     delete!(s.FKs, f0.id)
     return f1
@@ -207,12 +210,12 @@ end
 function set_target!(f::ConsumptionFirm, f1::ConsumptionFirm, Es::Int, s::State, s1::State, m::Model)
     f.c_ = max(1, ceil(Int, m.p.ρC * Es))
     b0 = b(f)
-    b_ = f.c_ / m.p.u_ - (b0 / m.p.NK)
-    f.Δb_ = b_ - b0
+    b_ = f.c_ / (m.p.u_ * m.p.ρC) + (b0 / m.p.NK)
+    f.Δb_ = max(0, b_ - b0)
     if length(f.K) > 0 && length(f1.employees) > 0
-        w_ = max(f1.w, 1, ceil(Int, f.c_ / mean(map(k -> k.β, f.K)) * (f1.w / length(f1.employees))))
+        w_ = max(f1.w, m.p.p0, ceil(Int, f.c_ / mean(map(k -> k.β, f.K)) * (f1.w / length(f1.employees))))
     else
-        w_ = max(f1.w, 1)
+        w_ = max(f1.w, m.p.p0)
     end
     if length(f.K) > 0
         i_ = ceil(Int, (1 + s.stats.ψ)^(1 / 12) * mean(map(k -> ((k.p * m.p.NK / (m.p.NK - k.age + 1)) / k.β), f.K)) * f.Δb_)
@@ -223,6 +226,7 @@ function set_target!(f::ConsumptionFirm, f1::ConsumptionFirm, Es::Int, s::State,
     Ep = ceil(Int, f1.p / f1.μ * (1 + f.μ))
     f.l_ = max(0, ceil(Int, m.p.ρF * w_ - f.D), ceil(Int, m.p.ρF * (w_ + i_) - (f.D + (Ep * Es))))
 end
+
 
 function wQ(f::CapitalFirm, s::State, s1::State, m::Model)::Float
     f1 = get_f_by_id(f.id, s1)
@@ -242,15 +246,15 @@ end
 
 function set_target!(f::CapitalFirm, f1::CapitalFirm, Es::Int, s::State, s1::State, m::Model)
     b0 = b(f)
-    b_ = max(1, m.p.ρF * Es / m.p.u_ - (b0 / m.p.NK))
+    b_ = max(1, Es / m.p.u_ + (b0 / m.p.NK))
     f.Δb_ = b_ - b0
-    f.k_ = max(1, ceil(Int, m.p.ρC * Es + f.Δb_ / f1.β - length(f.inv)))
+    f.k_ = max(0, max(1, ceil(Int, m.p.ρC * Es + f.Δb_ / f1.β)) - length(f.inv))
     avg_wQ = wQ(f, s, s1, m)
     f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.w) / avg_wQ)
     if length(f.K) > 0 && length(f1.employees) > 0
-        w_ = max(f1.w, 1, ceil(Int, f.k_ / mean(map(k -> k.β, f.K)) * (f1.w / length(f1.employees)) + f.q_ * avg_wQ))
+        w_ = max(f1.w, m.p.p0, ceil(Int, f.k_ / mean(map(k -> k.β, f.K)) * (f1.w / length(f1.employees)) + f.q_ * avg_wQ))
     else
-        w_ = max(f1.w, 1)
+        w_ = max(f1.w, m.p.p0)
     end
     f.l_ = max(0, ceil(Int, m.p.ρF * w_ - f.D))
 end
@@ -262,7 +266,7 @@ ry(f::ConsumptionFirm) = f.c
 ry(f::CapitalFirm) = f.k
 
 function stepF!(state::State, state1::State, m::Model)
-    #println("F")
+    # println("F")
     for (id, f) = merge(state.FCs, state.FKs)
         f1 = get_f(f, state1)
         # F0
@@ -275,10 +279,10 @@ function stepF!(state::State, state1::State, m::Model)
             f = replace!(f, state, m)
         end
         # F1
-        Es = ceil(Int, (1 + state.stats.g - state.stats.ψ)^(1 / 12) * f1.s)
+        Es = ceil(Int, (max(1 + state.stats.g - state.stats.ψ, 0))^(1 / 12) * f1.s)
         set_target!(f, f1, Es, state, state1, m)
         if ry_(f1) > 0
-            f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / ry_(f1) - 1))
+            f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / ry_(f1) * m.p.ρC - 1))
         else
             f.μ = f1.μ
         end
@@ -293,7 +297,7 @@ function stepF!(state::State, state1::State, m::Model)
             else
                 rL = state.B.rL + m.p.ν3 * l(f) / v(f) - m.p.ν4 * f1.π / l(f)
             end
-            push!(f.L, Loan(l0, rL, 0, false))
+            push!(f.L, Loan(l0, max(0, rL), 0, false))
             state.B.L += l0
             f.D += l0
             state.B.D += l0
@@ -325,7 +329,7 @@ function B2G!(q::Int, state::State)
         state.B.R += q
         state.C.R += q
         #else
-        #    #println("Credit system has collapsed for lack of liquidity")
+        #    # println("Credit system has collapsed for lack of liquidity")
         #    throw(DomainError("Bank's Reserves will go negative"))
         #end
     end
@@ -335,7 +339,7 @@ function B2G!(q::Int, state::State)
 end
 
 function stepG!(state::State, state1::State, m::Model)
-    #println("G")
+    # println("G")
     for (id, h) = copy(state.Hs)
         h1 = state1.Hs[id]
         # G0
@@ -389,6 +393,7 @@ function stepG!(state::State, state1::State, m::Model)
                 h.rc_ = B + h1.rc
             end
         end
+        h.rc_ = max(m.p.c0, h.rc_)
         nc_ = ceil(Int, h.rc_ * p * (1 + ψ))
         ΔS = max(0, min(floor(Int, h.D + h1.z + m.p.ϕ * h1.m - (1 + m.p.ρH) * nc_), h.D))
         h.S += ΔS
@@ -396,11 +401,6 @@ function stepG!(state::State, state1::State, m::Model)
         state.B.S += ΔS
         state.B.D -= ΔS
     end
-end
-
-struct Vacancy
-    fid::Int
-    g::Union{CapitalGood,Researcher}
 end
 
 σ(k::CapitalGood, m::Model) = k.σ
@@ -475,6 +475,7 @@ end
 function fill_vacancy!(v::Vacancy, s::State, s1::State, m::Model)
     hs = filter(h -> h.worker && h.σ >= σ(v.g, m), collect(values(s.Hs)))
     if length(hs) == 0
+        # println("Vacancy not filled: skill required too high")
         return
     end
     if length(hs) > m.p.χH
@@ -486,7 +487,7 @@ function fill_vacancy!(v::Vacancy, s::State, s1::State, m::Model)
         h = sort(hw, by=h -> h.σ, rev=true)[1]
     else
         h = sort(hs, by=h -> h.w)[1]
-        w = max(ceil(Int, h.w * m.p.ρW), 1)
+        w = max(ceil(Int, h.w * m.p.ρW), m.p.p0)
     end
     h.employer_changed = (h.employer == v.fid)
     if h.employer !== nothing
@@ -521,7 +522,7 @@ function free_g_by_operator_id!(id::Int, f::CapitalFirm)
 end
 
 function stepH!(state::State, state1::State, m::Model)
-    #println("H")
+    # println("H")
     for (id, f) = state.FKs
         f.Q = [Researcher(nothing) for _ = 1:f.q_]
     end
@@ -531,10 +532,12 @@ function stepH!(state::State, state1::State, m::Model)
     end
     vacancies = shuffle(vacancies)
     map(v -> fill_vacancy!(v, state, state1, m), vacancies)
+    # println("$(length(filter(v->v.g.operator === nothing, vacancies))) vacancies not filled")
     for (id, f) = merge(state.FCs, state.FKs)
         hs = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
         w = mapsum(h -> h.w, hs)
         while w > f.D
+            # println("Firing a worker for liquidity constraint")
             h = pop!(hs)
             w -= h.w
             fire!(h)
@@ -557,7 +560,7 @@ function stepH!(state::State, state1::State, m::Model)
 end
 
 function stepI!(state::State, state1::State, m::Model)
-    #println("I")
+    # println("I")
     for (id, f) in state.FCs
         f.c = floor(Int, mapsum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
         if f.c == 0
@@ -576,14 +579,14 @@ function stepI!(state::State, state1::State, m::Model)
         if f.k == 0
             f1 = get_f_by_id(f.id, state1)
             if f1 === nothing
-                f.p = ceil(Int, (1 + m.p.τC) * (1 + f.μ) * Ewσ(f.σ, state) / f.β)
+                f.p = ceil(Int, (1 + f.μ) * Ewσ(f.σ, state) / f.β)
             else
                 f.p = ceil(Int, f1.p * (1 + f.μ) / (1 + f1.μ))
             end
         else
-            f.p = ceil(Int, (1 + m.p.τC) * (1 + f.μ) * f.w / f.k)
+            f.p = ceil(Int, (1 + f.μ) * f.w / f.k)
         end
-        ΔK = ceil(f.Δb_ / f.β)
+        ΔK = max(0, ceil(f.Δb_ / f.β))
         for _ = 1:ΔK
             push!(f.K, CapitalGood(f.p, 0, f.σ, f.β, nothing))
         end
@@ -614,7 +617,7 @@ function G2B!(q::Int, state::State)
 end
 
 function stepJ!(state::State, state1::State, m::Model)
-    #println("J")
+    # println("J")
     for (id, h) in state.Hs
         if h.employer === nothing
             if haskey(state1.Hs, id)
@@ -655,17 +658,18 @@ function stepJ!(state::State, state1::State, m::Model)
 end
 
 function stepK!(state::State, state1::State, m::Model)
-    #println("K")
+    # println("K")
     hs = filter(((id, h),) -> h.rc < h.rc_, state.Hs)
     fcs = filter(((id, f),) -> f.s < f.c, state.FCs)
     while length(hs) > 0 && length(fcs) > 0
         hid, h = rand(hs)
-        if h.D == 0
+        if h.D < minimum(map(f -> f.p, values(fcs)))
             delete!(hs, hid)
             continue
         end
-        f = sort(sample(collect(values(fcs)), min(length(fcs), m.p.χC), replace=false), by=(f -> f.p))[1]
-        rc = floor(Int, min(h.rc_ - h.rc, h.rc_ / m.p.χC, h.D / f.p, f.c - f.s))
+        ffcs = filter(f -> f.p <= h.D, collect(values(fcs)))
+        f = sort(sample(ffcs, min(length(ffcs), m.p.χC), replace=false), by=(f -> f.p))[1]
+        rc = min(h.rc_ - h.rc, ceil(Int, h.rc_ / m.p.χC), floor(Int, h.D / f.p), f.c - f.s)
         nc = f.p * rc
         f.s += rc
         h.rc += rc
@@ -717,11 +721,11 @@ function cheapest_k_p(FKs)
 end
 
 function stepL!(state::State, state1::State, m::Model)
-    #println("L")
+    # println("L")
     for (id, f) = merge(state.FCs, state.FKs)
         depreciate_capital!(f, m)
     end
-    #println("L1")
+    # println("L1")
     fcs = filter(((id, f),) -> f.Δb < f.Δb_, state.FCs)
     fks = filter(((id, f),) -> length(f.inv) > 0, state.FKs)
     while length(fcs) > 0 && length(fks) > 0
@@ -761,7 +765,7 @@ function stepL!(state::State, state1::State, m::Model)
 end
 
 function stepM!(state::State, state1::State, m::Model)
-    #println("M")
+    # println("M")
     for (id, f) in state.FKs
         Q = count(r -> r.operator !== nothing, f.Q)
         if rand(Bernoulli(exp(-m.p.ζ * Q)))
@@ -774,7 +778,7 @@ function stepM!(state::State, state1::State, m::Model)
 end
 
 function stepN!(state::State, state1::State, m::Model)
-    #println("N")
+    # println("N")
     for (id, h) = state.Hs
         if h.employer === nothing
             h.σ = h.σ / (1 + m.p.Σ)
@@ -786,7 +790,7 @@ function stepN!(state::State, state1::State, m::Model)
 end
 
 function stepO!(state::State, state1::State, m::Model)
-    #println("O")
+    # println("O")
     for (id, f) in merge(state.FCs, state.FKs)
         for l = f.L
             i = floor(Int, y2m(l.r) * l.value)
@@ -811,7 +815,7 @@ function stepO!(state::State, state1::State, m::Model)
 end
 
 function stepP!(state::State, state1::State, m::Model)
-    #println("P")
+    # println("P")
     for (id, f) = merge(state.FCs, state.FKs)
         f.π = min(max(0, floor(Int, m.p.ρΠ * (f.p * f.s - f.w))), f.D)
         f.D -= f.π
@@ -821,7 +825,7 @@ function stepP!(state::State, state1::State, m::Model)
 end
 
 function stepQ!(state::State, state1::State, m::Model)
-    #println("Q")
+    # println("Q")
     for (id, h) in state.Hs
         i = floor(Int, y2m(state.B.rS) * h.S)
         t = floor(Int, m.p.τS * i)
@@ -834,8 +838,8 @@ function stepQ!(state::State, state1::State, m::Model)
 end
 
 function stepR!(state::State, state1::State, m::Model)
-    #println("R")
-    i = floor(Int, y2m(state.C.rB) * state.B.B)
+    # println("R")
+    i = floor(Int, y2m(state.C.rB) * state.B.B) # If negative can lead to negative reserves
     if state.G.R < i
         Δ = i - state.G.R
         state.G.B += Δ
