@@ -13,7 +13,7 @@ function create_capital_firm(m::Model, id::Int, K::Vector{CapitalGood}, inv::Vec
 end
 
 function create_bank(m::Model, id::Int)
-    return Bank(id=id, D=0, S=0, L=0, B=0, R=m.p.R0, rS=0, rL=0, l_=0, Π=0, iL=0)
+    return Bank(id=id, D=0, S=0, L=0, B=0, R=0, rS=0, rL=0, l_=0, Π=0, iL=0)
 end
 
 function create_government(m::Model, id::Int)
@@ -21,7 +21,7 @@ function create_government(m::Model, id::Int)
 end
 
 function create_centralbank(m::Model, id::Int)
-    return CentralBank(id=id, B=0, R=m.p.R0, rB=0)
+    return CentralBank(id=id, B=0, R=0, rB=0)
 end
 
 function age_household!(m::Model, h::Household)
