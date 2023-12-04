@@ -1,0 +1,270 @@
+\documentclass[]{beamer}
+
+\usepackage[style=authoryear]{biblatex}
+\usepackage{hyperref}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\AtBeginEnvironment{tabularx}{\scriptsize}
+\AtBeginEnvironment{tabular}{\small}
+\AtBeginEnvironment{gather}{\small}
+
+\usetheme{CambridgeUS}
+\usecolortheme{beaver}
+
+\setbeamerfont{caption}{size=\tiny}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+
+
+\title[DAS]{An AB-SFC Macroeconomic Model with an explicit distribution of income and wealth}
+\author[Ciruzzi, M.]{Michele Ciruzzi}
+\institute[UnInsubria]{Università degli Studi dell'Insubria}
+\date{EAEPE 2023 Conference}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{Introduction}
+
+\begin{frame}
+	\frametitle{The model}
+	\begin{itemize}
+		\item The model aims to represent personal inequality of income and wealth distribution
+		\item It is Agent-Based Stock-Flow Consistent Macroeconomic Model with two disaggregated sectors (Households, Firms)
+		\item Some choices are made to test different welfare policies in a second stage
+		\item European (Italian) economy is considered as real benchmark for stylized facts
+	\end{itemize}
+\end{frame}
+
+\section{The matrices}
+\begin{frame}
+	\frametitle{The balance matrix}
+	\makebox[\textwidth][c]{
+		\begin{tabular}{l|cccccc|l}
+			\toprule
+			             & $\mathcal{H}$             & $\mathcal{F}_{\mathbf{C}}$                              & $\mathcal{F}_{\mathbf{K}}$                              & $\mathcal{B}$             & $\mathcal{G}$             & $\mathcal{C}$             & Tot.                         \\
+			\midrule
+			$\mathbf{D}$ & $+\mathbf{D}_\mathcal{H}$ & $+\mathbf{D}_{\mathcal{F}_{\mathbf{C}}}$                & $+\mathbf{D}_{\mathcal{F}_{\mathbf{K}}}$                & $-\mathbf{D}$             &                           &                           & 0                            \\
+			$\mathbf{S}$ & $+\mathbf{S}$             &                                                         &                                                         & $-\mathbf{S}$             &                           &                           & 0                            \\
+			$\mathbf{L}$ &                           & $-\mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$                & $-\mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+\mathbf{L}$             &                           &                           & 0                            \\
+			$\mathbf{B}$ &                           &                                                         &                                                         & $+\mathbf{B}_\mathcal{B}$ & $-\mathbf{B}$             & $+\mathbf{B}_\mathcal{C}$ & 0                            \\
+			$\mathbf{R}$ &                           &                                                         &                                                         & $+\mathbf{R}_\mathcal{B}$ & $+\mathbf{R}_\mathcal{G}$ & $-\mathbf{R}$             & 0                            \\
+			$\mathbf{K}$ &                           & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$ & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{K}}}$ &                           &                           &                           & $+p_{\mathbf{K}} \mathbf{K}$ \\
+			\midrule
+			Tot.         & $+V_\mathcal{H}$          & $+V_{\mathcal{F}_{\mathbf{C}}}$                         & $+V_{\mathcal{F}_{\mathbf{K}}}$                         & $+V_\mathcal{B}$          & $+V_\mathcal{G}$          & $+V_\mathcal{C}$          & $+p_{\mathbf{K}} \mathbf{K}$ \\
+			\bottomrule
+		\end{tabular}
+	}\\
+\end{frame}
+
+\begin{frame}
+	\frametitle{The transactions matrix}
+	\makebox[\textwidth][c]{
+		\begin{tabularx}{\textwidth}{@{} Y|cccccc|l @{}}
+			\toprule
+			                       & $\mathcal{H}$                            & $\mathcal{F}_{\mathbf{C}}$                              & $\mathcal{F}_{\mathbf{K}}$                                             & $\mathcal{B}$                          & $\mathcal{G}$                            & $\mathcal{C}$                          & Tot. \\
+			\midrule
+			Consumption            & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{H}$ & $+p_{\mathbf{C}} \mathbf{C}$                            &                                                                        &                                        & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{G}$ &                                        & 0    \\
+			Investment             &                                          & $-p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$ & $+p_{\mathbf{K}} (\mathbf{K} - \mathbf{K}_{\mathcal{F}_{\mathbf{K}}})$ &                                        &                                          &                                        & 0    \\
+			Wages                  & $+W$                                     & $-W^{\mathcal{F}_{\mathbf{C}}}$                         & $-W^{\mathcal{F}_{\mathbf{K}}}$                                        &                                        &                                          &                                        & 0    \\
+			Taxes                  & $-T$                                     &                                                         &                                                                        &                                        & $+T$                                     &                                        & 0    \\
+			Transfers              & $+M$                                     &                                                         &                                                                        &                                        & $-M$                                     &                                        & 0    \\
+			\midrule
+			$\mathcal{F}$ Profits  &                                          & $-\Pi^{\mathcal{F}_{\mathbf{C}}}_\mathcal{B}$           & $-\Pi^{\mathcal{F}_{\mathbf{K}}}_\mathcal{B}$                          & $+\Pi_\mathcal{B}$                     &                                          &                                        & 0    \\
+			$\mathcal{C}$ Profits  &                                          &                                                         &                                                                        &                                        & $+\Pi^\mathcal{C}$                       & $-\Pi^\mathcal{C}$                     & 0    \\
+
+
+			\midrule
+			$\mathbf{S}$ Interests & $+r_{\mathbf{S}} \mathbf{S}$             &                                                         &                                                                        & $-r_{\mathbf{S}} \mathbf{S}$           &                                          &                                        & 0    \\
+			$\mathbf{L}$ Interests &                                          & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$ & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+r_{\mathbf{L}} \mathbf{L}$           &                                          &                                        & 0    \\
+			$\mathbf{B}$ Interests &                                          &                                                         &                                                                        & $+r_\mathbf{B} \mathbf{B}_\mathcal{B}$ & $-r_\mathbf{B} \mathbf{B}$               & $+r_\mathbf{B} \mathbf{B}_\mathcal{C}$ & 0    \\
+			\bottomrule
+		\end{tabularx}
+	}\\
+\end{frame}
+
+\section{The stocks}
+\begin{frame}
+	\frametitle{Capital goods}
+	A capital good is characterized by:
+	\begin{itemize}
+		\item a minimum skill level required to operate it $\sigma$
+		\item the output produced by the worker operating it $\beta$
+		\item constant life-time with constant depreciation
+	\end{itemize}
+\end{frame}
+
+\section{The agents}
+\begin{frame}
+	\frametitle{Households}
+	\begin{itemize}
+		\item Heterogeneous in their skill level $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$
+		\item Retired at fixed age and get substituted by a single new agent which inherits the wealth
+		\item Enter the simulation with an average initial skill $\mathbb{E}(\sigma_0) = 1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Households}
+	Marginal propensity to consume is assumed decreasing in wealth $\eta_t = (\frac{v_{t-1}}{p_{t-1}} + 1)^{-a}$
+
+	\begin{gather*}
+		\begin{align*}
+			\eta {\Delta c}_t & = {\Delta y}_t  = {\Delta z}_t + {\Delta (r_\mathbf{S} \mathbf{s})}_t   = {\Delta z}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})\mathbf{s}^*_t - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
+			                  & \approx {\Delta z}_t   + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(z)}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)               \\
+			                  & \qquad - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1}                                                                                                                                                \\
+			                  & = ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)                                                                  \\
+			                  & \qquad+ {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}                                                                                                                                          \\
+		\end{align*}\\
+		{\Delta c}_t \approx \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
+	\end{gather*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Consumption Firms}
+	\vspace{-1em}
+	\begin{gather*}
+		\mathbf{c}^*_t = \rho_\mathbf{C}(1+g-\psi)s_{t-1} = \rho_\mathbf{C}{\mathbb{E}(s)}_t \\
+		b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1} \\
+		i^*_t = (1+\psi){\langle\frac{{p_\mathbf{K}}}{\beta}\rangle}_{t-1}{\Delta b}_t \\
+		w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1}) \\
+		l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, \rho_\mathcal{F} (w_t^* + i_t^*) - (\mathbf{d}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\mathbb{E}(s)}_t), 0) \\
+		\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) \\
+		{p_\mathbf{C}}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_t}{\mathbf{c}_t} \\
+		\pi_t = r_\Pi ({p_\mathbf{C}}_t s_t - w_t)
+	\end{gather*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Capital Firms}
+	\begin{gather*}
+		\mathbf{k}_t^* = \rho_\mathbf{K}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\langle \beta \rangle} - \hat{\mathbf{k}}_{t-1} \\
+		b^*_t = \rho_\mathbf{K}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1} \\
+		i^*_t = 0, \qquad l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, 0) \\
+		q_t^* = \lfloor q_{t-1} (1+\frac{\rho_Q}{s_{t-1}}\frac{\pi_{t-1}}{{\langle w_Q \rangle}_{t-1}}) \rfloor
+	\end{gather*}
+	Innovate with probability $\theta = e^{-\zeta q}$ with output $\Delta \beta_\mathbf{C} = \text{Beta}(1, b_0)$ $\Delta \sigma = (\Delta \beta_\mathbf{C} - b_1 \text{Beta}(1, b_2))$
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Bank}
+	Represent the aggregate financial sector. No enforceable liquidity ratio. Target capital ratio $\Gamma = \frac{V}{L}$.
+
+	\begin{gather*}
+		{r_\mathbf{S}}_t = (1 - \tau_\mathbf{S}) ({r_\mathbf{B}}_t + \lambda(\Gamma - \Gamma^*))\\
+		{l^f}^*_t = \min (\nu_0 (p_\mathbf{K}{\mathbf{k}_f})_{t-1} - \mathbf{l}^f_{t-1}, \max((\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0)) \\
+		{r_\mathbf{L}}^f_t = r_\mathbf{B} + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})
+	\end{gather*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Government}
+	Maastricht-like setting.
+
+	\begin{gather*}
+		m_{t} = \phi \max(w_{t-1}, m_{t-1}), \qquad {\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t\\
+		(1+g) \delta^* Y_{t-1}  =  {\mathbb{E}(G)}_t + {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1} (1 + \frac{(1+g) \delta^* Y_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}}) - (1+g+\psi) T_{t-1} \\
+		\mathbb{E}(G)  = (1+\psi+g) \langle T \rangle + (1+g)(1-{r_\mathbf{B}}_t \langle \frac{{\mathbf{B}_\mathcal{B}}}{{\mathbf{B}^\mathcal{G}}} \rangle)\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1} \\
+		\mathbb{E}(G)_t = \mathbb{E}(M)_t + \mathbb{E}(C^\mathcal{G})_t \approx M_{t-1} + (1+\psi) p \frac{{\mathbf{C}^\mathcal{G}}_{t-1}}{\Xi_{t-1}} \Xi_t \\
+		\Xi_t          = \frac{\Xi_{t-1}}{\langle {\mathbf{C}^\mathcal{G}} \rangle} \frac{\mathbb{E}(G) - \langle M \rangle}{(1+\psi)p}
+	\end{gather*}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Central Bank}
+	$${r_\mathbf{B}} = \psi + \alpha_1 (\psi - \psi^*) + \alpha_2 (u - u^*) - \alpha_3 (\omega - \omega^*)$$
+\end{frame}
+
+\section{Dynamics}
+\begin{frame}
+	\frametitle{Time}
+	To smooth the dynamic of the model, two different times are overlapped
+	\begin{itemize}
+		\item a slow-time (the quarter) which is used to update institutional decision (CB rate, government targets, aggregate statistics update)
+		\item a fast-time (the month) which is used for consumption and production
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Good Market}
+	For each transaction, an agent buys $\chi^{-1}$ of the desired quantity $\chi$ times looking at $\chi$ sellers.
+
+	The markets in the model are
+	\begin{itemize}
+		\item Consumption Goods market: Consumption Firms sell Consumptions Goods to Households and the Government
+		\item Capital Goods market: Capital Firms sell Capital Goods to Consumption Firms
+	\end{itemize}
+
+	Every other transaction is settled at will, given the constraints.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Labour Market}
+	Households are employed by a Firm until they are fired (when $w_t - p_t s_t < 0$), they chose to exit the job market or they accept an offer from another Firm.
+
+	For each vacancy (i.e. unmatched capital good required for production target or research position) a Firm sees $\chi_\mathcal{H}$ workers which have the required skills and earn less than the average salary in the model for that skill level.
+
+	The Firm employs the one with the higher skills offering the average salary in the model for the required skill level.
+\end{frame}
+
+\section{Further steps}
+\begin{frame}
+	\frametitle{Implementation}
+	The planned implementation will rely on a stateful description in which it is possible to reconstruct most of the dynamics of the model.
+
+	Particularly the state of the model at the each of each time-step will be stored.
+
+	The model is written in Julia (\url{https://github.com/TnTo/FE/}).
+
+	This is helping prototyping since the quantities to be measured and recorded are not required to be defined a priori.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Calibration}
+	The calibration will aim not to fit real-world time series, but to match stylized facts.
+
+	The target facts will be listed as expected ranges of macroeconomic variables or moments of distributions, taking as reference the Western-European economies.
+
+	A Monte-Carlo search on the parameter space will be used to set the parameters that have no clear economic meaning to match the stylized facts.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Policies experiments}
+	The final goal of the work is to compare the macroeconomic effects of different welfare paradigms.
+	\begin{itemize}
+		\item A Keynesian government with full-employment or poverty-reduction goals
+		\item Minimum wage
+		\item Universal Basic Income
+		\item Universal Basic Dividend
+		\item Universal Basic Service (more significant with two-goods/foundational perspective)
+		\item Job Guarantee scheme (with differentiated firm-property and public ownership)
+		\item Cooperativism (with differentiated firm-property and public ownership)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{What is missing}
+	\begin{itemize}
+		\item A gender perspective: the care and domestic work and the education paths
+		\item A spatial perspective: commuting and housing -- a mayor factor of financial stress for the many --
+		\item A foundational perspective: differentiated goods and the public infrastructure
+		\item A capital perspective: competitive models of firm ownership and profit distribution
+		\item A development perspective: wage suppression and export-led growth in a multi-country model
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\centering
+	Thanks for your attention!
+
+	Any question?
+\end{frame}
+
+\end{document}

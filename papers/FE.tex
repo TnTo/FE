@@ -1,0 +1,650 @@
+% !TeX spellcheck = en_GB
+\documentclass[a4paper, headings=standardclasses]{scrartcl}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{etoolbox}
+\usepackage{authblk}
+\renewcommand{\Affilfont}{\small}
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\usepackage[style=apa, backend=biber, sorting=nyt, useprefix=true]{biblatex}
+\usepackage[autostyle=false, style=english]{csquotes}
+\MakeOuterQuote{"}
+\usepackage[british]{babel}
+\usepackage{appendix}
+\usepackage[modulo]{lineno}
+\linenumbers
+\usepackage{framed}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{cleveref}
+\usepackage{comment}
+
+\newif\ifshow
+
+%%%%%%%%%
+\showtrue
+%%%%%%%%%
+
+\ifshow
+	\newenvironment{enh}[1][]{\begin{framed}\noindent\textbf{Enhancement: #1}\par}{\end{framed}}
+\else
+	\excludecomment{enh}
+\fi
+
+\addbibresource{FE.bib}
+
+\newlist{steps}{enumerate}{1}
+\setlist[steps]{noitemsep,label=(\arabic*)}
+
+%opening
+\title{A Hybrid AB-SFC Macroeconomic Model with an explicit distribution of income and wealth \let\thefootnote\relax\footnotetext{
+	This version is intended to be submitted as a working paper to the 2023 STOREP Conference.
+
+	An updated version of this paper and all the source code and the instructions required to replicate the paper will be available at \url{https://github.com/TnTo/FE/}
+  }}
+\subtitle{Working Notes}
+\author{Michele Ciruzzi\thanks{mciruzzi@uninsubria.it - \url{https://orcid.org/0000-0003-1485-1204}}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Recent developments in Post-Keynesian macroeconomics have found in Stock-Flow Consistent models a general framework to enforce the macroeconomic accounting identities in the models.
+    These models are sometimes extended to include microfoundations (or a microeconomic description) through the use of Agent-Based Models.
+    But despite the progress and the diffusion of AB-SFC models in the last ten years, very few models can replicate the fat-tail distribution of income and wealth observed empirically.
+    Instead, they usually rely on a Kaleckian distinction between workers and capitalists or a segmented labour market (for example low-, medium- and high-skilled workers).
+    This model aims to reproduce a fat-tail distribution in income and wealth, in addition to other stylized facts, by differentiating workers by their skills and the capital goods used in production by their productivity and the skills required to use them.
+    A realistic distribution of income and wealth allows bringing closer this strain of literature with the literature on income and wealth inequality since it makes measuring indexes like Gini or the top5/bottom50 ratio possible.
+    The model includes endogenous innovation and credit rationing as previous models in the literature.
+    Households' consumption is expressed in material terms (i.e. the amount of goods consumed), rather than in monetary value, to be able to differentiate the goods consumed and better characterize the behaviour of low-income households in a future version of the model, relying on empirical stylized fact and the interpretative framework of the Foundational Economy.
+    Furthermore, the model is designed to compare different welfare policies, like minimum wage, minimum income, Universal Basic Income, Universal Basic Services or Job Guarantee programs, and different political orientations in public policies, like the austerity principles of the '10s, a Keynesian demand-led public spending or an entrepreneur state.
+    At the time of writing this abstract, the model has been completely outlined on paper but no numerical simulation has been performed yet.
+    %
+    %\textbf{Keywords}: Agent-Based Model; Stock-Flow Consistent; Post-Keynesian Macroeconomics; Inequality
+    %
+    %\textbf{JEL Codes}: D63, E21, E24, O11
+\end{abstract}
+
+\section{Introduction}
+
+In recent years Stock-Flow Consistent (SFC) models have been recognized as a valuable tool to model macroeconomics \parencite{nikiforos2017}. Particularly, they can represent the financial side of the economy, which has been recognized as a necessary feature to model after the financial crisis of the 00s.
+
+Those models are aggregate models which can neither describe microeconomic dynamics and behaviours nor, if it is considered necessary, provide a microfoundation for the model.
+Agent-Based Models (ABMs) have been used to add a microeconomic description to the macroeconomic model provided by the SFC framework \parencite{caverzasi2018,dosi2019}.
+
+But in the SB-SFC models literature, very few papers explore the conditions to model a realistic (i.e. fat-tail) distribution of income and wealth among households \parencite[e.g.][]{dafermos2015,kinsella2011}, often relying on a Kaleckian framework which studies the distribution between wages and profits \parencite[e.g.][]{dosi2013a} or a segmented labour-market \parencite[e.g.][]{caiani2019a}.
+
+Modelling personal income and wealth distribution is a needed step to close the gap between this strain of post-Keynesian literature and the literature on inequality pioneered by Atkinson, Piketty, Zucman and Saez, allowing, for example, to measure the evolution of inequality indexes (like Gini or the Top5/Bottom50) through time or policies changes.
+
+Some choices in the model are dictated by its long-term goals, specifically comparing disruptive welfare policies (Universal Basic Income, Universal Basic Service, Job Guarantee, \dots) and focusing on the different consumption patterns between high- and low-income households, including different compositions of the consumption bundle, the relevance of publicly provided goods and services (including infrastructures) in the consumption bundle, following the Foundational Economy framework \parencite{arcidiacono2018}, the incidence of unpaid domestic and care work on the work provided by individuals in the household, especially from a gender perspective.
+
+\begin{enh}[Foundational Economy -- 1]
+    To better characterize the differences in behaviour among low- and high-income households it is possible to refer to the theoretical framework provided by Foundational Economy \parencite{arcidiacono2018}. It suggests that a significant part of the economic activities are instrumental not to the extraction of rents from capital, but to addressing essential needs and to building up shared infrastructures
+    \begin{quote}
+        "It argues that the well-being of Europe's citizens depends less on individual consumption and more on their social consumption of essential goods and services – from water and retail banking, to schools and care homes – in what we call the foundational economy. Individual consumption depends on market income, while foundational consumption depends on infrastructure and delivery systems of networks and branches, which are neither created nor renewed automatically, even as incomes increase. The distinctive, primary role of public policy should therefore be to secure the supply of basic services for all citizens. If the aim is citizen well-being and flourishing for the many not the few, then European politics at regional, national and EU level needs to be refocused on foundational consumption and securing universal minimum access and quality." \parencite{arcidiacono2018}
+    \end{quote}
+\end{enh}
+
+\begin{enh}[Welfare policies]
+    The first version of the model will be as simple as possible to create a robust baseline.
+    Subsequent iterations of the model will explore different welfare policies and how to model them.
+\end{enh}
+
+Finally, the model is inspired more by west-European economies (particularly Italy) rather than by north-American ones.
+
+\section{General Hypothesis}
+To simplify the model a close single-country economy is assumed. This is a common hypothesis for SFC models (and macroeconomics in general) because an open economy does not preserve the balance of flows in the model. So, to preserve the consistency of the model the only alternative is to model a multi-countries system, each with its own dynamics.
+It is worth keeping in mind that this hypothesis prevents to model to replicate economic dynamics strongly dependent on international trade, like the export-led growth path.
+
+\begin{enh}[Multi-Country Model]
+    A compromise for future development is to model in an AB-SFC setting the main economy of the model while keeping aggregated (SFC only) the other economies.
+\end{enh}
+
+The microeconomic behaviour of the agent is modelled mostly using adaptive expectations, focusing on the variation of behaviours (as desires or expectations) with regard to the previous period.
+Exploiting this, to smooth the dynamics of the model each period represents a month (a small amount of time compared to other models) to keep the variations small.
+
+\begin{enh}[The time scale of the policies]
+    In a future version of the model, the simulation's timespan has to be long enough to observe the effects of introducing a policy. But, at the same time, it is unreasonable to keep the simulation running over 5-10 years after the policy's introduction because, in any real-world context, a government can tune or revert the policy afterwards.
+\end{enh}
+
+The model includes the six sectors: the Households ($\mathcal{H}$), the Firms which produce consumption goods ($\mathcal{F}_{\mathcal{C}}$), the Firms which produce Capital goods ($\mathcal{F}_{\mathbf{K}}$), a consolidated (i.e. aggregated) banking and financial sector (the Bank, $\mathcal{B}$), the Government ($\mathcal{G}$) and the Central Bank ($\mathcal{C}$). Households and Firms constitute the Agent-Based part of the model.
+
+The model comprises two kinds of real assets: Capital Goods ($\mathbf{K}$) and Consumption Goods ($\mathbf{C}$).
+Capital Goods are durable and Consumption Goods are homogeneous.
+
+\begin{enh}[Foundational Economy -- 2]
+    To model the idea of a Foundational Economy the single representative Consumption Good can be split into a representative Foundational Consumption Good and another kind of Others (non-Foundational) Consumption Goods.
+    The intuition which can be followed is that each Household aims to consume a certain amount of Foundational Goods before to start consuming the other Goods. Additionally, the non-monetary transfers by the Government should comprise only Foundational Goods.
+
+    The idea of a Foundational core of consumption needed to assure at least a given quality of life to the population is closely related to the idea of a (subsistence) wage functional to social reproduction.
+    Furthermore, it is possible to identify, as an approximation, this Foundational domain of consumption with the base goods described by \textcite{sraffa1960}, as they are necessary for the society, and so the worker, to preserve their living standard.
+\end{enh}
+
+The model includes five different financial assets.
+Bank Deposits ($\mathbf{D}$) of Households and Firms, which are not interest-bearing.
+Loans ($\mathbf{L}$) issued by the Banks to Firms, which interest rate is Firm-specific and fixed by the Bank.
+Bank Shares ($\mathbf{S}$) held by Households, which interest rate is fixed each period by the Bank.
+Banks Reserves and Government Account at the Central Bank ($\mathbf{R}$), which are not interest-bearing.
+Government Bonds ($\mathbf{B}$) held by Bank and Central Bank, and which interest rate is fixed by the Central Bank.
+
+\section{Matrices}
+\subsection{Balance Sheet Matrix}
+\makebox[\textwidth][c]{
+    \begin{tabular}{l|cccccc|l}
+        \toprule
+                     & $\mathcal{H}$             & $\mathcal{F}_{\mathbf{C}}$                              & $\mathcal{F}_{\mathbf{K}}$                              & $\mathcal{B}$             & $\mathcal{G}$             & $\mathcal{C}$             & Tot.                         \\
+        \midrule
+        $\mathbf{D}$ & $+\mathbf{D}_\mathcal{H}$ & $+\mathbf{D}_{\mathcal{F}_{\mathbf{C}}}$                & $+\mathbf{D}_{\mathcal{F}_{\mathbf{K}}}$                & $-\mathbf{D}$             &                           &                           & 0                            \\
+        $\mathbf{S}$ & $+\mathbf{S}$             &                                                         &                                                         & $-\mathbf{S}$             &                           &                           & 0                            \\
+        $\mathbf{L}$ &                           & $-\mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$                & $-\mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+\mathbf{L}$             &                           &                           & 0                            \\
+        $\mathbf{B}$ &                           &                                                         &                                                         & $+\mathbf{B}_\mathcal{B}$ & $-\mathbf{B}$             & $+\mathbf{B}_\mathcal{C}$ & 0                            \\
+        $\mathbf{R}$ &                           &                                                         &                                                         & $+\mathbf{R}_\mathcal{B}$ & $+\mathbf{R}_\mathcal{G}$ & $-\mathbf{R}$             & 0                            \\
+        $\mathbf{K}$ &                           & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$ & $+p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{K}}}$ &                           &                           &                           & $+p_{\mathbf{K}} \mathbf{K}$ \\
+        \midrule
+        Tot.         & $+V_\mathcal{H}$          & $+V_{\mathcal{F}_{\mathbf{C}}}$                         & $+V_{\mathcal{F}_{\mathbf{K}}}$                         & $+V_\mathcal{B}$          & $+V_\mathcal{G}$          & $+V_\mathcal{C}$          & $+p_{\mathbf{K}} \mathbf{K}$ \\
+        \bottomrule
+    \end{tabular}
+}\\ \\
+$V$ is the net worth of the sector.
+
+\subsection{Transactions Matrix}
+\makebox[\textwidth][c]{
+    \small
+    \begin{tabularx}{\textwidth}{@{} Y|cccccc|l @{}}
+        \toprule
+                               & $\mathcal{H}$                            & $\mathcal{F}_{\mathbf{C}}$                                 & $\mathcal{F}_{\mathbf{K}}$                                             & $\mathcal{B}$                          & $\mathcal{G}$                            & $\mathcal{C}$                          & Tot.                              \\
+        \midrule
+        Consumption            & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{H}$ & $+p_{\mathbf{C}} \mathbf{C}$                               &                                                                        &                                        & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{G}$ &                                        & 0                                 \\
+        Investment             &                                          & $-p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$    & $+p_{\mathbf{K}} (\mathbf{K} - \mathbf{K}_{\mathcal{F}_{\mathbf{K}}})$ &                                        &                                          &                                        & 0                                 \\
+        Wages                  & $+W$                                     & $-W^{\mathcal{F}_{\mathbf{C}}}$                            & $-W^{\mathcal{F}_{\mathbf{K}}}$                                        &                                        &                                          &                                        & 0                                 \\
+        Taxes                  & $-T$                                     &                                                            &                                                                        &                                        & $+T$                                     &                                        & 0                                 \\
+        Transfers              & $+M$                                     &                                                            &                                                                        &                                        & $-M$                                     &                                        & 0                                 \\
+        \midrule
+        $\mathcal{F}$ Profits  &                                          & $-\Pi^{\mathcal{F}_{\mathbf{C}}}_\mathcal{B}$              & $-\Pi^{\mathcal{F}_{\mathbf{K}}}_\mathcal{B}$                          & $+\Pi_\mathcal{B}$                     &                                          &                                        & 0                                 \\
+        $\mathcal{C}$ Profits  &                                          &                                                            &                                                                        &                                        & $+\Pi^\mathcal{C}$                       & $-\Pi^\mathcal{C}$                     & 0                                 \\
+
+
+        \midrule
+        $\mathbf{S}$ Interests & $+r_{\mathbf{S}} \mathbf{S}$             &                                                            &                                                                        & $-r_{\mathbf{S}} \mathbf{S}$           &                                          &                                        & 0                                 \\
+        $\mathbf{L}$ Interests &                                          & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$    & $-r_{\mathbf{L}} \mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                & $+r_{\mathbf{L}} \mathbf{L}$           &                                          &                                        & 0                                 \\
+        $\mathbf{B}$ Interests &                                          &                                                            &                                                                        & $+r_\mathbf{B} \mathbf{B}_\mathcal{B}$ & $-r_\mathbf{B} \mathbf{B}$               & $+r_\mathbf{B} \mathbf{B}_\mathcal{C}$ & 0                                 \\
+        \midrule
+        $\Delta\mathbf{D}$     & $-\Delta\mathbf{D}_\mathcal{H}$          & $-\Delta\mathbf{D}_{\mathcal{F}_{\mathbf{C}}}$             & $-\Delta\mathbf{D}_{\mathcal{F}_{\mathbf{K}}}$                         & $+\Delta\mathbf{D}$                    &                                          &                                        & 0                                 \\
+        $\Delta\mathbf{S}$     & $-\Delta\mathbf{S}$                      &                                                            &                                                                        & $+\Delta\mathbf{S}$                    &                                          &                                        & 0                                 \\
+        $\Delta\mathbf{L}$     &                                          & $+\Delta\mathbf{L}^{\mathcal{F}_{\mathbf{C}}}$             & $+\Delta\mathbf{L}^{\mathcal{F}_{\mathbf{K}}}$                         & $-\Delta\mathbf{L}$                    &                                          &                                        & 0                                 \\
+        $\Delta\mathbf{B}$     &                                          &                                                            &                                                                        & $-\Delta\mathbf{B}_\mathcal{B}$        & $+\Delta\mathbf{B}$                      & $-\Delta\mathbf{B}_\mathcal{C}$        & 0                                 \\
+        $\Delta\mathbf{R}$     &                                          &                                                            &                                                                        & $-\Delta\mathbf{R}_\mathcal{B}$        & $-\Delta\mathbf{R}_\mathcal{G}$          & $+\Delta\mathbf{R}$                    & 0                                 \\
+        \midrule
+        $\Delta\mathbf{K}$     &                                          & $-\Delta(p_\mathbf{K}\mathbf{K}_{\mathcal{F}_\mathbf{C}})$ & $-\Delta(p_\mathbf{K}\mathbf{K}_{\mathcal{F}_\mathbf{K}})$             &                                        &                                          &                                        & $-\Delta(p_\mathbf{K}\mathbf{K})$ \\
+        \bottomrule
+    \end{tabularx}
+}\\ \\
+where $\Delta(p_\mathbf{K}\mathbf{K})$ includes capital depreciation.
+
+\section{Sectors}
+\subsection{Households}
+In this model, the core agents (consumers, workers, capitalists) represent a household rather than a single individual. This is a very common approximation in economics and I think it is reasonable as long as we are not going into modelling education paths and care and domestic work, where the gender asymmetries become very relevant.
+
+Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
+The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
+Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{sec:beta-binomial}.
+
+Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + \sigma_0$, where $\sigma_0$ is the initial skill level.
+
+Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
+
+\begin{enh}[Training]
+    Two factors in the development of the skills can be introduced.
+
+    One on the welfare policies side is the possibility for the government to organize training programs for the unemployed to prevent the loss of skills on even increase them.
+
+    The second one relates to the actual job done: it is reasonable to assume that it is easier to learn new skills if the skills required for the job are closer to the skill level, while demoted and overqualified workers have lower chances to learn new skills. This can be included in the model making $\phi \propto (s-\sigma)^{-1}$, where $\sigma$ is the minimum skill level required to operate the machinery assigned to the worker in the time step.
+\end{enh}
+
+\begin{enh}[On real and nominal values]
+    It is unreasonable to assume that the behaviour of the agents depends on the absolute monetary value of the consumption rather than the quantity of goods or the (real) consumption of households with similar income.
+    The usual solution in economics is to divide the nominal value by a price index which, in this case, can be the average price of consumption goods in a given period.
+    An alternative that accounts for the variation in the quality of life (and so, in some way, the implicit transformation of the representative (basket of) consumption good) is to use the relative poverty threshold (express as a fraction of the median income or wealth) as the normalization factor.
+\end{enh}
+
+Households face two choices: if work and how many consumption goods they desire to consume.
+
+Households' flows balance is $y_t = z_t + m_t + {r_{\mathbf{S}}}_t \mathbf{s}_t = c_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the net wage ($z = w (1 - \max(\tau_M \tanh(\tau_F(\frac{w}{p}-\tau_T)),0))$).
+While at the aggregated level taxes are recorded as an outflow from the household sector, in the model households always receive inflows net of taxes.
+
+I assume, as a heuristic, that wages ($z$) can be approximated as constant from the previous period (because salaries increase only by changing employers, which is an unexpected event), while transfers ($m$) are composed only of unemployment benefits.
+Additionally, I assume that desired deposits ($\mathbf{d}^*_t$) at the end of the period are a fraction of the desired consumption ($c^*_t = \mathbb{E}(p_\mathbf{C}) \mathbf{c}^*_t$) as insurance against unexpected increases in prices ($\mathbf{d}^*_t = \rho_\mathcal{H}c^*_t$, $\rho_\mathcal{H} > 0$).
+
+Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta z}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
+\begin{align*}
+    \eta {\Delta c}_t = {\Delta y}_t & = {\Delta z}_t + {\Delta (r_\mathbf{S} \mathbf{s})}_t                                                                                            \\
+                                     & = {\Delta z}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - {r_\mathbf{S}}_{t-1} \mathbf{s}_{t-1}                                                         \\
+                                     & = {\Delta z}_t + {r_\mathbf{S}}_t \mathbf{s}^*_t - ({r_\mathbf{S}}_{t} - {\Delta r_\mathbf{S}}_{t}) (\mathbf{s}^*_{t} - {\Delta \mathbf{s}}_{t}) \\
+                                     & \approx {\Delta z}_t + {r_\mathbf{S}}_t {\Delta \mathbf{s}}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}^*_{t}                                       \\
+                                     & = {\Delta z}_t + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})\mathbf{s}^*_t - {r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+\end{align*}
+where $\mathbf{s}^*_t$ is the desired amount of shares to hold in the period.
+
+Looking at the balance of a household between the beginning of the period and the purchase of consumption goods, it is possible to write $\mathbf{s}^*_t + \mathbf{d}^*_t + c^*_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(z)}_t + {\mathbb{E}(m)}_t$, and substituting $\mathbf{s}^*_t$ above it becomes
+\begin{gather*}
+    \begin{align*}
+        \eta {\Delta c}_t & \approx {\Delta z}_t   + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(z)}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)- {r_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
+                          & = ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)              + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}                               \\
+                          & =  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1})                                                                                      \\
+                          & \qquad - ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}) {\Delta c}_t + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+    \end{align*}\\
+    \begin{align*}
+        (\eta + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})) {\Delta c}_t & \approx ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}
+    \end{align*}\\
+    {\Delta c}_t \approx \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
+\end{gather*}
+
+To translate this into consumption measured in consumption goods $\mathbf{C}$, calling $\psi$ the inflation rate updated periodically model-wise and $p_\mathbf{C}$ the average purchase price paid by the agent, we have
+\begin{align*}
+    {\Delta c}^*_t          & = \Delta (p_\mathbf{C} \mathbf{c})_t = \Delta(p_\mathbf{C})_t \mathbf{c}^*_t + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t - \Delta(p_\mathbf{C})_t{\Delta \mathbf{c}}_t                                                        \\
+                            & = (\mathbb{E}(p_\mathbf{C})_t - {p_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + \mathbb{E}(p_\mathbf{C})_t {\Delta \mathbf{c}}_t - (\mathbb{E}(p_\mathbf{C})_t - {p_\mathbf{C}}_{t-1}){\Delta \mathbf{c}}_t       \\
+                            & = ((1+\psi){p_\mathbf{C}}_{t-1} - {p_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + (1+\psi){p_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t - ((1+\psi){p_\mathbf{C}}_{t-1} - {p_\mathbf{C}}_{t-1}){\Delta \mathbf{c}}_t \\
+                            & = \psi {p_\mathbf{C}}_{t-1} \mathbf{c}_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t                                                                                                                                    \\
+                            & = \psi c_{t-1} + (1+\psi){p_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t                                                                                                                                                                  \\
+    {\Delta \mathbf{c}}^*_t & = \frac{\Delta c^*_t}{(1+\psi){p_\mathbf{C}}_{t-1}} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}}
+\end{align*}
+
+${r_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. Following \textcite{fisher2020} $\eta$ is considered dependent on the wealth and since it declines fast in the first quantiles, but way slower for wealthy households, it will be defined as $\eta(v) = (\frac{v}{p} + 1)^{-a}$.
+
+From these relations, we can model the two choices of households.
+
+First, a household exit from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
+$$ {\Delta \mathbf{c}}^*_t = \frac{-z_{t-1} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi z_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} \ge 0$$
+Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if
+\begin{multline*}
+    {\Delta \mathbf{c}}^*_t = \frac{({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} < 0 \\
+    {\Delta \mathbf{c}}^*_t = \frac{{\mathbb{E}(z|s)}_{t} + ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(z|\sigma)}_{t} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p_\mathbf{C}}_{t-1}(\eta +  ({r_\mathbf{S}}_t + {\Delta r_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} \ge 0
+\end{multline*}
+
+Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \mathbf{c}_{t-1} + {\Delta \mathbf{c}}^*_t$. From which follows $c^*_t = (1+\psi) {p_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + z_{t-1} + \phi m_{t-1} - \mathbf{d}^*_t - c^*_t$.
+
+\begin{enh}[Gender, Care work and Feminist Economics]
+    Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
+    Gender is an important factor in creating inequalities: for example, unemployment and wages show a strong gender effect (which in both cases penalizes women).
+
+    Adding a gender perspective will be an improvement in the model (with relevant policy implications) and will require explicitly modelling education and childcare (which in this first draft is only sketched), the complete life cycle of an agent (here reduced to the working age) and family choices (marriage, pregnancy, ...).
+\end{enh}
+
+\begin{enh}[Foundational Economy -- 3]
+    As stated before, a Foundational setting requires at least two consumption goods, so it is necessary to divide the total desired real consumption $\mathbf{c}^*$ among the two kinds.
+    A possibility is to define asymptotically the desired Foundational consumption as a fraction of the median consumption.
+    \begin{align*}
+        \mathbf{c}^*_F & = a \hat{\mathbf{c}} \tanh(\frac{\mathbf{c}^*}{b \hat{\mathbf{c}}}) \\
+        \mathbf{c}^*_O & = \mathbf{c}^* - \mathbf{c}^*_F
+    \end{align*}
+    where $\hat{\dot}$ indicates the median and two consumption goods (foundational and other) are considered.
+\end{enh}
+
+\subsection{Firms}
+Firms are characterized by their position in the supply chain (either Capital or Consumption).
+
+Loans are asked to the Bank at the beginning of the period to pay for salaries and to make investments and started to be repaid at the end of the period.
+In the case of rationed credit, Firms first pay the salaries of workers, then they pay the salaries of researchers, then they acquire new machinery then they distribute profits, and finally, they repay the bank the loans contracted.
+
+\subsubsection{Consumption Firms}
+Noted $s_{t-1}$ the number of goods sold in the previous period, each Firm sets the desired production as $\mathbf{c}^*_t = \max(\rho_\mathbf{C}(1+g-\psi)s_{t-1},1) \approx \rho_\mathbf{C}\mathbb{E}(s)_{t}$, where $g$ is the GDP growth rate and the functional form chosen is the one of a quasi-multiplicative process without a fixed point.
+
+The maximum output of the available machinery is defined as $b = \sum_{\kappa \in \mathbf{k}} \beta_\kappa$. Each Firm set a desired potential output $b^*_t = \frac{1}{u^*}\mathbf{c}^*_t + \gamma b_{t-1}$, where $\gamma$ is the depreciation rate of capital and $u^*$ is the target capacity utilization rate. From this follows that ${\Delta b}_t = \max(\frac{\mathbf{c}^*_t}{u^*} - (1 - \gamma) b_{t-1}, 0)$ and the desired investment in monetary units is $i^*_t = (1+\psi){\langle\frac{{p_\mathbf{K}}}{\beta}\rangle}_{t}{\Delta b}_t$, where the average is taken on the current capital stock. Expected expenses for salaries are computed as $w_t^* = \max(w_{t-1}, \frac{\mathbf{c}^*_t}{{\langle \beta \rangle}_{t}}{\langle w \rangle}_{t-1})$
+
+The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{C}\frac{s_{t-1}}{\mathbf{c}^*_{t-1}}-1))$ and the price ${p_\mathbf{C}}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm and $\tau_\mathbf{C}$ is the VAT rate.
+
+The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, \rho_\mathcal{F} (w_t^* + i_t^*) - (\mathbf{d}_{t-1} + {\mathbb{E}(p_{\mathbf{C}})}_t {\mathbb{E}(s)}_t), 0)$, where approximating a constant labour cost ${\mathbb{E}(p_\mathbf{C})}_t = (1+\tau_\mathbf{C})(1+\mu_t)\frac{w_{t-1}}{\mathbf{c}_{t-1}}$.
+
+Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e.  $\pi_t = \max(\rho_\Pi ({p_\mathbf{C}}_t s_t - w_t), 0)$.
+
+
+\subsubsection{Capital Firms}
+Capital Firms produce their own machinery, creating a system of two simultaneous equations to determine the desired output.
+The problem is avoided by approximating $b^*_t = \max(\rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}, 1)$, and $\mathbf{k}_t^* = \rho_\mathbf{K}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\beta_{t-1}} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
+
+Following the same logic used for Consumption Firms, we can write the mark-up $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) = \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1} + \hat{\mathbf{k}}_{t-2} - \Delta b_{t-1}{\beta_{t-2}}^{-1}}-1))$. The 2-lagged variables create problems in the start-up of the model. A solution is the strong approximation $\mu_t \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1}}-1))$.
+
+Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t^* = q_{t-1} + \lfloor \rho_Q\frac{{p_\mathbf{K}}_{t-1}s_{t-1} - w_{t-1}}{{\langle w_Q \rangle}_{t-1}} \rfloor$ where $\langle w_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$. This makes $w_t^* = \max(w_{t-1}, \frac{\mathbf{k}^*_t}{{\langle \beta \rangle}_{t-1}}{\langle w \rangle}_{t-1} + q_t^* {\langle w_Q \rangle}_{t-1})$.
+
+Finally, we note that $i_t = 0$ and so $l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, 0)$.
+
+\begin{enh}[Capital goods market]
+    The approximation that every capital firm produces its own capital goods is chosen to simplify the implementation of the model.
+    A more realistic assumption, which has the potential to introduce interesting market dynamics, is to allow every capital firm to buy its machinery from other firms.
+\end{enh}
+
+\begin{enh}[Firms' governance]
+    In a future version, different models of governance can be introduced, particularly regarding the property (not tradeable shares, shares available on the stock market, cooperative ownership, ...), the choice rules (mostly what is the goal of the Firm, like dividend maximization, share values maximization, market share maximisation, wages maximization, top manager retribution maximization, ...) and the expected profit rate required by the owners.
+\end{enh}
+
+\begin{enh}[Public Firms]
+    The recent literature has highlighted the important role of the state in technological innovation. Additionally, civil servant wages help to set, particularly when public employment share is relevant, an economy-wide reserve wage.
+    To keep the model simple all the firms are owned by the Bank and the government sustains demand in a way similar to public procurement.
+    It is possible to create an additional kind of Capital Firm, which performs publicly sponsored research and development, and of Consumption Firm, which represent the direct role of the government in the economy (which mostly provides infrastructures and services).
+\end{enh}
+
+
+\subsection{Bank}
+Bank agent represents the aggregate banking and financial sector.
+
+Bank is required to maintain both a liquidity ($\Lambda = \frac{R}{D}$) and a capital ratio ($\Gamma = \frac{V}{L}$) \parencite[see][]{caiani2016}. Liquidity is obtained, in case of necessity, by selling Government's Bonds to the Central Bank.
+
+Bank fixes the interest rates on Bank Shares as ${r_\mathbf{S}}_t = (1 - \tau_\mathbf{S}) ({r_\mathbf{B}}_t + \lambda(\Gamma - \Gamma^*))$, where ${r_\mathbf{B}}_t$ is the Central Bank interest rate and $\tau_\mathbf{S}$ is the constant tax rate on financial income.
+
+In this model the Bank does not distribute profits and can access all the needed liquidity from the Central Bank, making the liquidity requirement a tautology. As a consequence, it needs a way to avoid excessive capitalization that does not depends on $\Lambda$. The proposed behaviour simulates a profit distribution when the Bank is capitalized over the target, without the need to introduce a market for shares.
+
+\begin{enh}[Competitive credit market]
+    There are difficulties in setting the Bank Bonds interest rate because there is no competition in the credit market for Household savings, and Central Bank provides free from interest liquidity.
+    The first possibility is to disaggregate the sector and to make interest rates on Bank Bonds a tool of competition among banks.
+    The other is to allow Central Bank to ration the access to liquidity, charging an interest rate on Advances (adding a financial stock in the model).
+\end{enh}
+
+The Bank rations the credit to Firms, based on the balance sheet of the applicant, and fixes a different interest rate for each loan. The duration of Loans is fixed.
+Bank is willing to provide new loans to a firm $f$ in the period up to $${l^f}^*_t = \min (\nu_0 (p_\mathbf{K}{\mathbf{k}_f})_{t-1} - \mathbf{l}^f_{t-1}, \max((\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0))$$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = r_\mathbf{B} + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
+These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
+
+\subsection{Government}
+Government fixes the public expenditure. It additionally collects taxes and pays unemployment benefits. It determines the amount to be transferred to households (both as monetary and non-monetary, as consumption goods).
+
+When liquidity is needed, Government emits Bonds and sells them at will to the Central Bank.
+
+As an approximation, fiscal policy is kept constant during the simulation and taxes are collected only from the Household sector during the transactions. Particularly, the model includes four taxes: a VAT on the purchase of consumption goods ($\tau_\mathbf{C}$); a flat financial income tax on distributed interests on Bank shares ($\tau_\mathbf{S}$); an inheritance tax on wealth with a constant rate ($\tau_I$); a progressive income tax computed as $t_W(w) = w \max(\tau_M \tanh(\tau_F (\frac{w}{p} - \tau_T)),0)$, where $w$ is the annual wage, $p$ is the average price of consumption goods since the last update. % Income taxes are paid by the employer every period and arbitraged once a year.
+
+Fixed unemployment benefits $m_{t} = \phi \max(z_{t-1}, m_{t-1})$ is paid to those who have not exited the job market and are not employed.
+
+\begin{enh}[Income Taxes]
+    In this model income taxes are paidprogressivelly on the monthly salary. For this reason periods on unemployment distort the overall progressivity of the income taxation. To represent a more realistic situation, income taxes should be arbitraged once a year.
+\end{enh}
+
+Each period government buys consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to ${\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t$.
+
+We define $g$ as the growth rate of the GDP %(measured as Government and Households consumptions, including VAT, plus the variation in Capital stock, noted as $Y$) 
+in the previous periods, $M = \sum_{h \in \mathcal{H}} m_h$, $C^\mathcal{G}= \sum_{h \in \mathcal{H}} (p_\mathbf{C} \mathbf{c})^\mathcal{G}_h$ and $G = M + C^\mathcal{G}$.
+
+Assuming a Maastricht-like scenario in which Government has a target deficit $\delta^*$ to achieve, the expected balance of the next period can be written as
+\begin{align*}
+    (1+g) \delta^* Y_{t-1} & =  {\mathbb{E}(G)}_t + {r_\mathbf{B}}_t ({\mathbf{B}_\mathcal{B}}_{t-1} + \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}} (1+g) \delta^* Y_{t-1}) - (1+g+\psi) T_{t-1} \\
+    \mathbb{E}(G)_t        & = (1+\psi+g) T_{t-1} + (1+g)(1-{r_\mathbf{B}}_t \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}})\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1}
+\end{align*}
+But the expected public expenditure can also be written as
+\begin{align*}
+    \mathbb{E}(G)_t & = \mathbb{E}(M)_t + \mathbb{E}(C^\mathcal{G})_t \approx M_{t-1} + (1+\psi)p\mathbb{E}(\mathbf{C}^\mathcal{G})_t                                          \\
+                    & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle {\mathbf{c}^\mathcal{G}_h}_t \rangle = M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_t \rangle \Xi_t \\
+                    & \approx M_{t-1} + (1+\psi) p N_\mathcal{H} \langle \xi_{t-1} \rangle \Xi_t = M_{t-1} + (1+\psi) p \frac{{\mathbf{C}^\mathcal{G}}_{t-1}}{\Xi_{t-1}} \Xi_t
+\end{align*}
+where it is assumed that expenses for unemployment benefits are approximately constant.
+
+Finally, the public expenditure is regulated by updating regularly $\Xi$ as
+\begin{gather*}
+    \Xi_t          = \frac{\Xi_{t-1}}{\langle {\mathbf{C}^\mathcal{G}} \rangle} \frac{\mathbb{E}(G) - \langle M \rangle}{(1+\psi)p}                                                                                       \\
+    \mathbb{E}(G)  = (1+\psi+g) \langle T \rangle + (1+g)(1-{r_\mathbf{B}}_t \langle \frac{{\mathbf{B}_\mathcal{B}}}{{\mathbf{B}^\mathcal{G}}} \rangle)\delta^* Y_{t-1} - {r_\mathbf{B}}_t \langle{\mathbf{B}_\mathcal{B}}\rangle
+\end{gather*}
+where the averages are taken since the last update.
+
+\begin{enh}[A Keynesian Government]
+    In this first version of the model, the Government follows an austerity-inspired policy, similar to the one suggested by European Union treaties.
+
+    The behaviour of the Government is, in the end, defined by the target deficit imposed which can be substituted with other targets, like growth, unemployment or poverty rate.
+\end{enh}
+
+\subsection{Central Bank}
+In the model the role of the Central Bank is to fix the Government's Bonds interest rate according to a Taylor rule ${r_\mathbf{B}} = \psi + \alpha_1 (\psi - \psi^*) + \alpha_2 (u - u^*) - \alpha_3 (\omega - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The variables are computed as the average since the last update.
+
+Additionally, it passively buys and sells Government Bonds on request to the Bank and the Government. Reserves do not grant interests.
+
+In other words, the Central Bank is a lender of last resort for the Government, which then has no accounting limits to spending.
+
+\section{Real Assets}
+\subsection{Consumption Goods}
+Consumption Goods represent all the consumption (goods and services) of Households and are homogeneous and non-durable.
+
+\begin{enh}[Foundational Economy -- 3]
+    The exact definition of Foundational good (and service) is not easy to give. An intuition can be provided by the Foundational Economy approach \parencite{arcidiacono2018}: \begin{quote}
+        The sphere of the foundational was then demarcated by three criteria: these goods and services were necessary to everyday life; were consumed daily by all citizens regardless of income; and were distributed according to population through branches and networks. They were partly non-market, generally sheltered and one way or another politically franchised.
+    \end{quote}
+
+    Operationally, we can imagine the essential goods in a future model as the ones included in the basket used by national statistics offices to determine the poverty line. In this sense, it is a set of goods which continuously mutate to adapt to new life needs.
+\end{enh}
+
+\begin{enh}[Housing]
+    Among essential goods, one should require ad hoc modelling: houses. Houses are special for three reasons.
+
+    First, they are very heterogeneous in prices and quality, and both are strongly related to the position. In other words, including houses requires (quite always) making the model spatially explicit.
+
+    Second, the expenses for housing, in form of rent or mortgage, account for a significant part of monthly consumptions for poor individuals (up to one-half).
+
+    Third, real estate properties are an important form of rent extraction and an important tool of investment, and so another important channel of redistribution.
+\end{enh}
+
+\begin{enh}[Diversified Goods]
+    A subsequent version of the model can include different (abstract) goods to be produced and consumed. This will create two different innovation processes (better technology for existing goods, or technology for new goods) and will account for the empirical fact that the higher the income more diversified the consumptions are \parencite[cfr.][§2]{didomenico2022}.
+\end{enh}
+
+\subsection{Capital Goods}
+Capital goods are characterized by their productivity $\beta$ and the minimum skill level required to operate them $\sigma$. The production happens according to a Leontieff-like function in which one worker with at least $\sigma$ skill can operate a single capital good getting $\beta_\mathbf{C}$ consumption goods as output or $\beta_\mathbf{K} = k \beta_\mathbf{C}$ capital goods. Each period they are depreciated of a constant fraction $N_\mathbf{K}^{-1}$ of their original price and are destroyed after $N_\mathbf{K}$ periods.
+
+\section{Financial Assets}
+
+\subsection{Deposits}
+Deposits represent liquidity for Households and Firms and are not interest-bearing. Bank satisfies any transaction as long as the balance of the account remains positive.
+
+\subsection{Bank Shares}
+Bank Shares are sold and bought at their nominal value. Bank satisfies every transaction both as emission and as buy-back, as long as the accounts remain positive. Households can buy or sell Bank Shares only at the beginning of each period. At the end of each period, interests are paid, according to the rate fixed by the Bank at the beginning of the period.
+
+\subsection{Loans}
+Loans are issued by the Bank to a specific Firm. They have a fixed duration during which an equal share of capital is repaid plus the interest on the remaining debt. Interests are fixed by the Bank at a different value for each Firm at the time of emission.
+
+\subsection{Government Bonds}
+Government Bonds are sold and bought at their nominal value and do not expire. Central Bank satisfies every transaction. Bank can buy Government Bonds only at the beginning of each period. At the end of each period, interests are paid only to the Bank, according to the rate fixed by the Central Bank at the time beginning of the period.
+
+\subsection{Reserves}
+Reserves represent liquidity for Bank and Government and are not interest-bearing. Central Bank satisfies any transaction as long as the balance of the account remains positive.
+
+\section{Dynamics}
+\subsection{Consumption Goods market}
+Each Household sees $\chi_\mathbf{C}$ Consumption Firms $\chi_\mathbf{C}$ times, each time it buys up to $\frac{\mathbf{c}^*}{\chi_\mathbf{C}}$ at the lowest offered price until it matches the desired consumption or ends liquidity.
+
+\subsection{Capital Goods market}
+Each Consumption Firm sees $\chi_\mathbf{K}$ Capital Firms $\chi_\mathbf{K}$ times, each time it buys machinery with a total production capacity of $\frac{\Delta b}{\chi_C}$, choosing the one with the lowest value of $\beta p_\mathbf{C} - \mathbb{E}(w|\sigma) - \frac{p_\mathbf{K}}{\langle N_\mathbf{K} \rangle}$ until it matches the desired quantity or ends liquidity. % CHECK
+
+\subsection{Labour market}
+Households are employed by a Firm until they are fired, they chose to exit the job market or they accept an offer from another Firm.
+
+Firms can fire workers only when $w_t - p_t s_t < 0$ or equivalently $\pi_t < 0$. In that case, Firms fire workers until the number of workers reaches $u^* \mathbf{k}$. Additionally, in the case the Firm is not able to pay a worker, they is fired. In both cases, Firms start to fire those with lower skills.
+
+Firms match each employed worker with the most productive machinery they can use, starting with those with higher skills. For this purpose, a researcher is treated like a worker assigned to a machinery with productivity $\sigma^*$.
+Then the current potential output (as the sum of the productivity of the used machinery) is computed and vacancies are open starting from the most productive unused machinery. All research vacancies are filled if possible.
+For each vacancy, the Firm sees $\chi_\mathcal{H}$ workers who have the required skills. The firm offers at first the salary that preserves the unitary cost of the previous period, i.e. $w^*_h = \beta \frac{w_{t-1}}{c_{t-1}}$ or $w^*_h = \langle w_Q \rangle$, and employs the worker with the higher skills earning less than the proposed salary. If none of the workers earns less than the proposed salary, the firm employs the worker with the lower salary offering a salary equal to $\rho_W w^h_{t-1}$.
+
+Each vacancy is filled once and new vacancies are not filled.
+
+\begin{enh}[Collective bargain]
+    The average wage in the economy used to define the new salary proposed can be replaced by a "collective bargained" salary which is fixed economy-wide for each skill level (eventually differentiating between productive sectors) which increases with the employment rate and the average firm size.
+\end{enh}
+
+\subsection{Retirement and inheritance}
+When a Household reaches a certain age it is considered retired and is replaced by a new agent in the model which inherits their (taxed) wealth and enters the simulation with a random skill level proportional to the inherited wealth, and an age proportional to the skill level.
+
+\subsection{Non Performing Loans}
+In the case a Firm is unable to repay the principal of a loan or to pay the interest, the unpaid sum is added to the import of the loan and the duration is increased by one period. Additionally, the loan is marked as non-performing.
+
+\subsection{Bankrupt}
+Once the net value of a Firm becomes negative the Firm declares bankruptcy, fires all the employed households and loose all the financial assets (loans and deposits). It is "replaced" by a new firm which inherits the capital stock.
+
+\begin{enh}[Variable number of Firms]
+    In this version of the model, the number of Firms is constant in the simulation. It is possible to assume that if the profit rate (or the average markup of a sector) increases over a certain threshold the Bank (or the Firm-owners) starts a new Firm in the sector investing an initial monetary capital.
+\end{enh}
+
+\subsection{Innovation}
+Each Capital Firm can achieve an innovation each period with a probability $\theta = e^{-\zeta Q}$ where $Q$ is the number of researchers employed.
+
+If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta_\mathbf{C} = \text{Beta}(1, b_0)$ and modify the required skills as $\Delta \sigma = (\Delta \beta_\mathbf{C} - b_1 \text{Beta}(1, b_2))$.
+
+\begin{enh}[Imitation and the frontier]
+    Catching up with the leading technology is easier than moving the innovation frontier. This empirical evidence can be modelled in two ways: the first one is to model two different innovation processes, and the other is to make $p$ increasing with $\beta_\text{MAX} - \beta$.
+\end{enh}
+
+\section{Model steps}
+\begin{steps}
+    \item[A] [\textsc{quarterly}] Statistics are computed at the relevant frequency
+    \item[B] [\textsc{quarterly}] Central Bank sets the Government Bonds interest rate
+    \item[C] Bank sets the interest rate on Bank Bonds
+    \item[D] Bank buys Government Bonds to reach the liquidity requirement
+    \item[E] [\textsc{quarterly}] Government update the public spending policy
+    \item[F.0] Firms bankrupt and get substituted
+    \item[F.1] Firms set desired output and investment
+    \item[F.2] Firms ask the Bank for loans
+    \item[G.0] Households retire and get substituted
+    \item[G.1] Households set desired consumption and savings
+    \item[G.2] Households acquire Bank Shares
+    \item[H.0] Firms open vacancies
+    \item[H.1] Labour market and wages payment
+    \item[I] Production and price setting
+    \item[J.0] Government pays unemployment benefits
+    \item[J.1] Government buys and distributes Consumption Goods
+    \item[K] Households Consumption Goods market
+    \item[L.0] Capital Goods depreciation and dismission
+    \item[L.1] Capital Goods market
+    \item[M] Innovation
+    \item[N] Skill update
+    \item[O] Firms repay loans and interests
+    \item[P] Firms distribute dividends
+    \item[Q] Bank pays interests on Shares
+    \item[R] Government pays interest on Bonds to the Bank
+    % \item[S] [\textsc{yearly}] Income taxes are arbitraged
+\end{steps}
+
+%\section{Equations}
+
+\section{Parameters}
+
+\begin{tabularx}{\linewidth}{lXll}
+    \toprule
+                                 & Description                                                  & Value & Source \\
+    \midrule
+    $N_\mathcal{H}$              & Number of Households                                         &       &        \\
+    $N_{\mathcal{F}_\mathbf{C}}$ & Number of Consumption Firms                                  &       &        \\
+    $N_{\mathcal{F}_\mathbf{K}}$ & Number of Capital Firms                                      &       &        \\
+    $N_{\mathbf{K}}$             & Capital Goods lifetime                                       & 5y    &        \\
+    $\Sigma$                     & Relative skill variation                                     & 0.01  &        \\
+    $\sigma^M$                   & Maximum initial skill level                                  & 10    &        \\
+    $e_0$                        & Intergenerational social mobility parameter                  &       &        \\
+    $e_1$                        & Shape parameter for initial skill level                      & 1     &        \\
+    $A_R$                        & Retirement Age                                               & 65y   &        \\
+    $A_0$                        & Initial age without education                                & 15y   &        \\
+    $\rho_\mathcal{H}$           & Deposits to consumption ratio                                &       &        \\
+    $a$                          & Distribution parameter for marginal propensity to consume    &       &        \\
+    $\rho_\mathbf{C}$            & Production over expected sales for Consumption Firms         &       &        \\
+    $\rho_\mathbf{K}$            & Production over expected sales for Capital Firms             &       &        \\
+    $\rho_\mathcal{F}$           & Liquidity over expected wages and investment ratio           &       &        \\
+    $\Theta$                     & Markup growth rate                                           &       &        \\
+    $r_\Pi$                      & Profit distribution rate                                     & 0.05  &        \\
+    $\rho_Q$                     & Researchers number adjustment rate                           &       &        \\
+    $\sigma^*$                   & Minimum researchers' skill level                             &       &        \\
+    $\Lambda^*$                  & Target liquidity ratio                                       &       &        \\
+    $\Gamma^*$                   & Target capital ratio                                         &       &        \\
+    $\lambda$                    & Bank share premium                                           &       &        \\
+    $\nu_0$                      & Loan to capital ratio for firms                              &       &        \\
+    $\nu_1$                      & Number of firms correction to compute maximum loan amount    &       &        \\
+    $\nu_2$                      & Loan rate premium for Bank capitalization                    &       &        \\
+    $\nu_3$                      & Loan rate premium for firms loan to net worth ratio          &       &        \\
+    $\nu_4$                      & Loan rate premium for profits to loans ratio                 &       &        \\
+    $\tau_\mathbf{C}$            & VAT rate                                                     & 0.2   &        \\
+    $\tau_\mathbf{S}$            & Financial income tax rate                                    & 0.25  &        \\
+    $\tau_I$                     & Inheritance tax rate                                         & 0     &        \\
+    $\tau_M$                     & Maximum labour income tax rate                               & 0.5   &        \\
+    $\tau_F$                     & Labour income tax progressivity                              &       &        \\
+    $\tau_T$                     & Labour income tax threshold                                  &       &        \\
+    $\phi$                       & Unemployment benefits decay rate                             & 0.90  &        \\
+    $\delta^*$                   & Target deficit                                               & 0.03  &        \\
+    $\alpha_1$                   & Inflation coefficient in Taylor rule                         &       &        \\
+    $\alpha_2$                   & Capacity utilization coefficient in Taylor rule              &       &        \\
+    $\alpha_2$                   & Unemployment coefficient in Taylor rule                      &       &        \\
+    $\psi^*$                     & Target inflation                                             & 0.02  &        \\
+    $u^*$                        & Target capacity utilization                                  & 0.8   &        \\
+    $\omega^*$                   & Target unemployment rate                                     & 0.05  &        \\
+    $k$                          & Comsumption goods to capital good output                     & 1     &        \\
+    $\chi_\mathbf{C}$            & Number of Consumption Firms seen in Consumption Goods market &       &        \\
+    $\chi_\mathbf{K}$            & Number of Capital Firms seen in Capital Goods market         &       &        \\
+    $\chi_\mathcal{H}$           & Number of Households seen in labour market                   &       &        \\
+    $\zeta$                      & Innovation speed                                             &       &        \\
+    $b_0$                        & Productivity gain distribution parameter                     &       &        \\
+    $b_1$                        & Maximum required skill loss                                  &       &        \\
+    $b_2$                        & Required skill loss distribution parameter                   &       &        \\
+
+
+    \bottomrule
+\end{tabularx}
+
+\section{Implementation}
+This model has to be solved computationally, and, as a consequence, it has to be implemented as software.
+
+It has often been noticed that agents closely resemble the concept of object in Object-Oriented Programming. Both are logically independent pieces of information, which evolve through the execution (the simulation) updating themself in response to external stimuli (the calls of their methods from other agents).
+
+For this reason, some models are implemented using this paradigm, using different patterns for agent communication and different frameworks for generic Agent-Based or Multi-Agetn models, leveraging OOP programming languages such as C++ or Java. An example in the stream of literature of interest is \textcite{caiani2016}.
+
+A different approach relies on linear algebra routines and represents each variable of the model as a vector whose indexes are each associated with a different agent. Such representation levelers the ability of some libraries and programming languages to apply a function to each element of the vector (i.e. to each agent) in an optimized way. Programming languages suitable to this approach are R, Julia, Fortran or linear algebra libraries like Python's Numpy.
+
+It is interesting to highlight that both these approaches are widely diffused in video game development as Object-Oriented and Entity-Component-System patterns. The industrial investment in improving libraries and frameworks for game development is way bigger than the academic one on simulation models in Economics, and so borrowing the software infrastructure from game development can be an interesting path in case of computationally expensive models (i.e. large-scale or high interactions).
+
+In both cases, the simulation relies only on the current state of the model not storing, in principle, the intermediate states the model has traversed. Practically, it requires one to plan what data from the intermediate states of the model have to be preserved and log them separately. As a consequence, to enhance the analysis of the model and focus on previously ignored questions it is necessary to edit the simulation code and run it again.
+
+An alternative approach is to continuously store the states and transactions of the model in a database and to use an auxiliary programming language to update the database, being able to observe the full evolution of the simulation.
+This is the chosen way for this exploratory phase of the model development, at the moment implemented using Julia and SQLite. A significant quality-of-life improvement in this paradigm is the adoption of an ORM, probably still in the context of a functional-like or purely functional programming language (like Julia, Rust or Haskell).
+
+The last observation is about the need of writing parallelized code, for example, to run simulations with a huge number of agents in High-Performance Clusters. While this idea appears interesting at first look, it is probably an unnecessary overhead, since writing parallel code in the context of interacting objects is a very difficult task.
+Instead, the same computation capacity can be used to run in parallel multiple runs of the same single-thread model, for example, to explore the sensitivity to a parameter or to obtain statistically robust analysis by comparing different initializations of the random number generator.
+
+\section*{To Do}
+This working paper outlines the structure of the model and most of the relevant macro- and microeconomic equations.
+
+The implementation in Julia/SQLite is currently in development, but it is highly unlikely that it will be ready for the Conference. Early work is available in the online git repo.
+
+Once the model will be implemented, it will be validated using the stylized facts framework, i.e. finding the volume in the parameter space which generates values of the macroeconomic variables in the model (e.g. inflation, GDP growth rate, unemployment, Gini index) similar (i.e. in the same intervals with comparable distributions) to those observed in the western European economies in an interesting time-span (for example from the 50s to today).
+
+%\section{Initialization}
+%\section{Results}
+%\section{Discussion}
+
+\clearpage
+
+\printbibliography
+
+\clearpage
+
+\appendix
+
+\section{Beta-Binomial Distribution}
+\label{sec:beta-binomial}
+The Beta-binomial distribution is a probability distribution defined on a discrete and finite support from $0$ to $N$, which describes a Bernoulli process of $N$ trials each with a probability of success drawn from a Beta distribution of parameters $\alpha$ and $\beta$.
+Its probability mass function is $\binom{x}{N}\frac{B(x+\alpha, N-x+\beta)}{B(\alpha,\beta)}$, where $B$ is the Beta function.
+
+It is easy to see that the number of trials is the maximum possible result of a drawing, and so $N=\sigma^M$.
+The relations to define $\alpha$ and $\beta$ as functions of the mean $\mu$ and the variance $s$ are less easy to derive.
+
+First, it is known that $\mu = \frac{N \alpha}{\alpha + \beta}$  and $s=\frac{N\alpha\beta(\alpha + \beta + N)}{(\alpha+\beta)^2(\alpha+\beta+1)}$, from which it follows $\beta = \frac{\alpha}{\mu}(N-\mu)$ and $\alpha + \beta = \frac{N \alpha}{\mu}$.
+$$s=\frac{N\alpha^2\mu^3(N-\mu)(N\alpha-N\mu)}{N^2\alpha^2\mu^2(N\alpha+\mu)} = \frac{\mu(N-\mu)(\alpha-\mu)}{N\alpha+\mu}$$
+$$sN\alpha + s\mu = \mu N\alpha + \mu^2 N - \alpha \mu^2 - \mu^3$$
+$$\alpha(sN -\mu N + \mu^2) = \mu(\mu N - \mu^2 -s)$$
+$$\alpha=\frac{\mu(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
+$$\beta=\frac{(N-\mu)(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
+As additional conditions it must be $\alpha > 0$ and $\beta>0$, given that $N>\mu>0$ and $s>0$, from which it follows
+$$\mu(N-\mu) > s > \frac{\mu}{N}(N-\mu)$$
+To keep the variance small and so to ensure a bell-shaped mass function, $s=\frac{\mu}{N}(N-\mu+e_1)$.
+
+
+
+\end{document}
