@@ -9,7 +9,6 @@ include(srcdir("DAS.jl"))
 
 p = DAS.get_default_parameters()
 
-
 m = DAS.create_model(p)
 try
     for t = ProgressBar(1:m.p.T)
