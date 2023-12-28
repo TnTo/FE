@@ -492,7 +492,7 @@ Once the net value of a Firm becomes negative the Firm declares bankruptcy, fire
 \end{enh}
 
 \subsection{Innovation}
-Each Capital Firm can achieve an innovation each period with a probability $\theta = e^{-\zeta Q}$ where $Q$ is the number of researchers employed.
+Each Capital Firm can achieve an innovation each period with a probability $\theta = 1 - e^{-\zeta Q}$ where $Q$ is the number of researchers employed.
 
 If the innovation is achieved the Capital Goods produced by the Firm increase its productivity $\Delta \beta = \text{Beta}(1, b_0)$ and modify the required skills as $\Delta \sigma = (\Delta \beta - b_1 \text{Beta}(1, b_2))$.
 
@@ -552,7 +552,7 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
     $\rho_\mathbf{K}$            & Production over expected sales for Capital Firms             &       & Calibration; $>1$; growth rate                                                                                                                                                            \\
     $\rho_\mathcal{F}$           & Liquidity over expected wages and investment ratio           &       & Calibration; $>1$                                                                                                                                                            \\
     $\Theta$                     & Markup growth rate                                           &       & Calibration; $>0$; inflation rate                                                                                                                                                            \\
-    $r_\Pi$                      & Profit distribution rate                                     &  & Calibration; $1> \cdot >0$; Bank's capital ratio                                                                                                                                                            \\
+    $\rho_\Pi$                      & Profit distribution rate                                     &  & Calibration; $1> \cdot >0$; Bank's capital ratio                                                                                                                                                            \\
     $\rho_Q$                     & Researchers number adjustment rate                           &       & Calibration; $>0$                                                                                                                                                            \\
     $\sigma^*$                   & Minimum researchers' skill level                             & 10  & $\sigma_M$                                                                                                                                                            \\
     $\Gamma^*$                   & Target capital ratio                                         & 0.08      & Basel III                                                                                                                                                            \\
@@ -610,6 +610,13 @@ The last observation is about the need of writing parallelized code, for example
 Instead, the same computation capacity can be used to run in parallel multiple runs of the same single-thread model, for example, to explore the sensitivity to a parameter or to obtain statistically robust analysis by comparing different initializations of the random number generator.
 
 \subsection{Initialization}
+\begin{xltabular}{\linewidth}{lXlX}
+    \toprule
+    & Description                                                  & Value & Source and Notes                                                                                                                                            \\
+    \toprule \endhead
+    \bottomrule \endfoot
+    T & Simulation lenght & 300 & 25 years \\
+\end{xltabular}
 
 \section{Calibration}
 \subsection{Stylized facts}
