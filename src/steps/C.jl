@@ -1,6 +1,6 @@
 function stepC!(m::Model)
     # println("C")
-    Γ0 = Γ(m, -1)
+    Γ0 = Γ(m, m.t - 1)
     if m.s[m.t-1].B.L == 0
         if v(m.s[m.t-1].B) > 0
             m.s[m.t].B.rS = m.s[m.t].G.rB + m.p.λ
