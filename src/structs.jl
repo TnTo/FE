@@ -36,12 +36,9 @@ abstract type Firm end
     employer::Union{Nothing,Int}
     employer_changed::Bool
     rc_::Int
-    wH::Int
+    wF::Int
     m::Int
-    tC::Int
-    tS::Int
-    tW::Int
-    tI::Int
+    t::Int
     rc::Int
     nc::Int
 end
@@ -64,6 +61,7 @@ end
     pF::Int
     π::Int
     employees::Vector{Int}
+    newborn::Bool
 end
 
 @kwdef mutable struct CapitalFirm <: Firm
@@ -88,10 +86,10 @@ end
     σ::Float
     β::Float
     employees::Vector{Int}
+    newborn::Bool
 end
 
 @kwdef mutable struct Bank <: Agent
-    id::Int
     D::Int
     S::Int
     L::Int
@@ -104,10 +102,10 @@ end
 end
 
 @kwdef mutable struct Goverment <: Agent
-    id::Int
     B::Int
     rB::Float
-    Ξ::Int
+    rBy::Float
+    Ξ::Float
     rC::Int
     nC::Int
     M::Int
@@ -115,7 +113,6 @@ end
 end
 
 @kwdef struct Stats
-    # yearly
     ψ::Float # inflation
     u::Float # capacity utilization
     ω::Float # unemployment
@@ -126,9 +123,9 @@ end
 end
 
 mutable struct State
-    Hs::Dict{Int,Household}
-    FCs::Dict{Int,ConsumptionFirm}
-    FKs::Dict{Int,CapitalFirm}
+    Hs::Vector{Household}
+    FCs::Vector{ConsumptionFirm}
+    FKs::Vector{CapitalFirm}
     B::Bank
     G::Goverment
     stats::Stats
@@ -136,8 +133,7 @@ end
 
 mutable struct Model
     p::Parameters
-    states::OffsetArray{State,1}
-    id::Int
+    s::OffsetArray{State,1}
     t::Int
 end
 
