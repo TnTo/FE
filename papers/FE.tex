@@ -313,7 +313,7 @@ The maximum output of the available machinery is defined as $b = \sum_{\kappa \i
 
 The markup is set as $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{C}\frac{s_{t-1}}{\mathbf{c}^*_{t-1}}-1))$ and the price ${p^{\mathcal{F}}_\mathbf{C}}_t = (1+\mu_t)\frac{w_t}{\mathbf{c}_t}$ after the production \parencite[like in][]{caiani2016}, where $w$ is the sum of the wages paid by the firm, the price paid by households is $p^\mathcal{H}_\mathbf{C} = (1+\tau_\mathbf{C})p^\mathcal{F}_\mathbf{C}$ and $\tau_\mathbf{C}$ is the VAT rate.
 
-The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\rho_\mathcal{F} w_t^* - \mathbf{d}_{t-1}, \rho_\mathcal{F} (\mathbb{E}(w^\mathcal{F})_t + \mathbb{E}(i)_t) - (\mathbf{d}_{t-1} + {\mathbb{E}(p^\mathcal{F}_{\mathbf{C}})}_t {\mathbb{E}(s)}_t), 0)$, where approximating a constant labour cost ${\mathbb{E}(p^\mathcal{F}_\mathbf{C})}_t = (1+\mu_t)\frac{w^\mathcal{F}_{t-1}}{\mathbf{c}_{t-1}}$.
+The request for loans is set to cover salaries and investments, keeping in account revenues, i.e. $l_t^* = \max(\rho_\mathcal{F} \mathbb{E}(w^\mathcal{F})_t - \mathbf{d}_{t-1}, \rho_\mathcal{F} (\mathbb{E}(w^\mathcal{F})_t + \mathbb{E}(i)_t) - (\mathbf{d}_{t-1} + {\mathbb{E}(p^\mathcal{F}_{\mathbf{C}})}_t {\mathbb{E}(s)}_t), 0)$, where approximating a constant labour cost ${\mathbb{E}(p^\mathcal{F}_\mathbf{C})}_t = (1+\mu_t)\frac{w^\mathcal{F}_{t-1}}{\mathbf{c}_{t-1}}$.
 
 Each firm distributes profits equal to a fraction of the net income from production, aiming to self-financing the production in the long run, i.e.  $\pi_t = \max(\rho_\Pi ({p^\mathcal{F}_\mathbf{C}}_t s_t - w^\mathcal{F}_t), 0)$.
 
@@ -323,7 +323,7 @@ Capital Firms produce their own machinery, creating a system of two simultaneous
 The problem is avoided by approximating $b^*_t = \max(\rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}, 1)$, and $\mathbf{k}_t^* = \rho_\mathbf{K}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\beta^\mathbf{K}_{t-1}} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
 
 Following the same logic used for Consumption Firms, we can write the mark-up $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) = \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1} + \hat{\mathbf{k}}_{t-2} - \Delta b_{t-1}{\beta^\mathbf{K}_{t-2}}^{-1}}-1))$.
-% The 2-lagged variables create problems in the start-up of the model. A solution is the strong approximation $\mu_t \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1}}-1))$.
+This 2-lagged variables are the only one in the model. To simplify the implemetation the strong approximation $\mu_t \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1}}-1))$ is adopted.
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t^* = q_{t-1} + \lfloor \rho_Q\frac{{p_\mathbf{K}}_{t-1}s_{t-1} - w^\mathcal{F}_{t-1}}{{\langle w^\mathcal{F}_Q \rangle}_{t-1}} \rfloor$ where $\langle w^\mathcal{F}_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$. This makes $\mathbb{E}(w^\mathcal{F})_t = \max(w_{t-1}, \frac{\mathbf{k}^*_t}{{\langle \beta^\mathbf{K} \rangle}_{t-1}}{\langle w^\mathcal{F} \rangle}_{t-1} + q_t^* {\langle w^\mathcal{F}_Q \rangle}_{t-1})$.
 
@@ -368,7 +368,7 @@ These relations account for the fulfilment of the capital requirement for the Ba
 The consolidated Public sector acts as the Central Bank and as the Government.
 
 As Central Bank, it fixes the Bonds interest rate according to a Taylor rule.
-The annual interest rate is ${r_\mathbf{B}^y} = \psi^y + \alpha_1 (\psi^y - \psi^*) + \alpha_2 (\langle u \rangle_y - u^*) - \alpha_3 (\langle \omega \rangle_y - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The interest rate used in the model is then ${r_\mathbf{B}}_t = (1 + {r_\mathbf{B}^y}_t)^{\frac{1}{12}} - 1$
+The annual interest rate is ${r_\mathbf{B}^y} = \psi^y + \alpha_1 (\psi^y - \psi^*) + \alpha_2 (\langle u \rangle_y - u^*) - \alpha_3 (\langle \omega \rangle_y - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The Public sector do not raise the yearly interest rate by more than 0.005 each quarter. The interest rate used in the model is then ${r_\mathbf{B}}_t = (1 + {r_\mathbf{B}^y}_t)^{\frac{1}{12}} - 1$.
 
 Looking at the assets matrix of the model, any Public expenditure happens directly toward the Bank with the emission of new Bonds, or through the Bank which converts new Bonds in deposits for the other sectors. As consequence, the Government has no accounting limits to spending.
 
@@ -389,8 +389,8 @@ in the previous periods, $M = \sum_{h \in \mathcal{H}} m_h$, $C^\mathcal{G}= \su
 
 Assuming a Maastricht-like scenario in which Government has a target deficit $\delta^*$ to achieve, the expected balance of the next period can be written as
 \begin{align*}
-    (1+g) \delta^* Y_{t-1} & =  {\mathbb{E}(G)}_t + {r_\mathbf{B}}_t ({\mathbf{B}_\mathcal{B}}_{t-1} + \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}} (1+g) \delta^* Y_{t-1}) - (1+g)(1+\psi) T_{t-1} \\
-    \mathbb{E}(G)_t        & = (1+\psi)(1+g) T_{t-1} + (1+g)(1-{r_\mathbf{B}}_t \frac{{\mathbf{B}_\mathcal{B}}_{t-1}}{{\mathbf{B}^\mathcal{G}}_{t-1}})\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}_\mathcal{B}}_{t-1}
+    (1+g) \delta^* Y_{t-1} & =  {\mathbb{E}(G)}_t + {r_\mathbf{B}}_t ({\mathbf{B}}_{t-1} + (1+g) \delta^* Y_{t-1}) - (1+g)(1+\psi) T_{t-1} \\
+    \mathbb{E}(G)_t        & = (1+\psi)(1+g) T_{t-1} + (1+g)(1-{r_\mathbf{B}}_t)\delta^* Y_{t-1} - {r_\mathbf{B}}_t {\mathbf{B}}_{t-1}
 \end{align*}
 But the expected public expenditure can also be written as
 \begin{align*}
@@ -403,7 +403,7 @@ where it is assumed that expenses for unemployment benefits are approximately co
 Finally, the public expenditure is regulated by updating regularly $\Xi$ as
 \begin{gather*}
     \Xi_t          = \frac{\Xi_{t-1}}{\langle {\mathbf{C}^\mathcal{G}} \rangle} \frac{\mathbb{E}(G) - \langle M \rangle}{(1+\psi)p}                                                                                       \\
-    \mathbb{E}(G)  = (1+\psi)(1+g) \langle T \rangle + (1+g)(1-{r_\mathbf{B}}_t \langle \frac{{\mathbf{B}_\mathcal{B}}}{{\mathbf{B}^\mathcal{G}}} \rangle)\delta^* Y_{t-1} - {r_\mathbf{B}}_t \langle{\mathbf{B}_\mathcal{B}}\rangle
+    \mathbb{E}(G)  = (1+\psi)(1+g) \langle T \rangle + (1+g)(1-{r_\mathbf{B}}_t)\delta^* Y_{t-1} - {r_\mathbf{B}}_t \langle{\mathbf{B}}\rangle
 \end{gather*}
 where the averages are taken since the last update.
 
