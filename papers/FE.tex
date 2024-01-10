@@ -361,7 +361,7 @@ In this model the Bank does not distribute profits and can access all the needed
 \end{enh}
 
 The Bank rations the credit to Firms, based on the balance sheet of the applicant, and fixes a different interest rate for each loan. The duration of Loans is fixed.
-Bank is willing to provide new loans to a firm $f$ in the period up to $${l^f}^*_t = \min (\nu_0 (\sum_{\kappa \in \mathbf{K}_f} p^{t-1}_\kappa)_{t-1} - \mathbf{l}^f_{t-1}, \max((\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1),0))$$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = {r_\mathbf{B}}_t + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
+Bank is willing to provide new loans to a firm $f$ in the period up to $${l^f}^*_t = \max(\min(\nu_0 (\sum_{\kappa \in \mathbf{K}_f} p^{t-1}_\kappa)_{t-1} - \mathbf{l}^f_{t-1}, (\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1)),0)$$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = {r_\mathbf{B}}_t + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
 These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
 
 \subsection{Government}

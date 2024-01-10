@@ -61,7 +61,6 @@ end
     pF::Int
     π::Int
     employees::Vector{Int}
-    newborn::Bool
 end
 
 @kwdef mutable struct CapitalFirm <: Firm
@@ -86,7 +85,6 @@ end
     σ::Float
     β::Float
     employees::Vector{Int}
-    newborn::Bool
 end
 
 @kwdef mutable struct Bank <: Agent

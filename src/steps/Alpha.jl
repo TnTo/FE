@@ -41,8 +41,7 @@ function age(f::ConsumptionFirm)
         μ=0.0, # E
         pF=0, #
         π=0,
-        employees=copy(f.employees),
-        newborn=false
+        employees=copy(f.employees)
     )
 end
 
@@ -77,8 +76,7 @@ function age(f::CapitalFirm)
         π=0,
         σ=f.σ,
         β=f.β,
-        employees=copy(f.employees),
-        newborn=false
+        employees=copy(f.employees)
     )
 end
 
