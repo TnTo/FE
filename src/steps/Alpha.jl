@@ -8,7 +8,7 @@ function age(h::Household)
         worker=h.worker,
         employer=h.employer,
         employer_changed=false,
-        rc_=0, #
+        rc_=0, # F
         wF=0,
         m=0,
         t=0,

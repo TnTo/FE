@@ -121,3 +121,14 @@ function Ewσ(m::Model, t::Int, σ::Float)::Int
         return Ew[σ]
     end
 end
+
+# Household
+function η(m::Model, t::Int, h::Household)::Float
+    return (v(h) / m.s[t].stats.p + 1)^(-m.p.α)
+end
+
+function wH(m::Model, t::Int, w::Int)::Int
+    z = ceil(Int, w * (1 - max(0, m.p.τM * tanh(m.p.τF * (w / m.s[t].stats.p - m.p.τT)))))
+    return z
+end
+

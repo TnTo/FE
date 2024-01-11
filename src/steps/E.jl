@@ -1,7 +1,7 @@
 function fire!(h::Household)
     h.employer = nothing
     h.employer_changed = true
-    h.wH = 0
+    # h.wF = 0
 end
 
 function stepE!(m::Model)

@@ -15,25 +15,4 @@ end
 
 ###
 
-function skill_from_wealth(m::Model, rv::Int)::Float # rv = real net worth
-    N::Int = m.p.σM
-    μ::Float = 1 + (N - 1) * (tanh(m.p.e0 * (rv)))
-    s::Float = (μ / N) * (N - μ + m.p.e1)
-    A::Float = (μ * N - μ^2 - s) / (s * N - μ * N + μ^2)
-    α::Float = A * μ
-    β::Float = A * (N - μ)
-    σ = 1 + rand(BetaBinomial(N - 1, α, β))
-    return σ
-end
-
-function η(m::Model, rv::Int)::Float
-    return (rv + 1)^(-m.p.α)
-end
-
-function net_wage(m::Model, state::State, w::Int)::Int
-    z = ceil(Int, w * (1 - max(0, m.p.τM * tanh(m.p.τF * (w / state.stats.p - m.p.τT)))))
-    return z
-end
-
-
 
