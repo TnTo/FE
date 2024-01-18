@@ -4,6 +4,7 @@ using Base.@kwdef
     # Initialization
     seed::Int = 8686
     T::Int = 500
+    p0::Int = 100
 
     # Not to calibrate
     NH::Int = 2000
@@ -32,6 +33,7 @@ using Base.@kwdef
     χC::Int = 5
     χK::Int = 5
     χH::Int = 20
+    ρW::Float = 1.05
 
     # To calibrate
     e0::Float

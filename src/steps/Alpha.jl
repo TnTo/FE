@@ -10,6 +10,7 @@ function age(h::Household)
         employer_changed=false,
         rc_=0, # F
         wF=0,
+        EwF=h.wF,
         m=0,
         t=0,
         rc=0,
@@ -104,9 +105,9 @@ function stepAlpha!(m::Model)::State
         Π=0,
         iL=0
     )
-    Hs = [age(m.s[m.t-1].Hs[id]) for id = 1:m.p.NH]
-    FCs = [age(m.s[m.t-1].FCs[id]) for id = 1:m.p.NFC]
-    FKs = [age(m.s[m.t-1].FKs[id]) for id = 1:m.p.NFK]
+    Hs = OffsetArray([age(m.s[m.t-1].Hs[id]) for id = (m.p.NFK+m.p.NFC+1):(m.p.NFK+m.p.NFC+m.p.NH)], m.p.NFK + m.p.NFC)
+    FCs = OffsetArray([age(m.s[m.t-1].FCs[id]) for id = (m.p.NFK+1):(m.p.NFK+m.p.NFC)], m.p.NFK)
+    FKs = OffsetArray([age(m.s[m.t-1].FKs[id]) for id = 1:m.p.NFK], 0)
     stats = Stats(0, 0, 0, 0, 0, 0, Float[]) # A
     state = State(Hs, FCs, FKs, B, G, stats)
     m.s[m.t] = state

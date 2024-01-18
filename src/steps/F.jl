@@ -1,9 +1,9 @@
-function resign!(h::Household)
+function resign!(m::Model, h::Household)
     if h.employer !== nothing
-        filter!(x -> x != h.id, h.employer.employees)
+        filter!(x -> x != h.id, f_by_id(m, m.t, h.employer).employees)
         h.employer = nothing
         h.employer_changed = true
-        # h.wF = 0
+        h.EwF = 0
     end
 end
 
@@ -25,7 +25,7 @@ function stepF!(m::Model)
     for h = s.Hs
         h1 = s.Hs[h.id]
         if h.age == m.p.AM # retirement
-            resign!(h)
+            resign!(m, h)
             h.σ = skill_from_wealth(m, m.t, h)
             h.age = m.p.A0 + floor(Int, 12 * σ)
             it = floor(Int, m.p.τI * v(h0))
@@ -54,8 +54,8 @@ function stepF!(m::Model)
         D = ((1 + ψ) * p * η(m, m.t, h) + (rS + ΔrS) * (1 + m.p.ρH))
         A = (ΔrS * h.S + (rS + ΔrS) * (h.D - (1 + m.p.ρH) * h1.nc)) / D - ψ * h1.rc / (1 + ψ)
         if h.worker == true
-            if (A + (-wH(m, m.t, h1.wF) + (rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h1.wF)))) / D) > 0
-                resign!(h)
+            if (A + (-wH(m, m.t, h.EwF) + (rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D) > 0
+                resign!(m, h)
                 h.worker = false
             end
         else
@@ -64,11 +64,11 @@ function stepF!(m::Model)
             end
         end
         if h.employer === nothing
-            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h1.wF)))) / D)
-            s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h1.wF))) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
+            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D)
+            s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF))) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
         else
-            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h1.wF)) / D)
-            s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h1.wF) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
+            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h.EwF)) / D)
+            s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h.EwF) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
         end
         Δs = min(s_ - h.S, h.D)
         h.S += Δs

@@ -1,7 +1,7 @@
 function fire!(h::Household)
     h.employer = nothing
     h.employer_changed = true
-    # h.wF = 0
+    h.EwF = 0
 end
 
 function stepE!(m::Model)
@@ -76,12 +76,7 @@ function stepE!(m::Model)
         f.Δb_ = max(1, Es / m.p.u_ - m.p.γ * b(m, f)) - b(m, f)
         f.k_ = max(0, ceil(Int, m.p.ρK * Es + f.Δb_ / f.β - lenght(f.inv)))
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f.k_ - 1))
-        σempl = filter(hid -> s.Hs[hid].σ >= m.p.σ_, f.employees)
-        if length(σempl) > 0
-            avgwQF = mean(map(hid -> s.Hs[hid].wF, σempl))
-        else
-            avgwQF = Ewσ(m, t, m.p.σ_)
-        end
+        avgwQF = avgwQF(m, m.t - 1, f)
         f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.pF * f1.s - f1.wF) / avgwQF)
         if length(f.K) > 0
             if length(f.employees) > 0

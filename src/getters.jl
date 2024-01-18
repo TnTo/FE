@@ -30,6 +30,25 @@ function pKK(f::CapitalFirm)::Int
     return mapsum(k -> p(m, k), f.K) + mapsum(k -> p(m, k), f.inv)
 end
 
+function avgwQF(m::Model, t::Int, f::CapitalFirm)::Int
+    s = m.s[t]
+    σempl = filter(hid -> s.Hs[hid].σ >= m.p.σ_, f.employees)
+    if length(σempl) > 0
+        avgwQF = mean(map(hid -> s.Hs[hid].wF, σempl))
+    else
+        avgwQF = Ewσ(m, t, m.p.σ_)
+    end
+    return ceil(Int, avgwQF)
+end
+
+function f_by_id(m::Model, t::Int, id::Int)
+    if id <= m.p.NFK
+        return m.s[t].FKs[id]
+    else
+        return m.s[t].FCs[id]
+    end
+end
+
 # Net Worth
 
 function v(h::Household)::Int
@@ -132,3 +151,6 @@ function wH(m::Model, t::Int, w::Int)::Int
     return z
 end
 
+# Position
+σ(m::Model, k::CapitalGood) = k.σ
+σ(m::Model, r::Researcher) = m.p.σ_

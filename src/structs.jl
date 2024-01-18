@@ -33,10 +33,11 @@ abstract type Firm end
     σ::Float
     age::Int
     worker::Bool
-    employer::Union{Nothing,Firm}
+    employer::Union{Nothing,Int}
     employer_changed::Bool
     rc_::Int
     wF::Int
+    EwF::Int
     m::Int
     t::Int
     rc::Int
@@ -121,9 +122,9 @@ end
 end
 
 mutable struct State
-    Hs::Vector{Household}
-    FCs::Vector{ConsumptionFirm}
-    FKs::Vector{CapitalFirm}
+    Hs::OffsetArray{Household}
+    FCs::OffsetArray{ConsumptionFirm}
+    FKs::OffsetArray{CapitalFirm}
     B::Bank
     G::Goverment
     stats::Stats
@@ -136,6 +137,7 @@ mutable struct Model
 end
 
 struct Vacancy
-    fid::Int
+    f::Firm
     g::Position
+    w::Int
 end
