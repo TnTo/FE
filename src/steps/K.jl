@@ -14,7 +14,7 @@ function stepK!(m::Model)
         fc = rand(fcs)
         ffks = filter(fk -> any(map(k -> p(m, k) <= fc.D, fk.inv)), fks) # Feasible ks
         if length(ffks) == 0
-            filter!(e -> e == fc, fcs)
+            filter!(e -> e != fc, fcs)
             continue
         end
         fk = sort(sample(ffks, min(length(ffks), m.p.χK), replace=false), by=f -> f.β * m.p.k * fc.pF - Ewσ(f.σ, state) - f.p / m.p.NK)[1] # The promised β, σ, p/N are not necessary the ones sold !!!
@@ -37,10 +37,10 @@ function stepK!(m::Model)
             end
         end
         if fc.Δb_ <= fc.Δb
-            filter!(e -> e == fc, fcs)
+            filter!(e -> e != fc, fcs)
         end
         if length(fk.inv) == 0
-            filter!(e -> e == fk, fks)
+            filter!(e -> e != fk, fks)
         end
     end
 end

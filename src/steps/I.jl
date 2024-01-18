@@ -24,7 +24,7 @@ function stepI!(m::Model)
                 c = (rc_ - rc)
             else
                 c = f.c - f.s
-                filter!(e -> e == f, fcs)
+                filter!(e -> e != f, fcs)
             end
             rc += c
             state.G.rC += c

@@ -58,8 +58,8 @@ function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     flow[:ΠF, :FK] = -mapsum(a -> a.π, s.FKs)
     flow[:ΠF, :B] = s.B.Π
     flow[:ΠF, :Tot] = sum(flow[:ΠF, :])
-    flow[:rS, :H] = floor(Int, s.B.rS * mapsum(a -> a.S, s.Hs))
-    flow[:rS, :B] = -floor(Int, s.B.rS * s.B.S)
+    flow[:rS, :H] = mapsum(a -> a.iS, s.Hs)
+    flow[:rS, :B] = s.B.iS
     flow[:rS, :Tot] = sum(flow[:rS, :])
     flow[:rL, :FC] = -mapsum(a -> a.il, s.FCs)
     flow[:rL, :FK] = -mapsum(a -> a.il, s.FKs)

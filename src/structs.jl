@@ -42,6 +42,7 @@ abstract type Firm end
     t::Int
     rc::Int
     nc::Int
+    iS::Int
 end
 
 @kwdef mutable struct ConsumptionFirm <: Firm
@@ -98,6 +99,7 @@ end
     l_::Int
     Π::Int
     iL::Int
+    iS::Int
 end
 
 @kwdef mutable struct Goverment <: Agent

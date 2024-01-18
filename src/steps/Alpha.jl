@@ -14,7 +14,8 @@ function age(h::Household)
         m=0,
         t=0,
         rc=0,
-        nc=0
+        nc=0,
+        iS=0
     )
 end
 
@@ -103,7 +104,8 @@ function stepAlpha!(m::Model)::State
         rL=0.0, # C
         l_=0, # C
         Π=0,
-        iL=0
+        iL=0,
+        iS=0
     )
     Hs = OffsetArray([age(m.s[m.t-1].Hs[id]) for id = (m.p.NFK+m.p.NFC+1):(m.p.NFK+m.p.NFC+m.p.NH)], m.p.NFK + m.p.NFC)
     FCs = OffsetArray([age(m.s[m.t-1].FCs[id]) for id = (m.p.NFK+1):(m.p.NFK+m.p.NFC)], m.p.NFK)

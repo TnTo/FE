@@ -7,7 +7,7 @@ function stepJ!(m::Model)
         h = rand(hs)
         ffcs = filter(f -> floor(Int, f.pF * (1 + m.p.τC)) <= h.D, fcs)
         if length(ffcs) == 0
-            filter!(e -> e == h, hs)
+            filter!(e -> e != h, hs)
             continue
         end
         f = sort(sample(ffcs, min(length(ffcs), m.p.χC), replace=false), by=(f -> f.p))[1]
