@@ -12,8 +12,8 @@ function proposed_wage(m::Model, t::Int, f::CapitalFirm, g::Researcher)::Int
     return avgwQF(m, t - 1, f)
 end
 
-function stepH!(m::Model)
-    # println("H")
+function stepG!(m::Model)
+    # println("G")
     s = m.s[m.t]
     vacancies = Vacancy[]
     for f = s.FCs
@@ -126,11 +126,11 @@ function stepH!(m::Model)
             f.wF -= h.EwF
             tax = floor(Int, h.wF * max(0, m.p.τM * tanh(m.p.τF * (h.wF / s.stats.p - m.p.τT))))
             h.D -= tax
-            B.D += tax
-            B.B -= tax
-            G.B += tax
+            s.B.D += tax
+            s.B.B -= tax
+            s.G.B += tax
             h.t += tax
-            G.T -= tax
+            s.G.T -= tax
         end
     end
 
