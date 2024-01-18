@@ -129,8 +129,8 @@ function stepG!(m::Model)
             s.B.D += tax
             s.B.B -= tax
             s.G.B += tax
-            h.t += tax
-            s.G.T -= tax
+            h.t -= tax
+            s.G.T += tax
         end
     end
 
