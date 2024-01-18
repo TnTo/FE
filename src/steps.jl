@@ -6,6 +6,7 @@ include("steps/D.jl")
 include("steps/E.jl")
 include("steps/F.jl")
 include("steps/G.jl")
+include("steps/H.jl")
 
 function stepOmega!(m::Model)
 end

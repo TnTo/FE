@@ -123,6 +123,7 @@ function stepH!(m::Model)
             h.D += h.wF
             f.D -= h.wF
             h.wF = h.EwF
+            f.wF -= h.EwF
             tax = floor(Int, h.wF * max(0, m.p.τM * tanh(m.p.τF * (h.wF / s.stats.p - m.p.τT))))
             h.D -= tax
             B.D += tax
