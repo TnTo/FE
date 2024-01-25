@@ -9,7 +9,7 @@ end
 
 function skill_from_wealth(m::Model, t::Int, h::Household)::Float
     N::Int = m.p.σM
-    μ::Float = 1 + (N - 1) * (tanh(m.p.e0 * (v(h) / m.s[t].stats.p)))
+    μ::Float = 1 + (N - 1) * (tanh(m.p.e0 * (v(m, h) / m.s[t].stats.p)))
     s::Float = (μ / N) * (N - μ + m.p.e1)
     A::Float = (μ * N - μ^2 - s) / (s * N - μ * N + μ^2)
     α::Float = A * μ
@@ -24,11 +24,11 @@ function stepF!(m::Model)
     # println("F")
     for h = s.Hs
         h1 = s.Hs[h.id]
-        if h.age == m.p.AM # retirement
+        if h.age == m.p.AR # retirement
             resign!(m, h)
             h.σ = skill_from_wealth(m, m.t, h)
-            h.age = m.p.A0 + floor(Int, 12 * σ)
-            it = floor(Int, m.p.τI * v(h0))
+            h.age = m.p.A0 + floor(Int, 12 * h.σ)
+            it = floor(Int, m.p.τI * v(m, h1))
             if h.D < it
                 Δ = it - h.D
                 h.D += Δ
@@ -65,10 +65,10 @@ function stepF!(m::Model)
         end
         if h.employer === nothing
             h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D)
-            s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF))) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
+            s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF))) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
         else
             h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h.EwF)) / D)
-            s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h.EwF) - (1 + m.ρH) * (1 + s.stats.ψ) * p * h.nc_))
+            s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h.EwF) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
         end
         Δs = min(s_ - h.S, h.D)
         h.S += Δs

@@ -4,18 +4,18 @@ function stepI!(m::Model)
     # println("I")
     for h = s.Hs
         if h.employer === nothing
-            m = floor(Int, m.p.ϕ * max(s1.Hs[id].m, wH(m, m.t - 1, state1.Hs[id].wF)))
-            h.D += m
-            s.B.D -= m
-            s.B.B += m
-            s.G.B -= m
-            h.m += m
-            s.G.M -= m
+            M = floor(Int, m.p.ϕ * max(s1.Hs[h.id].m, wH(m, m.t - 1, s1.Hs[h.id].wF)))
+            h.D += M
+            s.B.D -= M
+            s.B.B += M
+            s.G.B -= M
+            h.m += M
+            s.G.M -= M
         end
     end
-    fcs = filter(f -> f.s < f.c, f.FCs)
-    for h = shuffle(s.Hs)
-        rv = v(s1.Hs[h.id]) / s1.stats.p
+    fcs = filter(f -> f.s < f.c, s.FCs)
+    for h = shuffle(OffsetArrays.no_offset_view(s.Hs))
+        rv = v(m, s1.Hs[h.id]) / s1.stats.p
         rc_ = ceil(Int, s.G.Ξ * ((1 - m.p.ϵ0) + m.p.ϵ0 * exp(-m.p.ϵ1 * rv)))
         rc = 0
         while rc < rc_ && length(fcs) > 0
@@ -27,7 +27,7 @@ function stepI!(m::Model)
                 filter!(e -> e != f, fcs)
             end
             rc += c
-            state.G.rC += c
+            s.G.rC += c
             f.s += c
             h.rc += c
             nc = f.pF * c

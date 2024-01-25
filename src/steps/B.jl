@@ -14,9 +14,9 @@ function stepB!(m::Model)
         end
         rB = y2m(rBy)
     else
-        rBy = m.s[t-1].G.rBy
-        rB = m.s[t-1].G.rB
+        rBy = m.s[m.t-1].G.rBy
+        rB = m.s[m.t-1].G.rB
     end
-    m.s.[m.t].G.rBy = rBy
-    m.s.[m.t].G.rB = rB
+    m.s[m.t].G.rBy = rBy
+    m.s[m.t].G.rB = rB
 end

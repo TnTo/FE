@@ -22,11 +22,11 @@ function q(f::CapitalFirm)::Int
     return count(r -> r.operator !== nothing, f.Q)
 end
 
-function pKK(f::ConsumptionFirm)::Int
+function pKK(m::Model, f::ConsumptionFirm)::Int
     return mapsum(k -> p(m, k), f.K)
 end
 
-function pKK(f::CapitalFirm)::Int
+function pKK(m::Model, f::CapitalFirm)::Int
     return mapsum(k -> p(m, k), f.K) + mapsum(k -> p(m, k), f.inv)
 end
 
@@ -51,26 +51,26 @@ end
 
 # Net Worth
 
-function v(h::Household)::Int
+function v(m::Model, h::Household)::Int
     return h.D + h.S
 end
 
-function v(f::Firm)::Int
-    return f.D + L(f) + pKK(f)
+function v(m::Model, f::Firm)::Int
+    return f.D + L(f) + pKK(m, f)
 end
 
-function v(b::Bank)::Int
+function v(m::Model, b::Bank)::Int
     return b.D + b.S + b.L + b.B
 end
 
-function v(g::Goverment)::Int
+function v(m::Model, g::Goverment)::Int
     return g.B
 end
 
 # Bank
 
 function Γ(m::Model, t::Int)::Float
-    return v(m.s[t].B) / m.s[t].B.L
+    return v(m, m.s[t].B) / m.s[t].B.L
 end
 
 # Stats
@@ -133,7 +133,7 @@ end
 
 function Ewσ(m::Model, t::Int, σ::Float)::Int
     σ = ceil(Int, σ)
-    Ew = st(m, t).stats.Ewσ
+    Ew = m.s[t].stats.Ewσ
     if σ > length(Ew)
         return last(Ew)
     else
@@ -143,7 +143,7 @@ end
 
 # Household
 function η(m::Model, t::Int, h::Household)::Float
-    return (v(h) / m.s[t].stats.p + 1)^(-m.p.α)
+    return (v(m, h) / m.s[t].stats.p + 1)^(-m.p.a)
 end
 
 function wH(m::Model, t::Int, w::Int)::Int

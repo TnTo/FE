@@ -4,7 +4,7 @@ Base.displaysize() = (25, 80)
 
 function compute_balance_sheet(m::Model, t::Int)::NamedArray{Int}
     s = m.s[t]
-    balance = NamedArray(zeros(Int, 7, 7), ([:D, :S, :L, :B, :K, :V], [:H, :FC, :FK, :B, :G, :Tot]))
+    balance = NamedArray(zeros(Int, 6, 6), ([:D, :S, :L, :B, :K, :V], [:H, :FC, :FK, :B, :G, :Tot]))
     balance[:D, :H] = mapsum(a -> a.D, s.Hs)
     balance[:D, :FC] = mapsum(a -> a.D, s.FCs)
     balance[:D, :FK] = mapsum(a -> a.D, s.FKs)
@@ -28,7 +28,6 @@ function compute_balance_sheet(m::Model, t::Int)::NamedArray{Int}
     balance[:V, :FK] = sum(balance[:, :FK])
     balance[:V, :B] = sum(balance[:, :B])
     balance[:V, :G] = sum(balance[:, :G])
-    balance[:V, :C] = sum(balance[:, :C])
     balance[:V, :Tot] = sum(balance[:V, :])
     return balance
 end
@@ -36,7 +35,7 @@ end
 function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     s = m.s[t]
     s1 = m.s[t-1]
-    flow = NamedArray(zeros(Int, 17, 7), ([:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB, :ΔD, :ΔS, :ΔL, :ΔB, :ΔK, :Tot], [:H, :FC, :FK, :B, :G, :Tot]))
+    flow = NamedArray(zeros(Int, 15, 6), ([:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB, :ΔD, :ΔS, :ΔL, :ΔB, :ΔK, :Tot], [:H, :FC, :FK, :B, :G, :Tot]))
     flow[:C, :H] = -mapsum(a -> a.nc, s.Hs)
     flow[:C, :FC] = mapsum(a -> a.s * a.pF, s.FCs)
     flow[:C, :G] = -s.G.nC
@@ -61,8 +60,8 @@ function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     flow[:rS, :H] = mapsum(a -> a.iS, s.Hs)
     flow[:rS, :B] = s.B.iS
     flow[:rS, :Tot] = sum(flow[:rS, :])
-    flow[:rL, :FC] = -mapsum(a -> a.il, s.FCs)
-    flow[:rL, :FK] = -mapsum(a -> a.il, s.FKs)
+    flow[:rL, :FC] = -mapsum(a -> a.iL, s.FCs)
+    flow[:rL, :FK] = -mapsum(a -> a.iL, s.FKs)
     flow[:rL, :B] = s.B.iL
     flow[:rL, :Tot] = sum(flow[:rL, :])
     flow[:rB, :B] = floor(Int, s.B.B * s.G.rB)
@@ -76,23 +75,22 @@ function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     flow[:ΔS, :H] = mapsum(a -> a.S, s.Hs) - mapsum(a -> a.S, s1.Hs)
     flow[:ΔS, :B] = -(s.B.S - s1.B.S)
     flow[:ΔS, :Tot] = sum(flow[:ΔS, :])
-    flow[:ΔL, :FC] = -(mapsum(a -> l(a), s.FCs) - mapsum(a -> l(a), s1.FCs))
-    flow[:ΔL, :FK] = -(mapsum(a -> l(a), s.FKs) - mapsum(a -> l(a), s1.FKs))
+    flow[:ΔL, :FC] = -(mapsum(a -> L(a), s.FCs) - mapsum(a -> L(a), s1.FCs))
+    flow[:ΔL, :FK] = -(mapsum(a -> L(a), s.FKs) - mapsum(a -> L(a), s1.FKs))
     flow[:ΔL, :B] = s.B.L - s1.B.L
     flow[:ΔL, :Tot] = sum(flow[:ΔL, :])
     flow[:ΔB, :B] = s.B.B - s1.B.B
     flow[:ΔB, :G] = -(s.G.B - s1.G.B)
     flow[:ΔB, :Tot] = sum(flow[:ΔB, :])
-    flow[:ΔK, :FC] = mapsum(a -> pkk(a), s.FCs) - mapsum(a -> pkk(a), s1.FCs)
-    flow[:ΔK, :FK] = mapsum(a -> pkk(a), s.FKs) - mapsum(a -> pkk(a), s1.FKs)
+    flow[:ΔK, :FC] = mapsum(a -> pKK(m, a), s.FCs) - mapsum(a -> pKK(m, a), s1.FCs)
+    flow[:ΔK, :FK] = mapsum(a -> pKK(m, a), s.FKs) - mapsum(a -> pKK(m, a), s1.FKs)
     flow[:ΔK, :Tot] = sum(flow[:ΔK, :])
-    flow[:Tot, :H] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :H]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :H])
-    flow[:Tot, :FC] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :FC]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :FC])
-    flow[:Tot, :FK] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :FK]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :FK])
-    flow[:Tot, :B] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :B]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :B])
-    flow[:Tot, :G] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :G]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :G])
-    flow[:Tot, :C] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :C]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :C])
-    flow[:Tot, :Tot] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔR, :ΔK], :Tot]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :ΠC, :rS, :rL, :rB], :Tot])
+    flow[:Tot, :H] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :H]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :H])
+    flow[:Tot, :FC] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :FC]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :FC])
+    flow[:Tot, :FK] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :FK]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :FK])
+    flow[:Tot, :B] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :B]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :B])
+    flow[:Tot, :G] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :G]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :G])
+    flow[:Tot, :Tot] = sum(flow[[:ΔD, :ΔS, :ΔL, :ΔB, :ΔK], :Tot]) - sum(flow[[:C, :I, :W, :T, :M, :ΠF, :rS, :rL, :rB], :Tot])
     return flow
 end
 

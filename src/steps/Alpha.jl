@@ -21,7 +21,7 @@ end
 
 function age(f::ConsumptionFirm)
     return ConsumptionFirm(
-        id=f.d,
+        id=f.id,
         D=f.D,
         L=[
             Loan(l.value, l.r, l.age + 1, l.NPL)

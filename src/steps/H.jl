@@ -19,7 +19,7 @@ function stepH!(m::Model)
         else
             f.p = ceil(Int, (1 + f.μ) * (-f.wF) / f.k)
         end
-        for _ = 1:f.K
+        for _ = 1:f.k
             push!(f.inv, CapitalGood(f.p, 0, f.σ, f.β, nothing))
         end
         Δ = f.Δb_

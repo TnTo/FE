@@ -1,10 +1,12 @@
-using Base.@kwdef
+import Base.@kwdef
 
 @kwdef mutable struct Parameters
     # Initialization
     seed::Int = 8686
     T::Int = 500
     p0::Int = 100
+    δ0::Float
+    σ0::Float
 
     # Not to calibrate
     NH::Int = 2000
@@ -15,7 +17,7 @@ using Base.@kwdef
     σM::Int = 10
     AR::Int = 780
     A0::Int = 180
-    σ_::Int = 10
+    σ_::Float = 10
     Γ_::Float = 0.08
     τC::Float = 0.2
     τS::Float = 0.25
@@ -42,6 +44,7 @@ using Base.@kwdef
     a::Float
     ρC::Float
     ρK::Float
+    ρF::Float
     Θ::Float
     ρΠ::Float
     ρQ::Float
@@ -62,12 +65,15 @@ using Base.@kwdef
 end
 
 Parameters() = Parameters(
+    σ0=1.0,
+    δ0=0.5,
     e0=1.0,
     e1=1.0,
     ρH=1.1,
     a=1.0,
     ρC=1.1,
     ρK=1.05,
+    ρF=1.0,
     Θ=1.0,
     ρΠ=0.5,
     ρQ=0.1,

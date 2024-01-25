@@ -91,8 +91,8 @@ function stepG!(m::Model)
             h = sort(hs, by=h -> h.EwF)[1]
             w = max(ceil(Int, h.EwF * m.p.ρW), m.p.p0)
         end
-        h.employer_changed = (h.employer == v.fid)
-        push!(f.employees, h.id)
+        h.employer_changed = (h.employer == v.f.id)
+        push!(v.f.employees, h.id)
         if h.employer !== nothing
             filter!(x -> x != h.id, f_by_id(m, m.t, h.employer).employees)
         end

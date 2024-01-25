@@ -1,10 +1,10 @@
 function stepK!(m::Model)
     # println("K")
     s = m.s[m.t]
-    for f = f.FCs
+    for f = s.FCs
         filter!(k -> k.age == m.p.NK, f.K)
     end
-    for f = f.FKs
+    for f = s.FKs
         filter!(k -> k.age == m.p.NK, f.K)
         filter!(k -> k.age == m.p.NK, f.inv)
     end

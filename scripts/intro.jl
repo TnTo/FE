@@ -7,12 +7,12 @@ using Statistics
 
 include(srcdir("DAS.jl"))
 
-p = DAS.get_default_parameters()
+p = DAS.Parameters()
 
 m = DAS.create_model(p)
 try
     for t = ProgressBar(1:m.p.T)
-        # println("STEP $(t)")
+        println("STEP $(t)")
         DAS.step!(m)
     end
 finally

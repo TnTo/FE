@@ -3,7 +3,7 @@ function stepP!(m::Model)
     # println("P")
     s = m.s[m.t]
     for h = s.Hs
-        i = floor(Int, state.B.rS * h.S)
+        i = floor(Int, s.B.rS * h.S)
         t = floor(Int, m.p.τS * i)
         h.D += (i - t)
         s.B.D -= (i - t)
@@ -12,6 +12,6 @@ function stepP!(m::Model)
         h.iS += i
         s.B.iS -= i
         h.t -= t
-        state.G.T += t
+        s.G.T += t
     end
 end
