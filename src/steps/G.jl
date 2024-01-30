@@ -102,7 +102,7 @@ function stepG!(m::Model)
     end
     # println("$(length(filter(v->v.g.operator === nothing, vacancies))) vacancies not filled")
     for f = s.FCs
-        hs = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
+        hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         w = mapsum(h -> h.EwF, hs)
         while w > f.D
             # println("Firing a worker for liquidity constraint")

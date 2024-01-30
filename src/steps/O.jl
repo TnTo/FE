@@ -21,7 +21,7 @@ function stepO!(m::Model)
         end
     end
     for f = s.FKs
-        f.π = floor(Int, m.p.ρΠ * (f.pF * f.s - f.wF))
+        f.π = floor(Int, m.p.ρΠ * (f.p * f.s - f.wF))
         if f.π > 0
             f.π = min(f.π, f.D)
             s.B.D += f.π

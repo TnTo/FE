@@ -28,7 +28,7 @@ function stepE!(m::Model)
             if length(f.employees) > 0
                 EwF = max(f1.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(k -> Ewσ(m, t, k.σ), f.K))
+                EwF = max(f.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(k -> Ewσ(m, m.t, k.σ), f.K))
             end
         else
             fk1 = sample(m.s[m.t-1].FKs)
