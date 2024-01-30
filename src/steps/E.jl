@@ -44,6 +44,7 @@ function stepE!(m::Model)
         f.l_ = ceil(Int, max(m.p.ρF * EwF - f.D, m.p.ρF * (EwF + Ei) - (f.D + ((1 + f.μ) / (1 + f1.μ) * f1.pF) * Es)))
 
         l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
+        # l = max(0, floor(Int, min(f.l_, s.B.l_)))
         if l > 0
             if L(f) != 0
                 if v(m, f) != 0
@@ -89,12 +90,13 @@ function stepE!(m::Model)
             if length(f.employees) > 0
                 EwF = max(f1.wF, f.k_ / f.β * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + q_ * wQF)
             else
-                EwF = max(f1.wF, f.k_ / f.β * Ewσ(m, t, f.σ) + q_ * wQF)
+                EwF = max(f1.wF, f.k_ / f.β * Ewσ(m, m.t, f.σ) + q_ * wQF)
             end
         end
         f.l_ = ceil(Int, max(m.p.ρF * EwF, 0))
 
         l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
+        #l = max(0, floor(Int, min(f.l_, s.B.l_)))
         if l > 0
             if L(f) != 0
                 if v(m, f) != 0
