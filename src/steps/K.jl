@@ -17,7 +17,7 @@ function stepK!(m::Model)
             filter!(e -> e != fc, fcs)
             continue
         end
-        fk = sort(sample(ffks, min(length(ffks), m.p.χK), replace=false), by=f -> f.β * m.p.k * fc.pF - Ewσ(f.σ, state) - f.p / m.p.NK)[1] # The promised β, σ, p/N are not necessary the ones sold !!!
+        fk = sort(sample(ffks, min(length(ffks), m.p.χK), replace=false), by=f -> f.β * m.p.k * fc.pF - Ewσ(m, m.t, f.σ) - f.p / m.p.NK)[1] # The promised β, σ, p/N are not necessary the ones sold !!!
         let nk_ = min(ceil(Int, fc.Δb_ - fc.Δb), ceil(Int, fc.Δb_ / m.p.χK), length(fk.inv))
             nk = 0
             i = 1

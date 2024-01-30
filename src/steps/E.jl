@@ -90,7 +90,7 @@ function stepE!(m::Model)
             if length(f.employees) > 0
                 EwF = max(f1.wF, f.k_ / f.β * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + q_ * wQF)
             else
-                EwF = max(f1.wF, f.k_ / f.β * Ewσ(m, m.t, f.σ) + q_ * wQF)
+                EwF = max(f1.wF, f.k_ / f.β * Ewσ(m, m.t, f.σ) + f.q_ * wQF)
             end
         end
         f.l_ = ceil(Int, max(m.p.ρF * EwF, 0))
