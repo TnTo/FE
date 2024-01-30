@@ -43,8 +43,8 @@ function stepE!(m::Model)
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρC * f1.s / f1.c_ - 1))
         f.l_ = ceil(Int, max(m.p.ρF * EwF - f.D, m.p.ρF * (EwF + Ei) - (f.D + ((1 + f.μ) / (1 + f1.μ) * f1.pF) * Es)))
 
-        l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
-        # l = max(0, floor(Int, min(f.l_, s.B.l_)))
+        # l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
+        l = max(0, floor(Int, min(f.l_, s.B.l_)))
         if l > 0
             if L(f) != 0
                 if v(m, f) != 0
@@ -95,8 +95,8 @@ function stepE!(m::Model)
         end
         f.l_ = ceil(Int, max(m.p.ρF * EwF, 0))
 
-        l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
-        #l = max(0, floor(Int, min(f.l_, s.B.l_)))
+        # l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
+        l = max(0, floor(Int, min(f.l_, s.B.l_)))
         if l > 0
             if L(f) != 0
                 if v(m, f) != 0
