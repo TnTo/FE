@@ -41,7 +41,7 @@ function stepE!(m::Model)
             end
         end
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρC * f1.s / f1.c_ - 1))
-        f.l_ = ceil(Int, max(m.p.ρF * EwF - f.D, m.p.ρF * (EwF + Ei) - (f.D + ((1 + f.μ) * f1.wF / f1.c) * Es)))
+        f.l_ = ceil(Int, max(m.p.ρF * EwF - f.D, m.p.ρF * (EwF + Ei) - (f.D + ((1 + f.μ) / (1 + f1.μ) * f1.pF) * Es)))
 
         l = max(0, floor(Int, min(f.l_, s.B.l_, m.p.ν0 * pKK(m, f) + L(f))))
         if l > 0
@@ -75,8 +75,8 @@ function stepE!(m::Model)
         end
         Es = (1 + s.stats.g - s.stats.ψ) * f1.s
         f.Δb_ = max(1, Es / m.p.u_ - γ * b(m, f)) - b(m, f)
-        f.k_ = max(0, ceil(Int, m.p.ρK * Es + f.Δb_ / f.β - length(f.inv)))
-        f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f.k_ - 1))
+        f.k_ = max(1, ceil(Int, m.p.ρK * Es + f.Δb_ / f.β - length(f.inv)))
+        f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1))
         wQF = avgwQF(m, m.t - 1, f)
         f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)
         if length(f.K) > 0

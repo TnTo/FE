@@ -2,11 +2,11 @@ function stepK!(m::Model)
     # println("K")
     s = m.s[m.t]
     for f = s.FCs
-        filter!(k -> k.age == m.p.NK, f.K)
+        filter!(k -> k.age != m.p.NK, f.K)
     end
     for f = s.FKs
-        filter!(k -> k.age == m.p.NK, f.K)
-        filter!(k -> k.age == m.p.NK, f.inv)
+        filter!(k -> k.age != m.p.NK, f.K)
+        filter!(k -> k.age != m.p.NK, f.inv)
     end
     fcs = filter(f -> f.Δb < f.Δb_, s.FCs)
     fks = filter(f -> length(f.inv) > 0, s.FKs)

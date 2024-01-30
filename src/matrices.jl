@@ -20,8 +20,8 @@ function compute_balance_sheet(m::Model, t::Int)::NamedArray{Int}
     balance[:B, :B] = s.B.B
     balance[:B, :G] = s.G.B
     balance[:B, :Tot] = sum(balance[:B, :])
-    balance[:K, :FC] = mapsum(k -> k.p, vcat(map(a -> a.K, s.FCs)...))
-    balance[:K, :FK] = mapsum(k -> k.p, vcat(map(a -> a.K, s.FKs)..., map(a -> a.inv, s.FKs)...))
+    balance[:K, :FC] = mapsum(a -> pKK(m, a), s.FCs)
+    balance[:K, :FK] = mapsum(a -> pKK(m, a), s.FKs)
     balance[:K, :Tot] = sum(balance[:K, :])
     balance[:V, :H] = sum(balance[:, :H])
     balance[:V, :FC] = sum(balance[:, :FC])

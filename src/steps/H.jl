@@ -15,7 +15,7 @@ function stepH!(m::Model)
         f.k = floor(Int, mapsum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
         f1 = m.s[m.t-1].FKs[f.id]
         if f.k == 0
-            f.pF = ceil(Int, f1.pF * (1 + f.μ) / (1 + f1.μ))
+            f.p = ceil(Int, f1.p * (1 + f.μ) / (1 + f1.μ))
         else
             f.p = ceil(Int, (1 + f.μ) * (-f.wF) / f.k)
         end

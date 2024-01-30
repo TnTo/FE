@@ -1,11 +1,11 @@
 function proposed_wage(m::Model, t::Int, f::ConsumptionFirm, g::CapitalGood)::Int
     s = m.s[t-1]
-    return m.p.k * g.β * s.FCs[f.id].wF / s.FCs[f.id].c
+    return floor(Int, m.p.k * g.β * s.FCs[f.id].pF / (1 + s.FCs[f.id].μ))
 end
 
 function proposed_wage(m::Model, t::Int, f::CapitalFirm, g::CapitalGood)::Int
     s = m.s[t-1]
-    return g.β * s.FKs[f.id].wF / s.FKs[f.id].k
+    return floor(Int, g.β * s.FKs[f.id].p / (1 + s.FKs[f.id].μ))
 end
 
 function proposed_wage(m::Model, t::Int, f::CapitalFirm, g::Researcher)::Int
@@ -92,7 +92,6 @@ function stepG!(m::Model)
             w = max(ceil(Int, h.EwF * m.p.ρW), m.p.p0)
         end
         h.employer_changed = (h.employer == v.f.id)
-        push!(v.f.employees, h.id)
         if h.employer !== nothing
             filter!(x -> x != h.id, f_by_id(m, m.t, h.employer).employees)
         end
@@ -134,8 +133,8 @@ function stepG!(m::Model)
         end
     end
 
-    for f = s.FCs
-        hs = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
+    for f = s.FKs
+        hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         w = mapsum(h -> h.EwF, hs)
         while w > f.D
             # println("Firing a worker for liquidity constraint")

@@ -5,21 +5,21 @@ function compute_stats(m::Model)::Stats
     pFs = map(t -> pF(m, t), t0:t1)
     p = floor(Int, mean(pFs))
     # ψ
-    ψs = (ps[2:4] ./ ps[1:3]) .- 1
+    ψs = (pFs[2:4] ./ pFs[1:3]) .- 1
     ψ = mean(ψs)
     # u
-    u = mean(map(t -> u(m, t), t0:t1))
+    ut = mean(map(t -> u(m, t), t0:t1))
     # ω
-    ω = mean(map(t -> ω(m, t), t0:t1))
+    ωt = mean(map(t -> ω(m, t), t0:t1))
     # Y
     Ys = map(t -> Y(m, t), t0:t1)
-    Y = mean(Ys)
+    Yt = mean(Ys)
     # g
     gs = (Ys[2:4] ./ Ys[1:3]) .- 1
     g = mean(gs)
     # Ewσ
-    Ewσ = Ewσ(m, t1)
-    return Stats(ψ, u, ω, p, g, Y, Ewσ)
+    Ewσt = Ewσ(m, t1)
+    return Stats(ψ, ut, ωt, p, g, Yt, Ewσt)
 end
 
 function stepA!(m::Model)
