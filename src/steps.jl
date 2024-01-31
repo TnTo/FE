@@ -20,7 +20,10 @@ include("steps/Q.jl")
 function stepOmega!(m::Model)
 end
 
-function step!(m)
+function step!(m; print=true)
+    if print
+        println("STEP $(m.t)")
+    end
     stepAlpha!(m)
     stepA!(m)
     stepB!(m)
@@ -40,5 +43,7 @@ function step!(m)
     stepP!(m)
     stepQ!(m)
     stepOmega!(m)
-    display_matrices(m, m.t)
+    if print
+        display_matrices(m, m.t)
+    end
 end
