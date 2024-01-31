@@ -119,10 +119,10 @@ function stepG!(m::Model)
         end
         for hid = f.employees
             h = s.Hs[hid]
-            h.D += h.wF
-            f.D -= h.wF
             h.wF = h.EwF
             f.wF += h.EwF # inverse notation
+            h.D += h.wF
+            f.D -= h.wF
             tax = floor(Int, h.wF * max(0, m.p.τM * tanh(m.p.τF * (h.wF / s.stats.p - m.p.τT))))
             h.D -= tax
             s.B.D += tax
@@ -157,10 +157,10 @@ function stepG!(m::Model)
         end
         for hid = f.employees
             h = s.Hs[hid]
+            h.wF = h.EwF
+            f.wF += h.wF # inverse notation
             h.D += h.wF
             f.D -= h.wF
-            h.wF = h.EwF
-            f.wF += h.wF
             tax = floor(Int, h.wF * max(0, m.p.τM * tanh(m.p.τF * (h.wF / s.stats.p - m.p.τT))))
             h.D -= tax
             s.B.D += tax
