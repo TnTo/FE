@@ -24,7 +24,7 @@ function age(f::ConsumptionFirm)
         id=f.id,
         D=f.D,
         L=[
-            Loan(l.value, l.r, l.age + 1, l.NPL)
+            Loan(l.principal, l.r, l.age + 1, l.NPL)
             for l in f.L
         ],
         K=[
@@ -52,7 +52,7 @@ function age(f::CapitalFirm)
         id=f.id,
         D=f.D,
         L=[
-            Loan(l.value, l.r, l.age + 1, l.NPL)
+            Loan(l.principal, l.r, l.age + 1, l.NPL)
             for l in f.L
         ],
         K=[
