@@ -40,7 +40,7 @@ function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     flow[:C, :FC] = mapsum(a -> a.s * a.pF, s.FCs)
     flow[:C, :G] = -s.G.nC
     flow[:C, :Tot] = sum(flow[:C, :])
-    flow[:I, :FC] = -mapsum(a -> a.i, s.FCs)
+    flow[:I, :FC] = mapsum(a -> a.i, s.FCs)
     flow[:I, :FK] = mapsum(a -> a.y, s.FKs)
     flow[:I, :Tot] = sum(flow[:I, :])
     flow[:W, :H] = mapsum(a -> a.wF, s.Hs)
