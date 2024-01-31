@@ -162,11 +162,11 @@ function stepG!(m::Model)
             h.wF = h.EwF
             tax = floor(Int, h.wF * max(0, m.p.τM * tanh(m.p.τF * (h.wF / s.stats.p - m.p.τT))))
             h.D -= tax
-            B.D += tax
-            B.B -= tax
-            G.B += tax
+            s.B.D += tax
+            s.B.B -= tax
+            s.G.B += tax
             h.t += tax
-            G.T -= tax
+            s.G.T -= tax
         end
     end
 end
