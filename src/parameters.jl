@@ -13,6 +13,7 @@ import Base.@kwdef
     NFC::Int = 250
     NFK::Int = 50
     NK::Int = 60
+    NL::Int = 60
     Σ::Float = 0.01
     σM::Int = 10
     AR::Int = 780
