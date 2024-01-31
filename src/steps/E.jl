@@ -24,20 +24,20 @@ function stepE!(m::Model)
         f.c_ = max(1, ceil(Int, m.p.ρC * Es))
         f.Δb_ = max(0, f.c_ / m.p.u_ - (1 - γ) * b(m, f))
         if length(f.K) > 0
-            Ei = (1 + s.stats.ψ) * mean(k -> k.p0 / βF(m, f, k), f.K) * ceil(Int, f.Δb_)
+            Ei = (1 + s.stats.ψ) * mean(k -> k.p0 / βF(m, f, k), f.K) * f.Δb_
             if length(f.employees) > 0
-                EwF = max(f1.wF, ceil(Int, f.c_ / mean(k -> βF(m, f, k), f.K)) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
+                EwF = max(f1.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, ceil(Int, f.c_ / mean(k -> βF(m, f, k), f.K)) * mean(k -> Ewσ(m, m.t, k.σ), f.K))
+                EwF = max(f.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(k -> Ewσ(m, m.t, k.σ), f.K))
             end
         else
             fk1 = sample(m.s[m.t-1].FKs)
             effβ = m.p.k * fk1.β
-            Ei = (1 + s.stats.ψ) * fk1.p * ceil(Int, f.Δb_ / effβ)
+            Ei = (1 + s.stats.ψ) * fk1.p * f.Δb_ / effβ
             if length(f.employees) > 0
-                EwF = max(f.wF, ceil(Int, f.c_ / effβ) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
+                EwF = max(f.wF, f.c_ / effβ * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, ceil(Int, f.c_ / effβ) * Ewσ(m, m.t, fk1.σ))
+                EwF = max(f.wF, f.c_ / effβ * Ewσ(m, m.t, fk1.σ))
             end
         end
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρC * f1.s / f1.c_ - 1))
