@@ -25,11 +25,12 @@ function stepK!(m::Model)
                 if p(m, fk.inv[i]) <= fc.D
                     k = popat!(fk.inv, i)
                     push!(fc.K, k)
+                    kp = p(m, k)
                     fc.Δb += k.β * m.p.k
-                    fc.i += p(m, k)
+                    fc.i += kp
                     fk.s += 1
-                    fc.D -= k.p
-                    fk.D += k.p
+                    fc.D -= kp
+                    fk.D += kp
                     nk += 1
                 else
                     i += 1

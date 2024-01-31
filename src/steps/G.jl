@@ -40,7 +40,7 @@ function stepG!(m::Model)
     for f = s.FKs
         f.Q = [Researcher(nothing) for _ = 1:f.q_]
         ks = sort(f.K, by=k -> k.β, rev=true)
-        ws = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
+        ws = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         y = f.k_
         while length(ks) > 0 && length(ws) > 0 && y > 0
             h = popfirst!(ws)
