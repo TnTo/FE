@@ -27,8 +27,9 @@ function stepK!(m::Model)
                     push!(fc.K, k)
                     kp = p(m, k)
                     fc.Δb += k.β * m.p.k
-                    fc.i += kp
+                    fc.i -= kp
                     fk.s += 1
+                    fk.y += kp
                     fc.D -= kp
                     fk.D += kp
                     nk += 1
