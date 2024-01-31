@@ -126,7 +126,7 @@ function Ewσ(m::Model, t::Int)::Vector{Int}
                 Ewσ[i] = Ewσ[i-1]
             end
         else
-            Ewσ[i] = ceil(Int, mean(map(h -> h.w, hi)))
+            Ewσ[i] = ceil(Int, mean(map(h -> h.wF, hi)))
         end
     end
     return Ewσ
