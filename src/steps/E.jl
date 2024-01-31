@@ -33,11 +33,11 @@ function stepE!(m::Model)
         else
             fk1 = sample(m.s[m.t-1].FKs)
             effβ = m.p.k * fk1.β
-            Ei = (1 + s.stats.ψ) * fk1.p / effβ * f.Δb_
+            Ei = (1 + s.stats.ψ) * fk1.p * max(1.0, f.Δb_ / effβ)
             if length(f.employees) > 0
-                EwF = max(f.wF, f.c_ / effβ * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
+                EwF = max(f.wF, max(1.0, f.c_ / effβ) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, f.c_ / effβ * Ewσ(m, m.t, fk1.σ))
+                EwF = max(f.wF, max(1.0, f.c_ / effβ) * Ewσ(m, m.t, fk1.σ))
             end
         end
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρC * f1.s / f1.c_ - 1))
@@ -75,7 +75,8 @@ function stepE!(m::Model)
             f.employees = []
         end
         Es = (1 + s.stats.g - s.stats.ψ) * f1.s
-        f.Δb_ = max(1, Es / m.p.u_ - γ * b(m, f)) - b(m, f)
+        b_ = max(1, Es / m.p.u_ - γ * b(m, f))
+        f.Δb_ = b_ - b(m, f)
         f.k_ = max(1, ceil(Int, m.p.ρK * Es + f.Δb_ / f.β - length(f.inv)))
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1))
         wQF = avgwQF(m, m.t - 1, f)
