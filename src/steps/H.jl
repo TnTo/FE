@@ -8,7 +8,7 @@ function stepH!(m::Model)
         if f.c == 0
             f.pF = ceil(Int, f1.pF * (1 + f.μ) / (1 + f1.μ))
         else
-            f.p = ceil(Int, (1 + f.μ) * (-f.wF) / f.c)
+            f.pF = ceil(Int, (1 + f.μ) * (-f.wF) / f.c)
         end
     end
     for f = s.FKs
@@ -17,7 +17,7 @@ function stepH!(m::Model)
         if f.k == 0
             f.p = ceil(Int, f1.p * (1 + f.μ) / (1 + f1.μ))
         else
-            f.p = ceil(Int, (1 + f.μ) * (-f.wF) / f.k)
+            f.p = ceil(Int, (1 + f.μ) * (f.wF) / f.k)
         end
         for _ = 1:f.k
             push!(f.inv, CapitalGood(f.p, 0, f.σ, f.β, nothing))
