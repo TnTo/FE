@@ -47,7 +47,7 @@ function compute_flow_matrix(m::Model, t::Int)::NamedArray{Int}
     flow[:W, :FC] = -mapsum(a -> a.wF, s.FCs)
     flow[:W, :FK] = -mapsum(a -> a.wF, s.FKs)
     flow[:W, :Tot] = sum(flow[:W, :])
-    flow[:T, :H] = -mapsum(a -> a.t, s.Hs)
+    flow[:T, :H] = mapsum(a -> a.t, s.Hs)
     flow[:T, :G] = s.G.T
     flow[:T, :Tot] = sum(flow[:T, :])
     flow[:M, :H] = mapsum(a -> a.m, s.Hs)
@@ -98,4 +98,5 @@ function display_matrices(m::Model, t::Int)
     display(compute_balance_sheet(m, t))
     display(compute_flow_matrix(m, t))
     flush(stdout)
+    println()
 end
