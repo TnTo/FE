@@ -27,7 +27,7 @@ function stepO!(m::Model)
             s.B.D += f.π
             s.B.Π += f.π
         else
-            ws = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
+            ws = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
             while f.π < 0 && length(ws) > 0
                 h = popfirst!(ws)
                 fire!(h)
