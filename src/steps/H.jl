@@ -8,7 +8,7 @@ function stepH!(m::Model)
         if f.c == 0
             f.pF = ceil(Int, f1.pF * (1 + f.μ) / (1 + f1.μ))
         else
-            f.pF = ceil(Int, (1 + f.μ) * (-f.wF) / f.c)
+            f.pF = ceil(Int, (1 + f.μ) * (f.wF) / f.c)
         end
     end
     for f = s.FKs

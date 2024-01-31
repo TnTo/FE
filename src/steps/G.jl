@@ -18,7 +18,7 @@ function stepG!(m::Model)
     vacancies = Vacancy[]
     for f = s.FCs
         ks = sort(f.K, by=k -> k.β, rev=true)
-        ws = sort(map(id -> state.Hs[id], f.employees), by=h -> h.σ, rev=true)
+        ws = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         y = f.c_
         while length(ks) > 0 && length(ws) > 0 && y > 0
             h = popfirst!(ws)
