@@ -9,9 +9,9 @@ import Base.@kwdef
     σ0::Float
 
     # Not to calibrate
-    NH::Int = 2000
-    NFC::Int = 250
-    NFK::Int = 50
+    NH::Int = 200
+    NFC::Int = 25
+    NFK::Int = 5
     NK::Int = 60
     NL::Int = 60
     Σ::Float = 0.01
@@ -32,7 +32,7 @@ import Base.@kwdef
     ψ_::Float = 0.02
     u_::Float = 0.8
     ω_::Float = 0.05
-    k::Float = 60.0
+    k::Float = 1.0
     χC::Int = 5
     χK::Int = 5
     χH::Int = 20
@@ -74,7 +74,7 @@ Parameters() = Parameters(
     a=1.0,
     ρC=1.1,
     ρK=1.05,
-    ρF=1.0,
+    ρF=1.05,
     Θ=1.0,
     ρΠ=0.5,
     ρQ=0.1,
