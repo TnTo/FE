@@ -12,6 +12,30 @@ function proposed_wage(m::Model, t::Int, f::CapitalFirm, g::Researcher)::Int
     return avgwQF(m, t - 1, f)
 end
 
+function clean_operators!(f::ConsumptionFirm, h::Household)
+    for k = f.K
+        if k.operator == h.id
+            k.operator = nothing
+            break
+        end
+    end
+end
+
+function clean_operators!(f::CapitalFirm, h::Household)
+    for k = f.K
+        if k.operator == h.id
+            k.operator = nothing
+            break
+        end
+    end
+    for q = f.Q
+        if q.operator == h.id
+            q.operator = nothing
+            break
+        end
+    end
+end
+
 function stepG!(m::Model)
     # println("G")
     s = m.s[m.t]
@@ -93,7 +117,9 @@ function stepG!(m::Model)
         end
         h.employer_changed = (h.employer == v.f.id)
         if h.employer !== nothing
-            filter!(x -> x != h.id, f_by_id(m, m.t, h.employer).employees)
+            oldf = f_by_id(m, m.t, h.employer)
+            filter!(x -> x != h.id, oldf.employees)
+            clean_operators!(oldf, h)
         end
         h.employer = v.f.id
         h.EwF = w
@@ -110,12 +136,7 @@ function stepG!(m::Model)
             w -= h.EwF
             fire!(h)
             filter!(i -> i != h.id, f.employees)
-            for k = f.K
-                if k.operator == h.id
-                    k.operator = nothing
-                    break
-                end
-            end
+            clean_operators!(f, h)
         end
         for hid = f.employees
             h = s.Hs[hid]
@@ -142,18 +163,7 @@ function stepG!(m::Model)
             w -= h.EwF
             fire!(h)
             filter!(i -> i != h.id, f.employees)
-            for k = f.K
-                if k.operator == h.id
-                    k.operator = nothing
-                    break
-                end
-            end
-            for q = f.Q
-                if q.operator == h.id
-                    q.operator = nothing
-                    break
-                end
-            end
+            clean_operators!(f, h)
         end
         for hid = f.employees
             h = s.Hs[hid]
