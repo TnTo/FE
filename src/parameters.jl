@@ -7,6 +7,7 @@ import Base.@kwdef
     p0::Int = 100
     δ0::Float
     σ0::Float
+    β0::Float
 
     # Not to calibrate
     NH::Int = 200
@@ -68,6 +69,7 @@ end
 Parameters() = Parameters(
     σ0=1.0,
     δ0=0.5,
+    β0=1.0,
     e0=1.0,
     e1=0.1,
     ρH=1.1,

@@ -5,11 +5,11 @@ function create_household(m::Model, id::Int)::Household
 end
 
 function create_consumption_firm(m::Model, id::Int)
-    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), 1, 1, nothing)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=m.p.p0, π=0, employees=Int[])
+    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), 1, m.p.β0, nothing)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=m.p.p0, π=0, employees=Int[])
 end
 
 function create_capital_firm(m::Model, id::Int)
-    return CapitalFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), 1, 1, nothing)], inv=CapitalGood[], Q=Researcher[], k_=1, Δb_=0, q_=0, l_=0, k=1, s=1, y=0, wF=0, iL=0, μ=1, p=m.p.p0, π=0, σ=1, β=1, employees=Int[])
+    return CapitalFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), 1, m.p.β0, nothing)], inv=CapitalGood[], Q=Researcher[], k_=1, Δb_=0, q_=0, l_=0, k=1, s=1, y=0, wF=0, iL=0, μ=1, p=m.p.p0, π=0, σ=1, β=m.p.β0, employees=Int[])
 end
 
 function create_model(p::Parameters)::Model
