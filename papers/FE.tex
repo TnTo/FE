@@ -208,7 +208,7 @@ In this model, the core agents (consumers, workers, capitalists) represent a hou
 
 Each agent is characterized by an education level assigned when it enters the simulation replacing a retired agent inheriting their wealth, and gains experience when working for the same firm for consecutive periods.
 The education level is assigned with a probability related to the inherited wealth and provides the starting skill level.
-Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-1)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{sec:beta-binomial}.
+Particularly, the initial skill level is distributed as a Beta-Binomial distribution characterized by $\sigma^M$ as the maximum initial skill level, an average value equal to $1+(\sigma^M-2)\tanh(e_0 \frac{v}{p})$ with $v$ the net inherited wealth, and a variance described by a parameter $e_1$ and described in appendix \ref{sec:beta-binomial}.
 
 Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + \sigma_0$, where $\sigma_0$ is the initial skill level.
 
