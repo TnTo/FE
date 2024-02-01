@@ -34,13 +34,14 @@ function stepF!(m::Model)
                 h.D += Δ
                 h.S -= Δ
                 s.B.D -= Δ
-                s.B.D += Δ
+                s.B.S += Δ
             end
             h.D -= it
             s.B.D += it
             s.B.B -= it
             s.G.B += it
-            h.t += it
+            h.t -= it
+            s.G.T += it
         end
         rS = s.B.rS * (1 - m.p.τS)
         rS1 = s1.B.rS * (1 - m.p.τS)
@@ -64,13 +65,13 @@ function stepF!(m::Model)
             end
         end
         if h.employer === nothing
-            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D)
+            h.rc_ = max(1, ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D))
             s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF))) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
         else
-            h.rc_ = ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h.EwF)) / D)
+            h.rc_ = max(1, ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h.EwF)) / D))
             s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h.EwF) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
         end
-        Δs = min(s_ - h.S, h.D)
+        Δs = max(min(s_ - h.S, h.D), -h.S)
         h.S += Δs
         s.B.S -= Δs
         h.D -= Δs

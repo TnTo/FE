@@ -24,6 +24,7 @@ function stepO!(m::Model)
         f.π = floor(Int, m.p.ρΠ * (f.p * f.s - f.wF))
         if f.π > 0
             f.π = min(f.π, f.D)
+            f.D -= f.π
             s.B.D += f.π
             s.B.Π += f.π
         else
