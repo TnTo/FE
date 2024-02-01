@@ -13,7 +13,7 @@ function compute_stats(m::Model)::Stats
     ωt = mean(map(t -> ω(m, t), t0:t1))
     # Y
     Ys = map(t -> Y(m, t), t0:t1)
-    Yt = mean(Ys)
+    Yt = round(Int, mean(Ys))
     # g
     gs = (Ys[2:4] ./ Ys[1:3]) .- 1
     g = mean(gs)

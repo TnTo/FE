@@ -16,7 +16,7 @@ function stepE!(m::Model)
             s.B.D += f.D
             f.D = 0
             for id = f.employees
-                fire!(state.Hs[id])
+                fire!(s.Hs[id])
             end
             f.employees = []
         end
