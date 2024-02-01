@@ -10,7 +10,7 @@ end
 function skill_from_wealth(m::Model, t::Int, h::Household)::Float
     N::Int = m.p.σM
     μ::Float = 1 + (N - 1) * (tanh(m.p.e0 * (v(m, h) / m.s[t].stats.p)))
-    s::Float = (μ / N) * (N - μ + m.p.e1)
+    s::Float = (μ / N) * (N - μ) * (N * m.p.e1 - m.p.e1 + 1)
     A::Float = (μ * N - μ^2 - s) / (s * N - μ * N + μ^2)
     α::Float = A * μ
     β::Float = A * (N - μ)

@@ -544,7 +544,7 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
     $\Sigma$                     & Relative skill variation                                     & 0.01 & To keep the annual increment af skill for a worker constantly employed \textasciitilde 1 ($1 \approx \Delta \sigma = (1+\Sigma)^{12} \sigma - \sigma$ )                                                                                                                                                          \\
     $\sigma^M$                   & Maximum initial skill level                                  & 10    & 2 high school years after compulsory education, 5 years in university, 3 years as PhD                                                                                                                                                         \\
     $e_0$                        & Intergenerational social mobility parameter                  &       & Calibration; $>0$; characterization of degree holders by previous generation degree                                                                                                                                                          \\
-    $e_1$                        & Shape parameter for initial skill level                      &      & Calibration; $>0$; fraction of degree holders                                                                                                                                                           \\
+    $e_1$                        & Shape parameter for initial skill level                      &      & Calibration; $1> \cdot >0$; fraction of degree holders                                                                                                                                                           \\
     $A_R$                        & Retirement Age                                               & 780   & 65 years; aprroximate retirement age in Italy                                                                                                                                                         \\
     $A_0$                        & Initial age without education                                & 180   & 15 years; compulsory education in Italy enrols people until 16 y.o., but the minimum skill level (years of education) is 1.                                                                                                                                                            \\
     $\rho_\mathcal{H}$           & Deposits to consumption ratio                                &       & Calibration; $>1$                                                                                                                                                         \\
@@ -684,7 +684,7 @@ $$\alpha=\frac{\mu(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
 $$\beta=\frac{(N-\mu)(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
 As additional conditions it must be $\alpha > 0$ and $\beta>0$, given that $N>\mu>0$ and $s>0$, from which it follows
 $$\mu(N-\mu) > s > \frac{\mu}{N}(N-\mu)$$
-To keep the variance small and so to ensure a bell-shaped mass function, $s=\frac{\mu}{N}(N-\mu+e_1)$.
+To keep the variance small and so to ensure a bell-shaped mass function, $s=e_1[\mu(N-\mu)-\frac{\mu}{N}(N-\mu)] + \frac{\mu}{N}(N-\mu) = \frac{\mu}{N}(Ne_1-e_1+1)$, for $e_1 \in (0,1)$ and smalls.
 
 
 
