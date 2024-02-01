@@ -10,7 +10,7 @@ function stepJ!(m::Model)
             filter!(e -> e != h, hs)
             continue
         end
-        f = sort(sample(ffcs, min(length(ffcs), m.p.χC), replace=false), by=(f -> f.p))[1]
+        f = sort(sample(ffcs, min(length(ffcs), m.p.χC), replace=false), by=(f -> f.pF))[1]
         rc = min(h.rc_ - h.rc, ceil(Int, h.rc_ / m.p.χC), floor(Int, h.D / floor(Int, f.pF * (1 + m.p.τC))), f.c - f.s)
         nc = f.pF * rc
         tax = floor(Int, m.p.τC * nc)
@@ -26,10 +26,10 @@ function stepJ!(m::Model)
         h.t -= tax
         s.G.T += tax
         if h.rc >= h.rc_
-            delete!(hs, hid)
+            filter!(e -> e != h, hs)
         end
         if f.s >= f.c
-            delete!(fcs, f.id)
+            filter!(e -> e != f, fcs)
         end
     end
 end
