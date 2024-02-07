@@ -33,7 +33,7 @@ import Base.@kwdef
     ψ_::Float = 0.02
     u_::Float = 0.8
     ω_::Float = 0.05
-    k::Float = 1.0
+    k::Float = 2.0
     χC::Int = 5
     χK::Int = 5
     χH::Int = 20
