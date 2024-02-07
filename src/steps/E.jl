@@ -24,20 +24,21 @@ function stepE!(m::Model)
         f.c_ = max(1, ceil(Int, m.p.ρC * Es))
         f.Δb_ = max(0, f.c_ / m.p.u_ - (1 - γ) * b(m, f))
         if length(f.K) > 0
-            Ei = (1 + s.stats.ψ) * mean(k -> k.p0 / βF(m, f, k), f.K) * f.Δb_
+            avgβ = mean(k -> βF(m, f, k), f.K)
+            Ei = (1 + s.stats.ψ) * mean(k -> k.p0 / βF(m, f, k), f.K) * avgβ * ceil(Int, f.Δb_ / avgβ)
             if length(f.employees) > 0
-                EwF = max(f1.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
+                EwF = max(f1.wF, ceil(Int, f.c_ / avgβ) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, f.c_ / mean(k -> βF(m, f, k), f.K) * mean(k -> Ewσ(m, m.t, k.σ), f.K))
+                EwF = max(f.wF, ceil(Int, f.c_ / avgβ) * mean(k -> Ewσ(m, m.t, k.σ), f.K))
             end
         else
             fk1 = sample(m.s[m.t-1].FKs)
             effβ = m.p.k * fk1.β
-            Ei = (1 + s.stats.ψ) * fk1.p * f.Δb_ / effβ
+            Ei = (1 + s.stats.ψ) * fk1.p * ceil(Int, f.Δb_ / effβ)
             if length(f.employees) > 0
-                EwF = max(f.wF, f.c_ / effβ * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
+                EwF = max(f.wF, ceil(Int, f.c_ / effβ) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees))
             else
-                EwF = max(f.wF, f.c_ / effβ * Ewσ(m, m.t, fk1.σ))
+                EwF = max(f.wF, ceil(Int, f.c_ / effβ) * Ewσ(m, m.t, fk1.σ))
             end
         end
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρC * f1.s / f1.c_ - 1))
@@ -77,21 +78,21 @@ function stepE!(m::Model)
         Es = (1 + s.stats.g - s.stats.ψ) * f1.s
         b_ = max(1, Es / m.p.u_ - γ * b(m, f))
         f.Δb_ = b_ - b(m, f)
-        f.k_ = max(1, ceil(Int, m.p.ρK * Es + f.Δb_ / f.β - length(f.inv)))
+        f.k_ = max(1, ceil(Int, m.p.ρK * Es + ceil(Int, f.Δb_ / f.β) - length(f.inv)))
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1))
         wQF = avgwQF(m, m.t - 1, f)
         f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)
         if length(f.K) > 0
             if length(f.employees) > 0
-                EwF = max(f1.wF, f.k_ / mean(k -> βF(m, f, k), f.K) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + f.q_ * wQF)
+                EwF = max(f1.wF, ceil(Int, f.k_ / mean(k -> βF(m, f, k), f.K)) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + f.q_ * wQF)
             else
-                EwF = max(f1.wF, f.k_ / mean(k -> βF(m, f, k), f.K) * mean(k -> Ewσ(m, m.t, k.σ), f.K) + f.q_ * wQF)
+                EwF = max(f1.wF, ceil(Int, f.k_ / mean(k -> βF(m, f, k), f.K)) * mean(k -> Ewσ(m, m.t, k.σ), f.K) + f.q_ * wQF)
             end
         else
             if length(f.employees) > 0
-                EwF = max(f1.wF, f.k_ / f.β * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + q_ * wQF)
+                EwF = max(f1.wF, ceil(Int, f.k_ / f.β) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + q_ * wQF)
             else
-                EwF = max(f1.wF, f.k_ / f.β * Ewσ(m, m.t, f.σ) + f.q_ * wQF)
+                EwF = max(f1.wF, ceil(Int, f.k_ / f.β) * Ewσ(m, m.t, f.σ) + f.q_ * wQF)
             end
         end
         f.l_ = ceil(Int, max(m.p.ρF * EwF, 0))
