@@ -76,12 +76,12 @@ function stepE!(m::Model)
             f.employees = []
         end
         Es = (1 + s.stats.g - s.stats.ψ) * f1.s
-        b_ = max(1, Es / m.p.u_ - γ * b(m, f))
+        b_ = max(1, m.p.ρK * Es / m.p.u_ - γ * b(m, f))
         f.Δb_ = b_ - b(m, f)
-        f.k_ = max(1, ceil(Int, m.p.ρK * Es + ceil(Int, f.Δb_ / f.β) - length(f.inv)))
+        f.k_ = max(1, ceil(Int, m.p.ρK * Es + ceil(Int, max(0, f.Δb_) / f.β) - length(f.inv)))
         f.μ = f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1))
         wQF = avgwQF(m, m.t - 1, f)
-        f.q_ = count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)
+        f.q_ = max(0, count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF))
         if length(f.K) > 0
             if length(f.employees) > 0
                 EwF = max(f1.wF, ceil(Int, f.k_ / mean(k -> βF(m, f, k), f.K)) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + f.q_ * wQF)
