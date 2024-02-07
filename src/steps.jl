@@ -22,7 +22,7 @@ end
 
 function step!(m; print=true)
     if print
-        println("STEP $(m.t)")
+        println("STEP $(m.t+1)")
     end
     stepAlpha!(m)
     stepA!(m)
