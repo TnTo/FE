@@ -71,7 +71,7 @@ function stepG!(m::Model)
             for (i, k) = enumerate(ks)
                 if h.σ >= k.σ
                     k.operator = h.id
-                    y -= k.β * m.p.k
+                    y -= k.β
                     deleteat!(ks, i)
                     break
                 end

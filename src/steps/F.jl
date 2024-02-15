@@ -23,7 +23,7 @@ function stepF!(m::Model)
     s1 = m.s[m.t-1]
     # println("F")
     for h = s.Hs
-        h1 = s.Hs[h.id]
+        h1 = s1.Hs[h.id]
         if h.age == m.p.AR # retirement
             resign!(m, h)
             h.σ = skill_from_wealth(m, m.t, h)
@@ -43,34 +43,36 @@ function stepF!(m::Model)
             h.t -= it
             s.G.T += it
         end
-        rS = s.B.rS * (1 - m.p.τS)
-        rS1 = s1.B.rS * (1 - m.p.τS)
-        ΔrS = rS - rS1
         ψ = s.stats.ψ
         if h1.nc > 0
-            p = ceil(Int, h1.nc / h1.rc)
+            p = ceil(Int, h1.nc / h1.rc * (1 + ψ))
         else
-            p = ceil(Int, s.stats.p * (1 + m.p.τC))
+            p = ceil(Int, s.stats.p * (1 + m.p.τC) * (1 + ψ))
         end
-        D = ((1 + ψ) * p * η(m, m.t, h) + (rS + ΔrS) * (1 + m.p.ρH))
-        A = (ΔrS * h.S + (rS + ΔrS) * (h.D - (1 + m.p.ρH) * h1.nc)) / D - ψ * h1.rc / (1 + ψ)
-        if h.worker == true
-            if (A + (-wH(m, m.t, h.EwF) + (rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D) > 0
-                resign!(m, h)
-                h.worker = false
-            end
-        else
-            if ((A + ((rS + ΔrS) * (m.p.ϕ * h1.m)) / D) > 0) && ((A + (Ewσ(m, m.t, h.σ) + (rS + ΔrS) * Ewσ(m, m.t, h.σ)) / D) > 0)
-                h.worker = true
-            end
-        end
+
+        rcv_ = c((h.S + h.D) / p, m.p.av)
+
+        # if h.worker == true
+        #     if (rcv_ + c(m.p.ϕ * max(wH(m, m.t, h1.EwF), h1.m) / p, m.p.ay)) > h1.rc
+        #         resign!(m, h)
+        #         h.worker = false
+        #     end
+        # else
+        #     if (rcv_ < h1.rc) && (rcv_ + c(Ewσ(m, m.t, h.σ) / p, m.p.ay) >= h1.rc)
+        #         h.worker = true
+        #     end
+        # end
+
         if h.employer === nothing
-            h.rc_ = max(1, ceil(Int, h1.rc + A + ((rS + ΔrS) * (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF)))) / D))
-            s_ = max(0, floor(Int, h.S + h.D + (m.p.ϕ * max(h1.m, wH(m, m.t, h.EwF))) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
+            Ey = m.p.ϕ * max(wH(m, m.t, h1.EwF), h1.m)
         else
-            h.rc_ = max(1, ceil(Int, h1.rc + A + ((rS + ΔrS) * wH(m, m.t, h.EwF)) / D))
-            s_ = max(0, floor(Int, h.S + h.D + wH(m, m.t, h.EwF) - (1 + m.p.ρH) * (1 + s.stats.ψ) * p * h.rc_))
+            Ey = wH(m, m.t, h1.EwF)
         end
+
+        rcy_ = c(Ey / p, m.p.ay)
+        h.rc_ = rcv_ + rcy_
+
+        s_ = max(0, floor(Int, h.S + h.D + Ey - (1 + m.p.ρH) * p * h.rc_))
         Δs = max(min(s_ - h.S, h.D), -h.S)
         h.S += Δs
         s.B.S -= Δs
