@@ -99,7 +99,7 @@ function stepG!(m::Model)
 
     vacancies = shuffle(vacancies)
     for v = vacancies
-        hs = filter(h -> h.worker && h.σ >= σ(m, v.g), s.Hs)
+        hs = filter(h.σ >= σ(m, v.g), s.Hs)
         if length(hs) == 0
             # println("Vacancy not filled: skill required too high")
             continue

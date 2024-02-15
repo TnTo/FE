@@ -5,7 +5,6 @@ function age(h::Household)
         S=h.S,
         σ=h.σ,
         age=h.age + 1,
-        worker=h.worker,
         employer=h.employer,
         employer_changed=false,
         rc_=0, # F

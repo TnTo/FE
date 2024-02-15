@@ -52,17 +52,6 @@ function stepF!(m::Model)
 
         rcv_ = c((h.S + h.D) / p, m.p.av)
 
-        # if h.worker == true
-        #     if (rcv_ + c(m.p.ϕ * max(wH(m, m.t, h1.EwF), h1.m) / p, m.p.ay)) > h1.rc
-        #         resign!(m, h)
-        #         h.worker = false
-        #     end
-        # else
-        #     if (rcv_ < h1.rc) && (rcv_ + c(Ewσ(m, m.t, h.σ) / p, m.p.ay) >= h1.rc)
-        #         h.worker = true
-        #     end
-        # end
-
         if h.employer === nothing
             Ey = m.p.ϕ * max(wH(m, m.t, h1.EwF), h1.m)
         else

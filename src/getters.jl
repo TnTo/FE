@@ -99,13 +99,8 @@ end
 
 function ω(m::Model, t::Int)::Float
     s = m.s[t]
-    N = count(h -> h.worker & (h.employer === nothing), collect(values(s.Hs)))
-    D = count(h -> h.worker, collect(values(s.Hs)))
-    if D == 0
-        return 0
-    else
-        return N / D
-    end
+    N = count(h.employer === nothing, s.Hs)
+    return N / m.p.NH
 end
 
 function Y(m::Model, t::Int)::Int

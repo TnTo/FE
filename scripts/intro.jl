@@ -9,7 +9,7 @@ include(srcdir("DAS.jl"))
 
 p = DAS.Parameters()
 
-p.T = 240
+p.T = 14
 
 m = DAS.create_model(p)
 #try
@@ -48,11 +48,10 @@ DAS.map_plot(m,
 
 DAS.map_plot(m,
     [
-        s -> count(h -> h.worker, s.Hs),
-        s -> count(h -> h.worker && h.employer !== nothing, s.Hs),
-        s -> count(h -> h.worker && h.employer === nothing, s.Hs)
+        s -> count(h.employer !== nothing, s.Hs),
+        s -> count(h.employer === nothing, s.Hs)
     ],
-    ["work" "empl" "unempl"]
+    ["empl" "unempl"]
 )
 
 DAS.map_plot(m, [s -> s.B.rS, s -> s.G.rB], ["rS" "rB"])
