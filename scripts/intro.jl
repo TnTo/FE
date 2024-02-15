@@ -9,7 +9,7 @@ include(srcdir("DAS.jl"))
 
 p = DAS.Parameters()
 
-p.T = 14
+p.T = 100
 
 m = DAS.create_model(p)
 #try
@@ -48,8 +48,8 @@ DAS.map_plot(m,
 
 DAS.map_plot(m,
     [
-        s -> count(h.employer !== nothing, s.Hs),
-        s -> count(h.employer === nothing, s.Hs)
+        s -> count(h -> h.employer !== nothing, s.Hs),
+        s -> count(h -> h.employer === nothing, s.Hs)
     ],
     ["empl" "unempl"]
 )
@@ -76,3 +76,17 @@ DAS.map_plot(m,
     ],
     ["Q" "q_"]
 )
+
+DAS.map_plot(m,
+    [
+        s -> DAS.mapmean(f -> f.p, s.FKs),
+        s -> DAS.mapmean(f -> f.pF, s.FCs),
+        s -> DAS.mapmean(h -> h.wF, filter(h -> h.employer !== nothing, s.Hs)),
+        s -> 0,
+        s -> s.stats.p,
+        s -> DAS.mapmean(h -> h.D, s.Hs)
+    ],
+    ["pK" "pC" "w" "0" "<p>" "DH"]
+)
+
+scatter(map(h -> h.σ, m.s[end].Hs), map(h -> h.wF, m.s[end].Hs))
