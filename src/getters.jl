@@ -115,10 +115,10 @@ end
 
 function Ewσ(m::Model, t::Int)::Vector{Int}
     s = m.s[t]
-    σM = floor(Int, maximum(map(h -> h.σ, values(s.Hs))))
+    σM = floor(Int, maximum(map(h -> h.σ, s.Hs)))
     Ewσ = ones(Int, σM)
     for i = 1:σM
-        hi = filter(h -> i >= h.σ > (i - 1) && h.wF > 0, collect(values(s.Hs)))
+        hi = filter(h -> i > h.σ >= (i - 1) && h.wF > 0, s.Hs)
         if length(hi) == 0
             if i == 1
                 Ewσ[i] = m.p.p0
@@ -133,7 +133,7 @@ function Ewσ(m::Model, t::Int)::Vector{Int}
 end
 
 function Ewσ(m::Model, t::Int, σ::Float)::Int
-    σ = ceil(Int, σ)
+    σ = 1 + floor(Int, σ)
     Ew = m.s[t].stats.Ewσ
     if σ > length(Ew)
         return last(Ew)
@@ -143,14 +143,14 @@ function Ewσ(m::Model, t::Int, σ::Float)::Int
 end
 
 # Household
-function η(m::Model, t::Int, h::Household)::Float
-    return (v(m, h) / m.s[t].stats.p + 1)^(-m.p.a)
-end
 
 function wH(m::Model, t::Int, w::Int)::Int
     z = ceil(Int, w * (1 - max(0, m.p.τM * tanh(m.p.τF * (w / m.s[t].stats.p - m.p.τT)))))
     return z
 end
+
+# c(x, a) = ceil(Int, (1 - exp(-a * x)) / a)
+c(x, a) = ceil(Int, ((x + 1)^(1 - a) - 1) / (1 - a))
 
 # Position
 σ(m::Model, k::CapitalGood) = k.σ
