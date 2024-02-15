@@ -7,7 +7,7 @@ function stepL!(m::Model)
             Δβ = rand(Beta(1, m.p.b0))
             Δσ = Δβ - m.p.b1 * rand(Beta(1, m.p.b2))
             f.β += Δβ
-            f.σ = max(1.0, f.σ + Δσ)
+            f.σ = max(0.0, f.σ + Δσ)
         end
     end
 end

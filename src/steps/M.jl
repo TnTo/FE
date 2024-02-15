@@ -3,9 +3,9 @@ function stepM!(m::Model)
     s = m.s[m.t]
     for h = s.Hs
         if h.employer === nothing
-            h.σ = h.σ / (1 + m.p.Σ)
+            h.σ = max(0, h.σ - m.p.Σ)
         elseif !h.employer_changed
-            h.σ = h.σ * (1 + m.p.Σ)
+            h.σ = h.σ + m.p.Σ
         end
     end
 end
