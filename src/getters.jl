@@ -99,7 +99,7 @@ end
 
 function ω(m::Model, t::Int)::Float
     s = m.s[t]
-    N = count(h.employer === nothing, s.Hs)
+    N = count(h -> h.employer === nothing, s.Hs)
     return N / m.p.NH
 end
 

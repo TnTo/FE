@@ -99,7 +99,7 @@ function stepG!(m::Model)
 
     vacancies = shuffle(vacancies)
     for v = vacancies
-        hs = filter(h.σ >= σ(m, v.g), s.Hs)
+        hs = filter(h -> h.σ >= σ(m, v.g), s.Hs)
         if length(hs) == 0
             # println("Vacancy not filled: skill required too high")
             continue
@@ -126,12 +126,11 @@ function stepG!(m::Model)
         push!(v.f.employees, h.id)
         v.g.operator = h.id
     end
-    # println("$(length(filter(v->v.g.operator === nothing, vacancies))) vacancies not filled")
+    
     for f = s.FCs
         hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         w = mapsum(h -> h.EwF, hs)
         while w > f.D
-            # println("Firing a worker for liquidity constraint")
             h = pop!(hs)
             w -= h.EwF
             fire!(h)

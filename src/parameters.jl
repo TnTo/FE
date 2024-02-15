@@ -15,7 +15,7 @@ import Base.@kwdef
     NFK::Int = 5
     NK::Int = 60
     NL::Int = 60
-    Σ::Float = 0.8
+    Σ::Float = 0.08
     σM::Int = 10
     AR::Int = 780
     A0::Int = 180
@@ -33,7 +33,6 @@ import Base.@kwdef
     ψ_::Float = 0.02
     u_::Float = 0.8
     ω_::Float = 0.05
-    k::Float = 2.0
     χC::Int = 5
     χK::Int = 5
     χH::Int = 20
@@ -49,6 +48,7 @@ import Base.@kwdef
     ρK::Float
     ρF::Float
     Θ::Float
+    k::Float
     ρΠ::Float
     ρQ::Float
     λ::Float
@@ -78,8 +78,9 @@ Parameters() = Parameters(
     av=5.0,
     ρC=1.1,
     ρK=1.5,
-    ρF=1.15,
+    ρF=1.2,
     Θ=1.0,
+    k=10.0,
     ρΠ=0.5,
     ρQ=0.1,
     λ=0.1,
