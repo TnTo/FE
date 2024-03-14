@@ -1,5 +1,5 @@
 function stepH!(m::Model)
-    # println("H")
+    @debug "H"
     s = m.s[m.t]
 
     for f = s.FCs

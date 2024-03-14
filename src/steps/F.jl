@@ -21,7 +21,7 @@ end
 function stepF!(m::Model)
     s = m.s[m.t]
     s1 = m.s[m.t-1]
-    # println("F")
+    @debug "F"
     for h = s.Hs
         h1 = s1.Hs[h.id]
         if h.age == m.p.AR # retirement

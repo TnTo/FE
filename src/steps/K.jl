@@ -1,5 +1,5 @@
 function stepK!(m::Model)
-    # println("K")
+    @debug "K"
     s = m.s[m.t]
     for f = s.FCs
         filter!(k -> k.age != m.p.NK, f.K)

@@ -1,5 +1,5 @@
 function stepD!(m::Model)
-    # println("D")
+    @debug "D"
     s = m.s[m.t]
     if quarterly(m.t)
         avgT = mean(map(i -> m.s[m.t-i].G.T, 1:4))

@@ -37,7 +37,7 @@ function clean_operators!(f::CapitalFirm, h::Household)
 end
 
 function stepG!(m::Model)
-    # println("G")
+    @debug "G"
     s = m.s[m.t]
     vacancies = Vacancy[]
     for f = s.FCs
@@ -126,7 +126,7 @@ function stepG!(m::Model)
         push!(v.f.employees, h.id)
         v.g.operator = h.id
     end
-    
+
     for f = s.FCs
         hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
         w = mapsum(h -> h.EwF, hs)

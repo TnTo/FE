@@ -1,5 +1,5 @@
 function stepM!(m::Model)
-    # println("M")
+    @debug "M"
     s = m.s[m.t]
     for h = s.Hs
         if h.employer === nothing

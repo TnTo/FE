@@ -6,7 +6,7 @@ end
 
 function stepE!(m::Model)
     s = m.s[m.t]
-    # println("E")
+    @debug "E"
     γ = 1 / m.p.NK
     for f = s.FCs
         f1 = m.s[m.t-1].FCs[f.id]

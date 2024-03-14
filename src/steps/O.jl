@@ -1,6 +1,6 @@
 
 function stepO!(m::Model)
-    # println("O")
+    @debug "O"
     s = m.s[m.t]
     for f = s.FCs
         f.π = floor(Int, m.p.ρΠ * (f.pF * f.s - f.wF))

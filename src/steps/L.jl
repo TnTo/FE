@@ -1,5 +1,5 @@
 function stepL!(m::Model)
-    # println("L")
+    @debug "L"
     s = m.s[m.t]
     for f = s.FKs
         Q = count(r -> r.operator !== nothing, f.Q)

@@ -1,5 +1,5 @@
 function stepC!(m::Model)
-    # println("C")
+    @debug "C"
     Γ0 = Γ(m, m.t - 1)
     s = m.s[m.t]
     if m.s[m.t-1].B.L == 0

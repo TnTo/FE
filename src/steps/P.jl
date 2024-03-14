@@ -1,6 +1,6 @@
 
 function stepP!(m::Model)
-    # println("P")
+    @debug "P"
     s = m.s[m.t]
     for h = s.Hs
         i = floor(Int, s.B.rS * h.S)

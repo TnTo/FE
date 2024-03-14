@@ -31,16 +31,17 @@ function run_or_load(pvec)
         :b1 => pvec[28],
         :b2 => pvec[29]
     )
-    data, f = DrWatson.produce_or_load(pdict, "sims") do pdict
+    data, f = DrWatson.produce_or_load(pdict, "sims"; filename=hash) do pdict
         seeds = [8, 86, 868, 8686]
         ps = map(s -> Parameters(; seed=s, pdict...), seeds)
         ms = Vector{Model}(undef, 4)
-        println(Dates.format(now(), "HH:MM:SS"))
+        @debug Dates.format(now(), "HH:MM:SS")
         Threads.@threads for i = 1:4
             #for i = 1:4
             m = create_model(ps[i])
             try
-                for _ = 1:m.p.T
+                for t = 1:m.p.T
+                    @debug t
                     step!(m, print=false)
                 end
             catch e
@@ -49,13 +50,13 @@ function run_or_load(pvec)
             end
         end
         scores = Vector{Matrix}(undef, 4)
-        println(Dates.format(now(), "HH:MM:SS"))
+        @debug Dates.format(now(), "HH:MM:SS")
         Threads.@threads for i = 1:4
             #for i = 1:4
             scores[i] = evaluate_model(ms[i])
         end
-        score = sum(scores)
-        println(Dates.format(now(), "HH:MM:SS"))
+        score = sum(sum(scores))
+        @debug Dates.format(now(), "HH:MM:SS")
         return Dict(
             "config" => pdict,
             "models" => ms,

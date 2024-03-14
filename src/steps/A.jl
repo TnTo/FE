@@ -23,6 +23,7 @@ function compute_stats(m::Model)::Stats
 end
 
 function stepA!(m::Model)
+    @debug "A"
     if quarterly(m.t)
         stats = compute_stats(m)
     else

@@ -1,5 +1,5 @@
 function stepJ!(m::Model)
-    # println("J")
+    @debug "J"
     s = m.s[m.t]
     hs = filter(h -> h.rc < h.rc_, s.Hs)
     fcs = filter(f -> f.s < f.c, s.FCs)

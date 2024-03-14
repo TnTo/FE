@@ -3,6 +3,9 @@ using DrWatson
 
 include(srcdir("DAS.jl"))
 
+using Logging
+global_logger(ConsoleLogger(stderr, Logging.Debug))
+
 using BayesOpt
 config = ConfigParameters()
 config.random_seed = 8686

@@ -1,7 +1,7 @@
 function stepI!(m::Model)
     s = m.s[m.t]
     s1 = m.s[m.t-1]
-    # println("I")
+    @debug "I"
     for h = s.Hs
         if h.employer === nothing
             M = floor(Int, m.p.ϕ * max(s1.Hs[h.id].m, wH(m, m.t - 1, s1.Hs[h.id].wF)))

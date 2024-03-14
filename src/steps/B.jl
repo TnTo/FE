@@ -1,5 +1,5 @@
 function stepB!(m::Model)
-    # println("B")
+    @debug "B"
     if quarterly(m.t) & m.t >= 12
         t0 = m.t - 12
         t1 = m.t - 1
