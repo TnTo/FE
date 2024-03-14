@@ -31,6 +31,7 @@ abstract type Firm end
     D::Int
     S::Int
     σ::Float
+    σ0::Float
     age::Int
     employer::Union{Nothing,Int}
     employer_changed::Bool

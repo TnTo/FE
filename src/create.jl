@@ -1,7 +1,8 @@
 function create_household(m::Model, id::Int)::Household
     age = rand(DiscreteUniform(m.p.A0, m.p.AR - 1))
-    σ = rand(Binomial(m.p.σM, 0.5)) + m.p.Σ * rand(Binomial(age - m.p.A0, m.p.δ0))
-    return Household(id=id, D=0, S=0, σ=σ, age=age, employer=nothing, employer_changed=false, rc_=0, wF=0, EwF=0, m=0, t=0, rc=0, nc=0, iS=0)
+    σ0 = rand(Binomial(m.p.σM, 0.5))
+    σ = σ0 + m.p.Σ * rand(Binomial(age - m.p.A0, m.p.δ0))
+    return Household(id=id, D=0, S=0, σ=σ, σ0=σ0, age=age, employer=nothing, employer_changed=false, rc_=0, wF=0, EwF=0, m=0, t=0, rc=0, nc=0, iS=0)
 end
 
 function create_consumption_firm(m::Model, id::Int)

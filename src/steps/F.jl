@@ -27,6 +27,7 @@ function stepF!(m::Model)
         if h.age == m.p.AR # retirement
             resign!(m, h)
             h.σ = skill_from_wealth(m, m.t, h)
+            h.σ0 = h.σ0
             h.age = m.p.A0 + floor(Int, 12 * h.σ)
             it = floor(Int, m.p.τI * v(m, h1))
             if h.D < it

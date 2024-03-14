@@ -2,6 +2,7 @@ module DAS
 
 using Distributions
 using Random
+using StatsBase
 
 Float = Float64
 
