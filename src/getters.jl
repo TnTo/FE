@@ -11,11 +11,11 @@ function p(m::Model, k::CapitalGood)
 end
 
 function b(m::Model, f::Firm)::Float
-    return sum(k -> βF(m, f, k), f.K)
+    return mapsum(k -> βF(m, f, k), f.K)
 end
 
 function L(f::Firm)::Int
-    return -sum(l -> l.principal, f.L)
+    return -mapsum(l -> l.principal, f.L)
 end
 
 function q(f::CapitalFirm)::Int
@@ -23,11 +23,11 @@ function q(f::CapitalFirm)::Int
 end
 
 function pKK(m::Model, f::ConsumptionFirm)::Int
-    return sum(k -> p(m, k), f.K)
+    return mapsum(k -> p(m, k), f.K)
 end
 
 function pKK(m::Model, f::CapitalFirm)::Int
-    return sum(k -> p(m, k), f.K) + sum(k -> p(m, k), f.inv)
+    return mapsum(k -> p(m, k), f.K) + mapsum(k -> p(m, k), f.inv)
 end
 
 function avgwQF(m::Model, t::Int, f::CapitalFirm)::Int
@@ -76,8 +76,8 @@ end
 # Stats
 
 function pF(m::Model, t::Int)::Int
-    N = sum(f -> f.s * f.pF, m.s[t].FCs)
-    D = sum(f -> f.s, m.s[t].FCs)
+    N = mapsum(f -> f.s * f.pF, m.s[t].FCs)
+    D = mapsum(f -> f.s, m.s[t].FCs)
     if D == 0
         return 0
     else
@@ -87,9 +87,9 @@ end
 
 function u(m::Model, t::Int)::Float
     s = m.s[t]
-    N = sum(f -> sum(g -> βC(m, g), filter(k -> k.operator !== nothing, f.K)), values(s.FCs)) +
-        sum(f -> sum(g -> βK(m, g), filter(k -> k.operator !== nothing, f.K)), values(s.FKs))
-    D = sum(f -> b(m, f), values(s.FCs)) + sum(f -> b(m, f), values(s.FKs))
+    N = mapsum(f -> mapsum(g -> βC(m, g), filter(k -> k.operator !== nothing, f.K)), values(s.FCs)) +
+        mapsum(f -> mapsum(g -> βK(m, g), filter(k -> k.operator !== nothing, f.K)), values(s.FKs))
+    D = mapsum(f -> b(m, f), values(s.FCs)) + mapsum(f -> b(m, f), values(s.FKs))
     if D == 0
         return 1
     else
@@ -105,7 +105,7 @@ end
 
 function Y(m::Model, t::Int)::Int
     s = m.s[t]
-    return sum(f -> f.s * f.pF, s.FCs) + sum(f -> f.y, s.FKs)
+    return mapsum(f -> f.s * f.pF, s.FCs) + mapsum(f -> f.y, s.FKs)
 end
 
 function Ewσ(m::Model, t::Int)::Vector{Int}

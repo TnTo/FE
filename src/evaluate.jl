@@ -64,7 +64,7 @@ function bank_capital_ratio(m::Model, s::State)
 end
 
 function profit_share(s::State)
-    if 0.45 >= (s.B.iS / sum(h -> h.wF + h.m + h.iS, s.Hs)) >= 0.3 # include taxes
+    if 0.45 >= (s.B.iS / mapsum(h -> h.wF + h.m + h.iS, s.Hs)) >= 0.3 # include taxes
         return 1
     else
         return 0
@@ -89,7 +89,7 @@ end
 
 function firm_loan_rate(s::State)
     if 0.004 >= (
-           sum(l -> l.principal * l.r, vcat(vcat(map(a -> a.L, s.FCs)...), vcat(map(a -> a.L, s.FKs)...))) / s.B.L
+           mapsum(l -> l.principal * l.r, vcat(vcat(map(a -> a.L, s.FCs)...), vcat(map(a -> a.L, s.FKs)...))) / s.B.L
        ) >= 0
         return 1
     else

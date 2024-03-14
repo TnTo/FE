@@ -3,7 +3,7 @@ function stepH!(m::Model)
     s = m.s[m.t]
 
     for f = s.FCs
-        f.c = floor(Int, m.p.k * sum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
+        f.c = floor(Int, m.p.k * mapsum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
         f1 = m.s[m.t-1].FCs[f.id]
         if f.c == 0
             f.pF = ceil(Int, f1.pF * (1 + f.μ) / (1 + f1.μ))
@@ -12,7 +12,7 @@ function stepH!(m::Model)
         end
     end
     for f = s.FKs
-        f.k = floor(Int, sum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
+        f.k = floor(Int, mapsum(k -> k.β, filter(k -> k.operator !== nothing, f.K)))
         f1 = m.s[m.t-1].FKs[f.id]
         if f.k == 0
             f.p = ceil(Int, f1.p * (1 + f.μ) / (1 + f1.μ))
