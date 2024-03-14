@@ -3,6 +3,7 @@ module DAS
 using Distributions
 using Random
 using StatsBase
+using DrWatson
 
 Float = Float64
 
@@ -14,5 +15,8 @@ include("create.jl")
 include("matrices.jl")
 include("steps.jl")
 include("plots.jl")
+
+include("evaluate.jl")
+include("calibrate.jl")
 
 end

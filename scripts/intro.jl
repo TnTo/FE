@@ -9,8 +9,6 @@ include(srcdir("DAS.jl"))
 
 p = DAS.Parameters()
 
-p.T = 100
-
 m = DAS.create_model(p)
 #try
 for t = ProgressBar(1:m.p.T)
@@ -26,9 +24,11 @@ DAS.map_plot(m,
         s -> DAS.mapsum(h -> h.rc, s.Hs),
         s -> s.G.rC,
         s -> DAS.mapsum(f -> f.c_, s.FCs),
-        s -> DAS.mapsum(f -> f.c, s.FCs)
+        s -> DAS.mapsum(f -> f.c, s.FCs),
+        s -> DAS.mapsum(f -> DAS.b(m, f), s.FCs),
+        s -> DAS.mapsum(f -> length(f.employees), s.FCs)
     ],
-    ["H rc_" "H rc" "G rc" "F c_" "F c"]
+    ["H rc_" "H rc" "G rc" "F c_" "F c" "F b"]
 )
 
 DAS.map_plot(m,
@@ -87,6 +87,14 @@ DAS.map_plot(m,
         s -> DAS.mapmean(h -> h.D, s.Hs)
     ],
     ["pK" "pC" "w" "0" "<p>" "DH"]
+)
+
+DAS.map_plot(m,
+    [
+        s -> DAS.mapmean(f -> f.μ, s.FKs),
+        s -> DAS.mapmean(f -> f.μ, s.FCs),
+    ],
+    ["μK" "μC"]
 )
 
 scatter(map(h -> h.σ, m.s[end].Hs), map(h -> h.wF, m.s[end].Hs))

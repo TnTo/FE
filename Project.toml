@@ -2,6 +2,7 @@ name = "DAS"
 authors = ["Michele Ciruzzi"]
 
 [deps]
+BayesOpt = "8b8fa57b-2f72-5ccd-8d28-750de228707b"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
 Hyperopt = "93e5fe13-2215-51db-baaf-2e9a34fb2712"

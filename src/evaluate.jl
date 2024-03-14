@@ -1,4 +1,4 @@
-function intergenerational_mobility(m::model, s::State, s1::State)
+function intergenerational_mobility(m::Model, s::State, s1::State)
     idx = (map(h -> h.age, s.Hs) .< map(h -> h.age, s1.Hs)) .& (map(h -> h.σ0, s1.Hs) .>= (m.p.σM / 2))
     if sum(idx) == 0
         return 1
