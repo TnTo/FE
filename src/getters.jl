@@ -105,7 +105,7 @@ end
 
 function Y(m::Model, t::Int)::Int
     s = m.s[t]
-    return mapsum(f -> f.s * f.pF, values(s.FCs)) + mapsum(f -> f.y, values(s.FKs))
+    return mapsum(f -> f.s * f.pF, s.FCs) + mapsum(f -> f.y, s.FKs)
 end
 
 function Ewσ(m::Model, t::Int)::Vector{Int}
@@ -144,7 +144,6 @@ function wH(m::Model, t::Int, w::Int)::Int
     return z
 end
 
-# c(x, a) = ceil(Int, (1 - exp(-a * x)) / a)
 c(x, a) = ceil(Int, ((x + 1)^(1 - a) - 1) / (1 - a))
 
 # Position

@@ -94,7 +94,7 @@ In recent years Stock-Flow Consistent (SFC) models have been recognized as a val
 Those models are aggregate models which can neither describe microeconomic dynamics and behaviours nor, if it is considered necessary, provide a microfoundation for the model.
 Agent-Based Models (ABMs) have been used to add a microeconomic description to the macroeconomic model provided by the SFC framework \parencite{caverzasi2018,dosi2019}.
 
-But in the SB-SFC models literature, very few papers explore the conditions to model a realistic (i.e. fat-tail) distribution of income and wealth among households \parencite[e.g.][]{dafermos2015,kinsella2011}, often relying on a Kaleckian framework which studies the distribution between wages and profits \parencite[e.g.][]{dosi2013a} or a segmented labour-market \parencite[e.g.][]{caiani2019a}.
+But in the AB-SFC models literature, very few papers explore the conditions to model a realistic (i.e. fat-tail) distribution of income and wealth among households \parencite[e.g.][]{dafermos2015,kinsella2011}, often relying on a Kaleckian framework which studies the distribution between wages and profits \parencite[e.g.][]{dosi2013a} or a segmented labour-market \parencite[e.g.][]{caiani2019a}.
 
 Modelling personal income and wealth distribution is a needed step to close the gap between this strain of post-Keynesian literature and the literature on inequality pioneered by Atkinson, Piketty, Zucman and Saez, allowing, for example, to measure the evolution of inequality indexes (like Gini or the Top5/Bottom50) through time or policies changes.
 
@@ -133,7 +133,7 @@ The model includes the five sectors: the Households ($\mathcal{H}$), the Firms w
 
 \begin{enh}[A separate Central Bank]
     The financial side of the model is simplified enough to require a single safe asset and no portfolio choice.
-    If more complex financial dynamics will be introduced (for example with tradable Firms' shares) it is probable that will be required a sapareted Central Bank, more assets (like Reservers and Advances), portfolio choices for the financial operators (as the Banks) and a Liquidity Ratio for the Bank.
+    If more complex financial dynamics will be introduced (for example with tradable Firms' shares) it is probable that will be required a separated Central Bank, more assets (like Reserves and Advances), portfolio choices for the financial operators (as the Banks) and a Liquidity Ratio for the Bank.
 \end{enh}
 
 The model comprises two kinds of real assets: Capital Goods ($\mathbf{K}$) and Consumption Goods ($\mathbf{C}$).
@@ -180,7 +180,7 @@ $V$ is the net worth of the sector.
                                & $\mathcal{H}$                            & $\mathcal{F}_{\mathbf{C}}$                                 & $\mathcal{F}_{\mathbf{K}}$                                             & $\mathcal{B}$                & $\mathcal{G}$                            & Tot.                              \\
         \midrule
         Consumption            & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{H}$ & $+p_{\mathbf{C}} \mathbf{C}$                               &                                                                        &                              & $-p_{\mathbf{C}} \mathbf{C}_\mathcal{G}$ & 0                                 \\
-        Investment             &                                          & $-p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$    & $+p_{\mathbf{K}} (\mathbf{K} - \mathbf{K}_{\mathcal{F}_{\mathbf{K}}})$ &                              &                                          & 0                                 \\
+        Investment             &                                          & $-p_{\mathbf{K}} \mathbf{K}_{\mathcal{F}_{\mathbf{C}}}$    & $+p_{\mathbf{K}} (\mathbf{K} - \mathbf{K}_{\mathcal{F}_{\mathbf{C}}})$ &                              &                                          & 0                                 \\
         Wages                  & $+W$                                     & $-W^{\mathcal{F}_{\mathbf{C}}}$                            & $-W^{\mathcal{F}_{\mathbf{K}}}$                                        &                              &                                          & 0                                 \\
         Taxes                  & $-T$                                     &                                                            &                                                                        &                              & $+T$                                     & 0                                 \\
         Transfers              & $+M$                                     &                                                            &                                                                        &                              & $-M$                                     & 0                                 \\
@@ -212,7 +212,7 @@ Particularly, the initial skill level is distributed as a Beta-Binomial distribu
 
 Retirement happens at a fixed $A_R$ age, while the initial age is equal to $A_0 + \sigma_0$, where $\sigma_0$ is the initial skill level.
 
-Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\Sigma)^\delta \sigma_{t-1}$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
+Skills $\sigma$ evolve $\sigma_t = \max(0,\sigma_{t-1} + \delta\Sigma)$ where $\delta=1$ if the household is employed by the same firm of the previous period, $\delta=0$ if the household is still employed but in a different firm, $\delta=-1$ if the household is unemployed.
 
 \begin{enh}[Training]
     Two factors in the development of the skills can be introduced.
@@ -228,60 +228,30 @@ Skills $\sigma$ evolve like in \textcite{dosi2018}, which means $\sigma_t = (1+\
     An alternative that accounts for the variation in the quality of life (and so, in some way, the implicit transformation of the representative (basket of) consumption good) is to use the relative poverty threshold (express as a fraction of the median income or wealth) as the normalization factor.
 \end{enh}
 
-Households face two choices: if work and how many consumption goods they desire to consume.
+Each household participates in the labour market and so has to choose a desired consumption given its income and wealth.
 
-Households' flows balance is $y_t = w^{\mathcal{H}}_t + m_t + {r^{\mathcal{H}}_{\mathbf{S}}}_t \mathbf{s}_t = c_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the $\mathcal{H}$ superscript indicate the net value after taxes (i.e. for the net wage $w^\mathcal{H} = w^{\mathcal{F}} (1 - \max(\tau_M \tanh(\tau_F(\frac{w^{\mathcal{F}}}{p}-\tau_T)),0))$).
+This differs from the post-keynesian tradition, in which the upper class of capitalists and rentiers doesn't receive any income from work. On the other hand, more recent studies from Piketty, Saez, Zucman and coauthors highlight how contemporary upper class mix financial and labour income, for example by paying the managers in equities (and so granting them financial income) or appointing owners in apical positions, e.g. board's members, granting them labour income.
+
+\begin{enh}[Rentiers]
+    One of the core ideas of this model is that classes are, at least theoretically, permeable.
+    As a consequence, the idea of having a subset of the households who are rentiers and never participate in the labour market is unavailable.
+    Instead, an additional behavioural rule should be added to give to each household the choice about entering or exiting the labour market.
+    The rule should take in account that only high-income household can be rentier, and a requirement to exit the labour market is that the financial income is significantly greater than the labour income.
+\end{enh}
+
+Households' flows balance is $w^{\mathcal{H}}_t + m_t + {r^{\mathcal{H}}_{\mathbf{S}}}_t \mathbf{s}_t = c_t + {\Delta \mathbf{s}}_t + {\Delta \mathbf{d}}_t$, where bold lowercase letters are used to indicate individual value for the correspondent uppercase aggregates and the $\mathcal{H}$ superscript indicate the net value after taxes (i.e. for the net wage $w^\mathcal{H} = w^{\mathcal{F}} (1 - \max(\tau_M \tanh(\tau_F(\frac{w^{\mathcal{F}}}{p}-\tau_T)),0))$).
 
 I assume, as a heuristic, that wages ($w$) can be approximated as constant from the previous period (because salaries increase only by changing employers, which is an unexpected event), while transfers ($m$) are composed only of unemployment benefits.
 Additionally, I assume that desired deposits ($\mathbf{d}^*_t$) at the end of the period are a fraction of the desired consumption ($c^*_t = \mathbb{E}(p_\mathbf{C}) \mathbf{c}^*_t$) as insurance against unexpected increases in prices ($\mathbf{d}^*_t = \rho_\mathcal{H}c^*_t$, $\rho_\mathcal{H} > 0$).
 
-Subtracting two consecutive periods and ignoring second-order differences, the in-flow income becomes ${\Delta y}_t = {\Delta z}_t + {\Delta r_\mathbf{S} \mathbf{s} }_t$, and calling $\eta$ the marginal propensity to consume it becomes
-\begin{align*}
-    \eta {\Delta c}_t = {\Delta y}_t & = {\Delta w^{\mathcal{H}}}_t + {\Delta (r^{\mathcal{H}}_\mathbf{S} \mathbf{s})}_t                                                                                                                        \\
-                                     & = {\Delta w^{\mathcal{H}}}_t + {r^{\mathcal{H}}_\mathbf{S}}_t \mathbf{s}^*_t - {r^{\mathcal{H}}_\mathbf{S}}_{t-1} \mathbf{s}_{t-1}                                                                       \\
-                                     & = {\Delta w^{\mathcal{H}}}_t + {r^{\mathcal{H}}_\mathbf{S}}_t \mathbf{s}^*_t - ({r^{\mathcal{H}}_\mathbf{S}}_{t} - {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t}) (\mathbf{s}^*_{t} - {\Delta \mathbf{s}}_{t}) \\
-                                     & \approx {\Delta w^{\mathcal{H}}}_t + {r^{\mathcal{H}}_\mathbf{S}}_t {\Delta \mathbf{s}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}^*_{t}                                                     \\
-                                     & = {\Delta w^{\mathcal{H}}}_t + ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})\mathbf{s}^*_t - {r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}
-\end{align*}
-where $\mathbf{s}^*_t$ is the desired amount of shares to hold in the period.
+Following for example \textcite{fisher2020} the propensity to consume has to be considered decreasing in income and wealth.
+This idea is able to improve a classical post-keynesian consumption function by introducing variable coefficients for the propensity to consume out of income and out of wealth.
+As detailed in the appendix \ref{sec:consumption}, the resulting equation for the real desired consumption is $$\mathbf{c}^* = \frac{1}{(1-a_y)}\left(\left(\frac{\mathbb{E}(y)}{p^\mathcal{H}_\mathbf{C}(1+\psi)}+1\right)^{1-a_y}-1\right) + \frac{1}{(1-a_v)}\left(\left(\frac{v}{p^\mathcal{H}_\mathbf{C}(1+\psi)}+1\right)^{1-a_v}-1\right)$$
+where $v = \mathbf{s} + \mathbf{d}$ at the beginning of the period and $\mathbb{E}(y)_t = w^\mathcal{H}_{t-1} + \phi m_{t-1}$ is the expected non-financial income.
 
-Looking at the balance of a household between the beginning of the period and the purchase of consumption goods, it is possible to write $\mathbf{s}^*_t + \mathbf{d}^*_t + c^*_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w^{\mathcal{H}})}_t + {\mathbb{E}(m)}_t$, and substituting $\mathbf{s}^*_t$ above it becomes
-\begin{gather*}
-    \begin{align*}
-        \eta {\Delta c}_t & \approx {\Delta w^{\mathcal{H}}}_t   + ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{s}_{t-1} + \mathbf{d}_{t-1} + {\mathbb{E}(w^{\mathcal{H}})}_t + {\mathbb{E}(m)}_t - \mathbf{d}^*_t - c^*_t)- {r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1} \\
-                          & = ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c^*_t)              + {\Delta r_\mathbf{S}}_{t} \mathbf{s}_{t-1}                                                           \\
-                          & =  ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1})                                                                                                                  \\
-                          & \qquad - ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}) {\Delta c}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}
-    \end{align*}\\
-    \begin{align*}
-        (\eta + ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})) {\Delta c}_t & \approx ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}
-    \end{align*}\\
-    {\Delta c}_t \approx \frac{({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{\eta +  ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}})}
-\end{gather*}
+The financial income does not appear explicitly in the equation because it is determined by the portfolio choice, which relies on the desired consumption, creating a couple of equation without a closed form solution.
 
-To translate this into consumption measured in consumption goods $\mathbf{C}$, calling $\psi$ the inflation rate updated periodically model-wise and $p_\mathbf{C}$ the average purchase price paid by the agent, we have
-\begin{align*}
-    {\Delta c}^*_t          & = \Delta (p^{\mathcal{H}}_\mathbf{C} \mathbf{c})_t = \Delta(p^{\mathcal{H}}_\mathbf{C})_t \mathbf{c}^*_t + \mathbb{E}(p^{\mathcal{H}}_\mathbf{C})_t {\Delta \mathbf{c}}_t - \Delta(p^{\mathcal{H}}_\mathbf{C})_t{\Delta \mathbf{c}}_t                                                                      \\
-                            & = (\mathbb{E}(p^{\mathcal{H}}_\mathbf{C})_t - {p^{\mathcal{H}}_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + \mathbb{E}(p^{\mathcal{H}}_\mathbf{C})_t {\Delta \mathbf{c}}_t - (\mathbb{E}(p^{\mathcal{H}}_\mathbf{C})_t - {p^{\mathcal{H}}_\mathbf{C}}_{t-1}){\Delta \mathbf{c}}_t       \\
-                            & = ((1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1} - {p^{\mathcal{H}}_\mathbf{C}}_{t-1}) (\mathbf{c}_{t-1} + {\Delta \mathbf{c}}_t) + (1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t - ((1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1} - {p^{\mathcal{H}}_\mathbf{C}}_{t-1}){\Delta \mathbf{c}}_t \\
-                            & = \psi {p^{\mathcal{H}}_\mathbf{C}}_{t-1} \mathbf{c}_{t-1} + (1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t                                                                                                                                                                              \\
-                            & = \psi c_{t-1} + (1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1} {\Delta \mathbf{c}}_t                                                                                                                                                                                                                          \\
-    {\Delta \mathbf{c}}^*_t & = \frac{\Delta c^*_t}{(1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1}} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}}
-\end{align*}
-
-${r^{\mathcal{H}}_\mathbf{S}}_t$ is communicated by the Bank before the agent has to choose between consumption and saving. Following \textcite{fisher2020} $\eta$ is considered dependent on the wealth and since it declines fast in the first quantiles, but way slower for wealthy households, it will be defined as $\eta(v) = (\frac{v}{p} + 1)^{-a}$.
-
-From these relations, we can model the two choices of households.
-
-First, a household exit from the labour market if the loss of the wage can anyway grant a non-decreasing standard of living, i.e. if
-$$ {\Delta \mathbf{c}}^*_t = \frac{-w^{\mathcal{H}}_{t-1} + ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi w^{\mathcal{H}}_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1}(\eta +  ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} \ge 0$$
-Similarly, it re-enters the labour market if the expected salary (i.e. the average salary given the skill level) prevents a loss of consumption, i.e. if
-\begin{multline*}
-    {\Delta \mathbf{c}}^*_t = \frac{({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + \phi m_{t-1} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1}(\eta +  ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} < 0 \\
-    {\Delta \mathbf{c}}^*_t = \frac{{\mathbb{E}(w^{\mathcal{H}}|\sigma)}_{t} + ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(\mathbf{d}_{t-1} + {\mathbb{E}(w^{\mathcal{H}}|\sigma)}_{t} - (1+\rho_{\mathcal{H}}) c_{t-1}) + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t} \mathbf{s}_{t-1}}{(1+\psi){p^{\mathcal{H}}_\mathbf{C}}_{t-1}(\eta +  ({r^{\mathcal{H}}_\mathbf{S}}_t + {\Delta r^{\mathcal{H}}_\mathbf{S}}_{t})(1+\rho_{\mathcal{H}}))} - \frac{\psi}{1+\psi}{\mathbf{c}_{t-1}} \ge 0
-\end{multline*}
-
-Second, each household sets the desired total consumption as $\mathbf{c}^*_t = \mathbf{c}_{t-1} + {\Delta \mathbf{c}}^*_t$. From which follows $c^*_t = (1+\psi) {p^{\mathcal{H}}_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho_{\mathcal{H}} c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - \mathbf{d}^*_t - c^*_t$.
+From this follows $c^*_t = (1+\psi) {p^{\mathcal{H}}_\mathbf{C}}_{t-1} \mathbf{c}^*_t$ and $\mathbf{d}^*_t = \rho_{\mathcal{H}} c^*_t$. Finally, the household buys shares $\mathbf{s}_t = \mathbf{s}_{t-1} + \mathbf{d}_{t-1} + w^{\mathcal{H}}_{t-1} + \phi m_{t-1} - \mathbf{d}^*_t - c^*_t$.
 
 \begin{enh}[Gender, Care work and Feminist Economics]
     Approximating individuals as household invisibilizes gender differences and the (hidden) work made mostly by women inside the family (childcare, elder care, housekeeping, ...).
@@ -323,7 +293,7 @@ Capital Firms produce their own machinery, creating a system of two simultaneous
 The problem is avoided by approximating $b^*_t = \max(\rho_\mathcal{F}\frac{(1+g-\psi)}{u^*}s_{t-1} + \gamma b_{t-1}, 1)$, and $\mathbf{k}_t^* = \rho_\mathbf{K}(1+g-\psi)s_{t-1} + \frac{{\Delta b}_t}{\beta^\mathbf{K}_{t-1}} - \hat{\mathbf{k}}_{t-1}$, where $\hat{\mathbf{k}}$ are the inventories unsold from the previous period. The machinery produced for own use is kept separate from those to be sold (the inventories), and valued in the balance sheet with value ${p_\mathbf{K}}_t$.
 
 Following the same logic used for Consumption Firms, we can write the mark-up $\mu_t = \mu_{t-1}(1 + \Theta \frac{s_{t-1}-{\mathbb{E}(s)}_{t-1}}{{\mathbb{E}(s)}_{t-1}}) = \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1} + \hat{\mathbf{k}}_{t-2} - \Delta b_{t-1}{\beta^\mathbf{K}_{t-2}}^{-1}}-1))$.
-This 2-lagged variables are the only one in the model. To simplify the implemetation the strong approximation $\mu_t \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1}}-1))$ is adopted.
+This 2-lagged variables are the only one in the model. To simplify the implementation the strong approximation $\mu_t \approx \mu_{t-1}(1+\Theta(\rho_\mathbf{K}\frac{s_{t-1}}{\mathbf{k}^*_{t-1}}-1))$ is adopted.
 
 Additionally, Capital Firms perform research to improve the machinery they sell. They aim to employ a number of researchers $q_t^* = q_{t-1} + \lfloor \rho_Q\frac{{p_\mathbf{K}}_{t-1}s_{t-1} - w^\mathcal{F}_{t-1}}{{\langle w^\mathcal{F}_Q \rangle}_{t-1}} \rfloor$ where $\langle w^\mathcal{F}_Q \rangle$ is the average salaries of the employees with $\sigma \ge \sigma^*$. This makes $\mathbb{E}(w^\mathcal{F})_t = \max(w_{t-1}, \frac{\mathbf{k}^*_t}{{\langle \beta^\mathbf{K} \rangle}_{t-1}}{\langle w^\mathcal{F} \rangle}_{t-1} + q_t^* {\langle w^\mathcal{F}_Q \rangle}_{t-1})$.
 
@@ -335,7 +305,7 @@ Finally, we note that $i_t = 0$ and so $l_t^* = \max(\rho_\mathcal{F} \mathbb{E}
 \end{enh}
 
 \begin{enh}[Firms' governance]
-    In a future version, different models of governance can be introduced, particularly regarding the property (not tradeable shares, shares available on the stock market, cooperative ownership, ...), the choice rules (mostly what is the goal of the Firm, like dividend maximization, share values maximization, market share maximisation, wages maximization, top manager retribution maximization, ...) and the expected profit rate required by the owners.
+    In a future version, different models of governance can be introduced, particularly regarding the property (not tradeable shares, shares available on the stock market, cooperative ownership, ...), the choice rules (mostly what is the goal of the Firm, like dividend maximization, share values maximization, market share maximization, wages maximization, top manager retribution maximization, ...) and the expected profit rate required by the owners.
 \end{enh}
 
 \begin{enh}[Public Firms]
@@ -360,9 +330,8 @@ In this model the Bank does not distribute profits and can access all the needed
     The other is to allow Central Bank to ration the access to liquidity, charging different interest rates on Bonds, Reserves and Advances (adding two financial stock in the model).
 \end{enh}
 
-The Bank rations the credit to Firms, based on the balance sheet of the applicant, and fixes a different interest rate for each loan. The duration of Loans is fixed.
-Bank is willing to provide new loans to a firm $f$ in the period up to $${l^f}^*_t = \max(\min(\nu_0 (\sum_{\kappa \in \mathbf{K}_f} p^{t-1}_\kappa)_{t-1} - \mathbf{l}^f_{t-1}, (\nu_1 N_F)^{-1} \mathbf{L}_{t-1} (\frac{\Gamma_{t-1}}{\Gamma^*}-1)),0)$$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = {r_\mathbf{B}}_t + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
-These relations account for the fulfilment of the capital requirement for the Bank and the presence of sufficient collaterals on the Firm side.
+The Bank does not ration the credit to Firms, accommodating all the demand for Loans.
+Bank provides new loans to a firm $f$ at a firm-specific interest rate $${r_\mathbf{L}}^f_t = {r_\mathbf{B}}_t + \nu_2 (\Gamma^* - \Gamma_{t-1}) + \nu_3 (\frac{\mathbf{l}^f_{t-1}}{{v_f}_{t-1}}) - \nu_4 (\frac{{\pi_f}_{t-1}}{{\mathbf{l}^f}_{t-1}})$$
 
 \subsection{Government}
 The consolidated Public sector acts as the Central Bank and as the Government.
@@ -370,7 +339,7 @@ The consolidated Public sector acts as the Central Bank and as the Government.
 As Central Bank, it fixes the Bonds interest rate according to a Taylor rule.
 The annual interest rate is ${r_\mathbf{B}^y} = \psi^y + \alpha_1 (\psi^y - \psi^*) + \alpha_2 (\langle u \rangle_y - u^*) - \alpha_3 (\langle \omega \rangle_y - \omega^*)$, where $\psi$ is the inflation rate, $u$ is the capacity utilization measured as the fraction of capital goods used in production, $\omega$ is the unemployment rate computed among those who have not voluntarily exited the job market, and starred variables are the targets. The Public sector do not raise the yearly interest rate by more than 0.005 each quarter. The interest rate used in the model is then ${r_\mathbf{B}}_t = (1 + {r_\mathbf{B}^y}_t)^{\frac{1}{12}} - 1$.
 
-Looking at the assets matrix of the model, any Public expenditure happens directly toward the Bank with the emission of new Bonds, or through the Bank which converts new Bonds in deposits for the other sectors. As consequence, the Government has no accounting limits to spending.
+Looking at the assets' matrix of the model, any Public expenditure happens directly toward the Bank with the emission of new Bonds, or through the Bank which converts new Bonds in deposits for the other sectors. As consequence, the Government has no accounting limits to spending.
 
 As Government, it fixes the public expenditure. It additionally collects taxes and pays unemployment benefits. It determines the amount to be transferred to households (both as monetary and non-monetary, as consumption goods).
 
@@ -379,7 +348,7 @@ As an approximation, fiscal policy is kept constant during the simulation and ta
 Fixed unemployment benefits $m_{t} = \phi \max(w^\mathcal{H}_{t-1}, m_{t-1})$ is paid to those who have not exited the job market and are not employed.
 
 \begin{enh}[Income Taxes]
-    In this model income taxes are paid progressivelly on the monthly salary. For this reason periods on unemployment distort the overall progressivity of the income taxation. To represent a more realistic situation, income taxes should be arbitraged once a year.
+    In this model income taxes are paid progressively on the monthly salary. For this reason periods on unemployment distort the overall progressiveness of the income taxation. To represent a more realistic situation, income taxes should be arbitraged once a year.
 \end{enh}
 
 Each period government buys consumption goods which distribute to the Households. Particularly each Household receives an amount of Consumption goods equal to ${\mathbf{c}^\mathcal{G}_h}_t = ((1 - \varepsilon_0) + \varepsilon_0 e^{-\varepsilon_1\frac{{v_h}_{t-1}}{p}})\Xi_t$.
@@ -518,7 +487,7 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
     \item[I.0] Government pays unemployment benefits
     \item[I.1] Government buys and distributes Consumption Goods
     \item[J] Households Consumption Goods market
-    \item[K.0] Capital Goods depreciation and dismission
+    \item[K.0] Capital Goods depreciation
     \item[K.1] Capital Goods market
     \item[L] Innovation
     \item[M] Skill update
@@ -541,14 +510,15 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
     $N_{\mathcal{F}_\mathbf{K}}$ & Number of Capital Firms                                      & 50 & See above                                                                                                                                                            \\
     $N_{\mathbf{K}}$             & Capital Goods lifetime                                       & 60 & 5 years                                                                                                                                                           \\
     $N_{L}$             & Loans duration                                      & 60 &     $N_{\mathbf{K}}$                                                                                                                                                         \\
-    $\Sigma$                     & Relative skill variation                                     & 0.01 & To keep the annual increment af skill for a worker constantly employed \textasciitilde 1 ($1 \approx \Delta \sigma = (1+\Sigma)^{12} \sigma - \sigma$ )                                                                                                                                                          \\
+    $\Sigma$                     & Relative skill variation                                     & 0.08 & To keep the annual increment of skill for a worker constantly employed $\lesssim 1$                                                                                                                                   \\
     $\sigma^M$                   & Maximum initial skill level                                  & 10    & 2 high school years after compulsory education, 5 years in university, 3 years as PhD                                                                                                                                                         \\
     $e_0$                        & Intergenerational social mobility parameter                  &       & Calibration; $>0$; characterization of degree holders by previous generation degree                                                                                                                                                          \\
     $e_1$                        & Shape parameter for initial skill level                      &      & Calibration; $1> \cdot >0$; fraction of degree holders                                                                                                                                                           \\
-    $A_R$                        & Retirement Age                                               & 780   & 65 years; aprroximate retirement age in Italy                                                                                                                                                         \\
+    $A_R$                        & Retirement Age                                               & 780   & 65 years; approximate retirement age in Italy                                                                                                                                                         \\
     $A_0$                        & Initial age without education                                & 180   & 15 years; compulsory education in Italy enrols people until 16 y.o., but the minimum skill level (years of education) is 1.                                                                                                                                                            \\
     $\rho_\mathcal{H}$           & Deposits to consumption ratio                                &       & Calibration; $>1$                                                                                                                                                         \\
-    $a$                          & Distribution parameter for marginal propensity to consume    &       & Calibration; $>1$; average propensity to consume                                                                                                                                                          \\
+    $a_y$                          & Distribution parameter for propensity to consume out of income     &       & Calibration; $>0$; average propensity to consume                                                                                                                                                          \\
+    $a_v$                          & Distribution parameter for propensity to consume out of wealth   &       & Calibration; $>0$; average propensity to consume                                                                                                                                                          \\
     $\rho_\mathbf{C}$            & Production over expected sales for Consumption Firms         &       & Calibration; $>1$                                                                                                                                                         \\
     $\rho_\mathbf{K}$            & Production over expected sales for Capital Firms             &       & Calibration; $>1$; growth rate                                                                                                                                                            \\
     $\rho_\mathcal{F}$           & Liquidity over expected wages and investment ratio           &       & Calibration; $>1$                                                                                                                                                            \\
@@ -566,24 +536,24 @@ If the innovation is achieved the Capital Goods produced by the Firm increase it
     $\tau_\mathbf{C}$            & VAT rate                                                     & 0.2   & VAT rate in Italy is between 0.04 and 0.22 depending on the kind of good                                                                                                                                                            \\
     $\tau_\mathbf{S}$            & Financial income tax rate                                    & 0.25  & Capital income tax rate is between 0.24 and 0.26                                                                                                                                                            \\
     $\tau_I$                     & Inheritance tax rate                                         & 0     & There is no such thing as taxing again honestly earned wealth                                                                                                                                                            \\
-    $\tau_M$                     & Maximum labour income tax rate                               & 0.45   &  The maximum marginal rate of italian income tax is 0.43                                                   \\
-    $\tau_F$                     & Labour income tax progressivity                              &       & Calibration; $>0$; tax revenues on GDP                                                                                                                                                           \\
+    $\tau_M$                     & Maximum labour income tax rate                               & 0.45   &  The maximum marginal rate of Italian income tax is 0.43                                                   \\
+    $\tau_F$                     & Labour income tax progressiveness                              &       & Calibration; $>0$; tax revenues on GDP                                                                                                                                                           \\
     $\tau_T$                     & Labour income tax threshold                                  &       & Calibration; $>0$; number of exempted households                                                                                                                                                             \\
     $\phi$                       & Unemployment benefits decay rate                             & 0.90  & \textasciitilde 30\% of initial wage after one year                                                                                                                                                            \\
     $\delta^*$                   & Target deficit                                               & 0.03  & EU                                                                                                                                                            \\
     $\alpha_1$                   & Inflation coefficient in Taylor rule                         & 0.5      &                                                                                                                                                             \\
     $\alpha_2$                   & Capacity utilization coefficient in Taylor rule              & 0.25      &                                                                                                                                                             \\
     $\alpha_2$                   & Unemployment coefficient in Taylor rule                      & 0.25      &                                                                                                                                                             \\
-    $\varepsilon_0$                   & Progressivity of Government transferts                   &  & Calibration; $1 \ge \cdot > 0$; Wealth and income inequality                                                                                                                                                             \\
-    $\varepsilon_1$                   & Progressivity of Government transferts                      &      & Calibration; $>0$; Wealth and income inequality                                                                                                                                                            \\
+    $\varepsilon_0$                   & Progressiveness of Government transfers                   &  & Calibration; $1 \ge \cdot > 0$; Wealth and income inequality                                                                                                                                                             \\
+    $\varepsilon_1$                   & Progressiveness of Government transfers                      &      & Calibration; $>0$; Wealth and income inequality                                                                                                                                                            \\
     $\psi^*$                     & Target inflation                                             & 0.02  & EU                                                                                                                                                            \\
     $u^*$                        & Target capacity utilization                                  & 0.8   &                                                                                                                                                             \\
     $\omega^*$                   & Target unemployment rate                                     & 0.05  &                                                                                                                                                             \\
-    $k$                          & Capital goods to consumption good output                     & 60     & $N_\mathbf{K}$                                                                                                                                                            \\
+    $k$                          & Consumption goods to capital good output ratio                    &      & Calibration; $\ge 1$; growth and unemployment rates                                                                                                                                                            \\
     $\chi_\mathbf{C}$            & Number of Consumption Firms seen in Consumption Goods market & 5      & 2\%                                                                                                                                                            \\
     $\chi_\mathbf{K}$            & Number of Capital Firms seen in Capital Goods market         & 5      & 10\%                                                                                                                                                            \\
     $\chi_\mathcal{H}$           & Number of Households seen in labour market                   & 20      & 1\%                                                                                                                                                            \\
-    $\rho_W$                     & Salary increase if the labor market is short on the offer    & 1.05      &                                                                                                                                                             \\
+    $\rho_W$                     & Salary increase if the labour market is short on the offer    & 1.05      &                                                                                                                                                             \\
     $\zeta$                      & Innovation speed                                             &       & Calibration; $>0$; growth and unemployment rate                                                                                                                                                            \\
     $b_0$                        & Productivity gain distribution parameter                     &       & Calibration; $>0$; growth and unemployment rate                                                                                                                                                               \\
     $b_1$                        & Maximum required skill loss                                  &       & Calibration; $>0$; growth and unemployment rate (adjusted for education/skill)                                                                                                                                                              \\
@@ -612,12 +582,18 @@ The last observation is about the need of writing parallelized code, for example
 Instead, the same computation capacity can be used to run in parallel multiple runs of the same single-thread model, for example, to explore the sensitivity to a parameter or to obtain statistically robust analysis by comparing different initializations of the random number generator.
 
 \subsection{Initialization}
+To initialize the model a handful of parameters are added to the model to easy the start-up.
+
 \begin{xltabular}{\linewidth}{lXlX}
     \toprule
     & Description                                                  & Value & Source and Notes                                                                                                                                            \\
     \toprule \endhead
     \bottomrule \endfoot
-    T & Simulation lenght & 300 & 25 years \\
+    T & Simulation length & 300 & 25 years \\
+    $p_0$ & Price level & 100 & \\
+    $\delta_0$ & Probability of skill increase per age in initialization & Calibration & \\
+    $\beta_0$ & Productivity of Capital Goods at the beginning of the simulation & Calibration & \\
+    $\sigma_0$ & Minimum skill level for Capital Goods at the beginning of the simulation & Calibration & \\
 \end{xltabular}
 
 \section{Calibration}
@@ -627,12 +603,11 @@ Instead, the same computation capacity can be used to run in parallel multiple r
     & Description                                                  & Value & Target &                                                                                                                                            \\
     \toprule \endhead
     \bottomrule \endfoot
-    Intergenerational mobility & $\mathbb{P}(\sigma_0 \ge 5 | \sigma_0^{parent} \ge 5)$ & $[0.67:0.65]$ & $\ge 0.7$ & \endnote{Holders of bachelor degree, childrens of holders of bachelor degree, ITALY 2022 \url{https://www.istat.it/it/files//2023/10/Report-livelli-di-istruzione-e-ritorni-occupazionali.pdf}} \\
+    Intergenerational mobility & $\mathbb{P}(\sigma_0 \ge 5 | \sigma_0^{parent} \ge 5)$ & $[0.67:0.65]$ & $\ge 0.7$ & \endnote{Holders of bachelor degree, children of holders of bachelor degree, ITALY 2022 \url{https://www.istat.it/it/files//2023/10/Report-livelli-di-istruzione-e-ritorni-occupazionali.pdf}} \\
     Degree holders & $\mathbb{P}(\sigma_0 \ge 5)$ & $[19,4\%:20,3\%]$ & $[0.2:0.35]$ & \endnote{ITALY 2019-2022 \url{https://www.istat.it/it/files//2023/10/Report-livelli-di-istruzione-e-ritorni-occupazionali.pdf}}\\
     Average propensity to consume out of income - 1st quintile & $\langle c / y^\mathcal{H} \rangle$ & $[0.974:0.976]$ & $[0.90:1]$ & \endnote{US 1999-2013 \parencite{fisher2020}}\\
     Average propensity to consume out of income - 5th quintile& $\langle c / y^\mathcal{H} \rangle$ & $[0.435:0.475]$ & $[0.4:0.5]$ & \endnote{US 1999-2013 \parencite{fisher2020}} \\
     Growth rate & $g^y$ & $[-0.075:0.097]$ & $[-0.1:0.1]$ & \endnote{ITALY 2012-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00001/default/table?lang=en}}\\
-    Growth rate skweness & $\gamma(g^y)$ & $-0.19$ & $<0$ & \endnote{ITALY 2012-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00001/default/table?lang=en}}\\
     Inflation rate & $\psi^y$ & $[-0.001:0.087]$ & $[-0.01:0.05]$ & \endnote{ITALY 2011-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00118/default/table?lang=en}}\\
     Bank's capital ratio & $\Gamma \le \Gamma^*$ & & True & \\
     Profit share & ($r_\mathbf{S}^\mathcal{H} \mathbf{S}) / Y^\mathcal{H}$ & $[0.35:0.40]$ & $[0.30:0.45]$ & \endnote{ITALY 2011-2022 Gross Operating Surplus over Gross Value Added \url{https://ec.europa.eu/eurostat/databrowser/view/nasa_10_nf_tr/default/table?lang=en}}\\
@@ -640,22 +615,23 @@ Instead, the same computation capacity can be used to run in parallel multiple r
     Debt to GDP ratio & $\mathbf{B} / Y$ & $[1.32:1.55]$ &  $[1.0:1.5]$ & \endnote{ITALY 2013-2022 Gross Operating Surplus over Gross Value Added \url{https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en}}\\
     Average loan interest rate for Firms & $\langle r_\mathbf{L} \rangle$ & $[0.012:0.045]$ & $[0.00:0.05]$ & \endnote{ITALY 2011-2022 \url{https://data.ecb.europa.eu/data/datasets/MIR/MIR.M.IT.B.A2I.AM.R.A.2240.EUR.N}}\\
     Tax revenues over GDP & $T / Y$ & $[0.4165:0.438]$ & $[0.35:0.50]$ & \endnote{ITALY 2010-2022 \url{https://data.oecd.org/tax/tax-revenue.htm}} \\
-    Housedhold exempted from tax payment & $|\{h|t^h = 0\}|/N^\mathcal{H}$ & $0.24$ & $[0.15:0.25]$ & \endnote{ITALY 2021 \url{https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/analisi_dati_2021_irpef.pdf} (§1.8)}\\
-    Unemployment rate & $\omega^y$ & $[0.081:0.124]$ & $[0.00:0.10]$ & \endnote{ITALY 2011-2022 \url{http://dati.istat.it/Index.aspx?DataSetCode=DCCV_TAXDISOCCU1}}\\
-    Employment rate & $\cdot$ & $[0.428:0.458]$ & $[0.55:0.75]$ & \endnote{ITALY 2011-2022 \url{http://dati.istat.it/Index.aspx?DataSetCode=DCCV_TAXOCCU1}}\\
+    Households exempted from tax payment & $|\{h|t_W^h = 0\}|/N^\mathcal{H}$ & $0.24$ & $[0.15:0.25]$ & \endnote{ITALY 2021 \url{https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/analisi_dati_2021_irpef.pdf} (\S 1.8)}\\
+    Unemployment rate & $\omega$ & $[0.081:0.124]$ & $[0.00:0.10]$ & \endnote{ITALY 2011-2022 \url{http://dati.istat.it/Index.aspx?DataSetCode=DCCV_TAXDISOCCU1}}\\
+    % Employment rate & $\cdot$ & $[0.428:0.458]$ & $[0.55:0.75]$ & \endnote{ITALY 2011-2022 \url{http://dati.istat.it/Index.aspx?DataSetCode=DCCV_TAXOCCU1}}\\
     Decreasing unemployment rate by skill level & $\rho(\omega,\sigma)<0$ & & True & \\
     Increasing salary by skill level & $\rho(w,\sigma)>0$ & & True & \\
-    Kurtosis of firms' size & $\kappa(\#employed_f)$ & & $\ge 6$ & \endnote{Kurtosis of exponential distribution} \\
+    Kurtosis of firms' size & $\kappa(\#employed_f)$ & & $> 6$ & \endnote{Kurtosis of exponential distribution} \\
     Kurtosis of income & $\kappa(y^\mathcal{H})$ & & $> 6$ & \\
     Kurtosis of wealth & $\kappa(v_h)$ & & $> \kappa(y^\mathcal{H})$ & \\
     Gini index for income & $\cdot$ & $[0.295:0.307]$ & $[0.25:0.35]$ & \endnote{ITALY 2011-2022 \url{http://dati.istat.it/Index.aspx?DataSetCode=DCCV_GINIREDD}}\\
     Wealth and income inequality & $\text{Gini}(wealth) > \text{Gini}(income)$ & & True & \\
-    % Government spending over GDP & $(M+C^\mathcal{G})/Y$ & $[0.484:0.570]$ & $[0.45:0.60]$ & \endnote{ITALY 2011-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00023/default/table?lang=en}} \\
+    Government spending over GDP & $(M+C^\mathcal{G})/Y$ & $[0.484:0.570]$ & $[0.45:0.60]$ & \endnote{ITALY 2011-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00023/default/table?lang=en}} \\
 \end{xltabular}
 \theendnotes
 
 Autocorrelation as in \parencite{assenza2015}.
-Check \Parencite[p.72]{dosi2017a}
+Check \Parencite[p.72]{dosi2017a}.
+% Growth rate skewness & $\gamma(g^y)$ & $-0.19$ & $<0$ & \endnote{ITALY 2012-2022 \url{https://ec.europa.eu/eurostat/databrowser/view/tec00001/default/table?lang=en}}\\
 
 %\section{Results}
 %\section{Discussion}
@@ -684,7 +660,16 @@ $$\alpha=\frac{\mu(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
 $$\beta=\frac{(N-\mu)(\mu N - \mu^2 -s)}{sN -\mu N + \mu^2}$$
 As additional conditions it must be $\alpha > 0$ and $\beta>0$, given that $N>\mu>0$ and $s>0$, from which it follows
 $$\mu(N-\mu) > s > \frac{\mu}{N}(N-\mu)$$
-To keep the variance small and so to ensure a bell-shaped mass function, $s=e_1[\mu(N-\mu)-\frac{\mu}{N}(N-\mu)] + \frac{\mu}{N}(N-\mu) = \frac{\mu}{N}(Ne_1-e_1+1)$, for $e_1 \in (0,1)$ and smalls.
+To keep the variance small and so to ensure a bell-shaped mass function, $s=e_1[\mu(N-\mu)-\frac{\mu}{N}(N-\mu)] + \frac{\mu}{N}(N-\mu) = \frac{\mu}{N}(Ne_1-e_1+1)$, for $e_1 \in (0,1)$ and small.
+
+\section{Consumption Equation}
+\label{sec:consumption}
+Empirical literature \parencite{fisher2020} suggests that the marginal propensity to consume $\eta$ is decreasing in income and wealth.
+
+By definition $\eta = \frac{\partial c}{\partial x}$ (where $x$ is either income or wealth) and so, as long as $c$ depends on $y$ only directly, it is possible to write $c = \int_{0}^{X} \eta(x) dx$.
+Assuming a persistency of the marginal propensity to consume, and so a fat-tail functional form like $\eta = (x+1)^{-a}$, it is possible to obtain
+$$c(X) = \int_{0}^{X} (x+1)^{-a} dx = \int_{1}^{X+1} y^{-a} dy = \frac{1}{1-a}\left.y^{1-a}\right|_1^{X+1} = \frac{1}{1-a} ((X+1)^{1-a}-1)$$
+
 
 
 

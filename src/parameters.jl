@@ -3,16 +3,16 @@ import Base.@kwdef
 @kwdef mutable struct Parameters
     # Initialization
     seed::Int = 8686
-    T::Int = 500
+    T::Int = 300
     p0::Int = 100
     δ0::Float
     σ0::Float
     β0::Float
 
     # Not to calibrate
-    NH::Int = 200
-    NFC::Int = 25
-    NFK::Int = 5
+    NH::Int = 2000
+    NFC::Int = 250
+    NFK::Int = 50
     NK::Int = 60
     NL::Int = 60
     Σ::Float = 0.08
