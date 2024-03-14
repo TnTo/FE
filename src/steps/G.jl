@@ -129,7 +129,7 @@ function stepG!(m::Model)
 
     for f = s.FCs
         hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
-        w = mapsum(h -> h.EwF, hs)
+        w = sum(h -> h.EwF, hs)
         while w > f.D
             h = pop!(hs)
             w -= h.EwF
@@ -155,7 +155,7 @@ function stepG!(m::Model)
 
     for f = s.FKs
         hs = sort(map(id -> s.Hs[id], f.employees), by=h -> h.σ, rev=true)
-        w = mapsum(h -> h.EwF, hs)
+        w = sum(h -> h.EwF, hs)
         while w > f.D
             # println("Firing a worker for liquidity constraint")
             h = pop!(hs)
