@@ -21,7 +21,7 @@ end
 
 function avg_propensity_consume_1st(s::State)
     yh = map(h -> h.wF + h.m + h.iS - h.t, s.Hs)
-    idx = yh .<= StatsBase.quintile(yh, 0.2)
+    idx = yh .<= StatsBase.quantile(OffsetArrays.no_offset_view(yh), 0.2)
     if 1.0 >= mean(map(h -> h.nc, s.Hs[idx]) ./ yh[idx]) >= 0.9
         return 1
     else
@@ -31,7 +31,7 @@ end
 
 function avg_propensity_consume_5th(s::State)
     yh = map(h -> h.wF + h.m + h.iS - h.t, s.Hs)
-    idx = yh .>= StatsBase.quintile(yh, 0.8)
+    idx = yh .>= StatsBase.quantile(OffsetArrays.no_offset_view(yh), 0.8)
     if 0.5 >= mean(map(h -> h.nc, s.Hs[idx]) ./ yh[idx]) >= 0.4
         return 1
     else
@@ -40,7 +40,7 @@ function avg_propensity_consume_5th(s::State)
 end
 
 function growth_rate(s::State)
-    if 0.008 >= s.Stats.g >= 0.009
+    if 0.008 >= s.stats.g >= 0.009
         return 1
     else
         return 0
@@ -48,7 +48,7 @@ function growth_rate(s::State)
 end
 
 function inflation_rate(s::State)
-    if 0.004 >= s.Stats.ψ >= 0.0008
+    if 0.004 >= s.stats.ψ >= 0.0008
         return 1
     else
         return 0
@@ -56,7 +56,7 @@ function inflation_rate(s::State)
 end
 
 function bank_capital_ratio(m::Model, s::State)
-    if Γ(s.B) <= m.p.Γ_
+    if Γ(m, s.B) <= m.p.Γ_
         return 1
     else
         return 0
@@ -80,7 +80,7 @@ function debt_interest_rate(s::State)
 end
 
 function debt_gdp_rate(s::State)
-    if 1.5 >= (s.B.B / (12 * s.Stats.Y)) >= 1.0
+    if 1.5 >= (s.B.B / (12 * s.stats.Y)) >= 1.0
         return 1
     else
         return 0
@@ -98,7 +98,7 @@ function firm_loan_rate(s::State)
 end
 
 function tax_gdp_rate(s::State)
-    if 0.5 >= (s.G.T / s.Stats.Y) >= 0.35
+    if 0.5 >= (s.G.T / s.stats.Y) >= 0.35
         return 1
     else
         return 0
@@ -106,7 +106,7 @@ function tax_gdp_rate(s::State)
 end
 
 function no_tax_households(m::Model, s::State)
-    if 0.25 >= count(h -> h.wF <= m.p.τT * s.stats.p) / m.p.NH >= 0.15
+    if 0.25 >= count(h -> (h.wF <= m.p.τT * s.stats.p), s.Hs) / m.p.NH >= 0.15
         return 1
     else
         return 0
@@ -122,7 +122,7 @@ function unemployment_rate(s::State)
 end
 
 function unemployment_by_skill(s::State)
-    if StatsBase.cor(map(h -> h.σ, s.Hs), map(h -> (h.employer === nothing), s.Hs)) < 0.0
+    if StatsBase.cor(map(h -> h.σ, OffsetArrays.no_offset_view(s.Hs)), map(h -> (h.employer === nothing), OffsetArrays.no_offset_view(s.Hs))) < 0.0
         return 1
     else
         return 0
@@ -130,7 +130,7 @@ function unemployment_by_skill(s::State)
 end
 
 function wage_by_skill(s::State)
-    if StatsBase.cor(map(h -> h.σ, s.Hs), map(h -> h.wF, s.Hs)) > 0.0
+    if StatsBase.cor(map(h -> h.σ, OffsetArrays.no_offset_view(s.Hs)), map(h -> h.wF, OffsetArrays.no_offset_view(s.Hs))) > 0.0
         return 1
     else
         return 0
@@ -138,7 +138,7 @@ function wage_by_skill(s::State)
 end
 
 function firm_size(s::State)
-    if StatsBase.kurtosis(map(f -> length(f.employees), vcat(s.FCs, s.FKs))) > 6.0
+    if StatsBase.kurtosis(map(f -> length(f.employees), vcat(OffsetArrays.no_offset_view(s.FCs), OffsetArrays.no_offset_view(s.FKs)))) > 6.0
         return 1
     else
         return 0
@@ -146,7 +146,7 @@ function firm_size(s::State)
 end
 
 function income_kurtosis(s::State)
-    if StatsBase.kurtosis(map(h -> h.m + h.iS + h.wF - h.t, s.Hs)) > 6.0
+    if StatsBase.kurtosis(map(h -> h.m + h.iS + h.wF - h.t, OffsetArrays.no_offset_view(s.Hs))) > 6.0
         return 1
     else
         return 0
@@ -154,7 +154,7 @@ function income_kurtosis(s::State)
 end
 
 function wealth_kurtosis(m::Model, s::State)
-    if StatsBase.kurtosis(map(h -> v(m, h))) > StatsBase.kurtosis(map(h -> h.m + h.iS + h.wF - h.t, s.Hs))
+    if StatsBase.kurtosis(map(h -> v(m, h), OffsetArrays.no_offset_view(s.Hs))) > StatsBase.kurtosis(map(h -> h.m + h.iS + h.wF - h.t, OffsetArrays.no_offset_view(s.Hs)))
         return 1
     else
         return 0
@@ -162,15 +162,15 @@ function wealth_kurtosis(m::Model, s::State)
 end
 
 function gini_income(s::State)
-    if 0.35 >= gini(map(h -> h.m + h.iS + h.wF - h.t, s.Hs)) >= 0.25
+    if 0.35 >= gini(map(h -> h.m + h.iS + h.wF - h.t, OffsetArrays.no_offset_view(s.Hs))) >= 0.25
         return 1
     else
         return 0
     end
 end
 
-function gini_wealth(s::State)
-    if gini(map(h -> v(m, h))) > gini(map(h -> h.m + h.iS + h.wF - h.t, s.Hs))
+function gini_wealth(m::Model, s::State)
+    if gini(map(h -> v(m, h), OffsetArrays.no_offset_view(s.Hs))) > gini(map(h -> h.m + h.iS + h.wF - h.t, OffsetArrays.no_offset_view(s.Hs)))
         return 1
     else
         return 0
@@ -186,7 +186,6 @@ function goverment_spending(s::State)
 end
 
 function evaluate_state(m::Model, t::Int)
-
     try
         s = m.s[t]
         s1 = m.s[t-1]
@@ -210,11 +209,14 @@ function evaluate_state(m::Model, t::Int)
             income_kurtosis(s),
             wealth_kurtosis(m, s),
             gini_income(s),
-            gini_wealth(s),
+            gini_wealth(m, s),
             goverment_spending(s)
         ]
     catch e
-        # println(e)
+        if !isa(e, UndefRefError)
+            @warn "State not evaluated: $(e)"
+            rethrow(e)
+        end
         return zeros(Int, 21)
     end
 end
