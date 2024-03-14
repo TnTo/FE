@@ -185,42 +185,40 @@ function goverment_spending(s::State)
     end
 end
 
-function evaluate_state(m::Model, t::Int)::Int
-    if t == 0
-        return 0
-    else
+function evaluate_state(m::Model, t::Int)
+
+    try
         s = m.s[t]
         s1 = m.s[t-1]
-        # try
         return [
-            intergenerational_mobility(m, s, s1)
-            degree_holders(m, s)
-            avg_propensity_consume_1st(s)
-            avg_propensity_consume_5th(s)
-            growth_rate(s)
-            inflation_rate(s)
-            profit_share(s)
-            debt_interest_rate(s)
-            debt_gdp_rate(s)
-            firm_loan_rate(s)
-            tax_gdp_rate(s)
-            no_tax_households(m, s)
-            unemployment_rate(s)
-            unemployment_by_skill(s)
-            wage_by_skill(s)
-            firm_size(s)
-            income_kurtosis(s)
-            wealth_kurtosis(m, s)
-            gini_income(s)
-            gini_wealth(s)
+            intergenerational_mobility(m, s, s1),
+            degree_holders(m, s),
+            avg_propensity_consume_1st(s),
+            avg_propensity_consume_5th(s),
+            growth_rate(s),
+            inflation_rate(s),
+            profit_share(s),
+            debt_interest_rate(s),
+            debt_gdp_rate(s),
+            firm_loan_rate(s),
+            tax_gdp_rate(s),
+            no_tax_households(m, s),
+            unemployment_rate(s),
+            unemployment_by_skill(s),
+            wage_by_skill(s),
+            firm_size(s),
+            income_kurtosis(s),
+            wealth_kurtosis(m, s),
+            gini_income(s),
+            gini_wealth(s),
             goverment_spending(s)
         ]
-        #finally
-        #return zeros(Int, 21)'
-        #end
+    catch e
+        # println(e)
+        return zeros(Int, 21)
     end
 end
 
-function evaluate_model(m::Model)::Int
-    return vcat(t -> evaluate_state(m, t), length(m.s))
+function evaluate_model(m::Model)
+    return hcat(map(t -> evaluate_state(m, t), 1:m.p.T)...)
 end

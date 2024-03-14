@@ -5,6 +5,7 @@ include(srcdir("DAS.jl"))
 
 using BayesOpt
 config = ConfigParameters()
+config.random_seed = 8686
 
 bounds = [
     0.0 20.0; # σ0 

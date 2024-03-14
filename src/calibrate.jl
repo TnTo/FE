@@ -1,3 +1,4 @@
+using Dates
 function run_or_load(pvec)
     pdict = Dict(
         :σ0 => pvec[1],
@@ -34,7 +35,9 @@ function run_or_load(pvec)
         seeds = [8, 86, 868, 8686]
         ps = map(s -> Parameters(; seed=s, pdict...), seeds)
         ms = Vector{Model}(undef, 4)
+        println(Dates.format(now(), "HH:MM:SS"))
         Threads.@threads for i = 1:4
+            #for i = 1:4
             m = create_model(ps[i])
             try
                 for _ = 1:m.p.T
@@ -45,10 +48,16 @@ function run_or_load(pvec)
                 ms[i] = m
             end
         end
-        scores = Distributed.pmap(evaluate_model, ms)
+        scores = Vector{Matrix}(undef, 4)
+        println(Dates.format(now(), "HH:MM:SS"))
+        Threads.@threads for i = 1:4
+            #for i = 1:4
+            scores[i] = evaluate_model(ms[i])
+        end
         score = sum(scores)
+        println(Dates.format(now(), "HH:MM:SS"))
         return Dict(
-            "config" => pdic,
+            "config" => pdict,
             "models" => ms,
             "scores" => scores,
             "score" => score
