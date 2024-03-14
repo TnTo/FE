@@ -64,5 +64,5 @@ function run_or_load(pvec)
             "score" => score
         )
     end
-    return data["score"] / (4 * 21 * 300)
+    return -data["score"] / (4 * 21 * 300)
 end
