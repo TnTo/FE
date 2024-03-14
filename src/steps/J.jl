@@ -5,13 +5,13 @@ function stepJ!(m::Model)
     fcs = filter(f -> f.s < f.c, s.FCs)
     while length(hs) > 0 && length(fcs) > 0
         h = rand(hs)
-        ffcs = filter(f -> floor(Int, f.pF * (1 + m.p.τC)) <= h.D, fcs)
+        ffcs = filter(f -> ceil(Int, f.pF * (1 + m.p.τC)) <= h.D, fcs)
         if length(ffcs) == 0
             filter!(e -> e != h, hs)
             continue
         end
         f = sort(sample(ffcs, min(length(ffcs), m.p.χC), replace=false), by=(f -> f.pF))[1]
-        rc = min(h.rc_ - h.rc, ceil(Int, h.rc_ / m.p.χC), floor(Int, h.D / floor(Int, f.pF * (1 + m.p.τC))), f.c - f.s)
+        rc = min(h.rc_ - h.rc, ceil(Int, h.rc_ / m.p.χC), floor(Int, h.D / ceil(Int, f.pF * (1 + m.p.τC))), f.c - f.s)
         nc = f.pF * rc
         tax = floor(Int, m.p.τC * nc)
         h.D -= nc
