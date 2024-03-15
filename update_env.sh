@@ -1,0 +1,1 @@
+mamba env update --file environment.yml -n FE
