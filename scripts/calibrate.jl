@@ -5,13 +5,21 @@ include(srcdir("DAS.jl"))
 
 using Logging
 using BayesOpt
+using Dates
 
 # global_logger(ConsoleLogger(stderr, Logging.Debug))
 
 config = ConfigParameters()
 config.random_seed = 8686
-config.n_iterations = 500
-config.n_iter_relearn = 25
+config.n_iterations = 190
+config.n_iter_relearn = 50
+config.l_type = "L_MCMC"
+config.crit_name = "cEIa"
+config.epsilon = 0.1
+config.verbose_level = 4
+config.log_filename = datadir("bayesopt_$(Dates.now()).log")
+config.load_save_flag = 2
+config.save_filename = datadir("bayesopt_$(Dates.now()).dat")
 
 bounds = [
     0.0 5.0; # σ0 
@@ -47,4 +55,4 @@ bounds = [
 
 optimizer, optimum = bayes_optimization(DAS.run_or_load, bounds[:, 1], bounds[:, 2], config)
 
-DrWatson.tagsave("optimization.jld2", Dict(:optimizer => optimizer, :optimum => optimum), path="data")
+DrWatson.tagsave(datadir("optimization.jld2"), Dict("optimizer" => optimizer, "optimum" => optimum), safe=true)
