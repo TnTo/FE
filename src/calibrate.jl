@@ -31,7 +31,7 @@ function run_or_load(pvec)
         :b1 => pvec[28],
         :b2 => pvec[29]
     )
-    data, f = DrWatson.produce_or_load(pdict, "sims"; filename=hash) do pdict
+    data, f = DrWatson.produce_or_load(pdict, datadir("sims"); filename=hash) do pdict
         seeds = [8, 86, 868, 8686]
         ps = map(s -> Parameters(; seed=s, pdict...), seeds)
         ms = Vector{Model}(undef, 4)
@@ -59,8 +59,8 @@ function run_or_load(pvec)
         @debug Dates.format(now(), "HH:MM:SS")
         return Dict(
             "config" => pdict,
-            "models" => ms,
-            "scores" => scores,
+            # "models" => ms,
+            # "scores" => scores,
             "score" => score
         )
     end
