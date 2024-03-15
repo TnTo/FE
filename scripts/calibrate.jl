@@ -11,7 +11,7 @@ using Dates
 
 config = ConfigParameters()
 config.random_seed = 8686
-config.n_iterations = 500
+config.n_iterations = 1000
 config.n_iter_relearn = 50
 config.l_type = L_MCMC
 set_criteria!(config, "cEIa")
