@@ -74,7 +74,7 @@ opt = BOpt(
         maxtime=0.1,
         maxeval=1000
     ),
-    verbosity=Progress
+    verbosity=Timings
 )
 
 result = boptimize!(opt)
