@@ -19,7 +19,10 @@ kbl[end] = 0
 kbu = 4 * ones(30)
 kbu[end] = 10
 
-# [config.σ0,config.δ0,config.β0,config.e0,config.e1,config.ρH,config.ay,config.av,config.ρC,config.ρK,config.ρF,config.Θ,config.k,config.ρΠ,config.ρQ,config.λ,config.ν0,config.ν1,config.ν2,config.ν3,config.ν4,config.τF,config.τT,config.ϵ0,config.ϵ1,config.ζ,config.b0,config.b1,config.b2]
+history = hcat([[config.σ0, config.δ0, config.β0, config.e0, config.e1, config.ρH, config.ay, config.av, config.ρC, config.ρK, config.ρF, config.Θ, config.k, config.ρΠ, config.ρQ, config.λ, config.ν0, config.ν1, config.ν2, config.ν3, config.ν4, config.τF, config.τT, config.ϵ0, config.ϵ1, config.ζ, config.b0, config.b1, config.b2, score] for (config, score) = collect_results(datadir("sims"), white_list=["config", "score"])]...)
+
+append!(model, history[1:29, ;], history[end, :])
+
 
 modeloptimizer = MAPGPOptimizer(
     every=50,
