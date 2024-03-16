@@ -26,7 +26,7 @@ append!(model, history[1:29, ;], history[end, :])
 
 modeloptimizer = MAPGPOptimizer(
     every=50,
-    oisebounds=[-4, 3],
+    noisebounds=[-4, 3],
     kernbounds=[kbl, kbu],
     maxeval=40
 )
