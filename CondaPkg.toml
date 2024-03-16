@@ -1,0 +1,6 @@
+
+[pip.deps]
+black-it = ""
+[deps]
+dill = ""
+python = "<3.11"
