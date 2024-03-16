@@ -79,4 +79,4 @@ opt = BOpt(
 
 result = boptimize!(opt)
 
-DrWatson.tagsave(datadir("optimization2.jld2"), Dict("result" => result), safe=true)
+DrWatson.tagsave(datadir("optimization2.jld2"), Dict("result" => result, "optimizer" => opt), safe=true)
