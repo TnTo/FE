@@ -22,7 +22,7 @@ kbu[end] = 10
 modeloptimizer = MAPGPOptimizer(
     every=50,
     oisebounds=[-4, 3],
-    kernbounds=[kbl, kbu],  # bounds of the 3 parameters GaussianProcesses.get_param_names(model.kernel)
+    kernbounds=[kbl, kbu],
     maxeval=40
 )
 
@@ -61,8 +61,7 @@ bounds = [
 opt = BOpt(
     DAS.run_or_load,
     model,
-    UpperConfidenceBound(),                   # type of acquisition
-    modeloptimizer,
+    UpperConfidenceBound(),
     bounds[:, 1],
     bounds[:, 2],
     repetitions=1,
