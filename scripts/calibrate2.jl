@@ -62,6 +62,7 @@ opt = BOpt(
     DAS.run_or_load,
     model,
     UpperConfidenceBound(),
+    modeloptimizer,
     bounds[:, 1],
     bounds[:, 2],
     repetitions=1,
