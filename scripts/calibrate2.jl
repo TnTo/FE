@@ -6,6 +6,8 @@ include(srcdir("DAS.jl"))
 using BayesianOptimization, GaussianProcesses, Distributions
 using DataFrames
 
+N_HIST = 500
+
 history = hcat(
     [
         [config[:σ0], config[:δ0], config[:β0], config[:e0], config[:e1], config[:ρH], config[:ay], config[:av], config[:ρC], config[:ρK], config[:ρF], config[:Θ], config[:k], config[:ρΠ], config[:ρQ], config[:λ], config[:ν0], config[:ν1], config[:ν2], config[:ν3], config[:ν4], config[:τF], config[:τT], config[:ϵ0], config[:ϵ1], config[:ζ], config[:b0], config[:b1], config[:b2], score] for (config, score) = Tuple.(
@@ -22,7 +24,7 @@ history = hcat(
                         "score",
                         rev=true
                     ),
-                    300
+                    N_HIST
                 )
             )
         )
@@ -31,7 +33,7 @@ history = hcat(
 
 model = ElasticGPE(
     29,
-    capacity=300
+    capacity=N_HIST + 50
 )
 
 modeloptimizer = MAPGPOptimizer()
@@ -84,7 +86,7 @@ opt = BOpt(
         maxtime=1.0,
         maxeval=5000
     ),
-    initializer_iterations=10,
+    initializer_iterations=50,
     verbosity=Progress
 )
 
