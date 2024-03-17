@@ -78,7 +78,7 @@ opt = BOpt(
     bounds[:, 1],
     bounds[:, 2],
     repetitions=1,
-    maxiterations=200,
+    maxiterations=5000,
     sense=Min,
     acquisitionoptions=(
         method=:LD_LBFGS,
