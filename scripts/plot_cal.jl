@@ -4,7 +4,6 @@ using DrWatson
 include(srcdir("DAS.jl"))
 using OffsetArrays
 
-using JSON
 using Plots
 using DataFrames
 using StatsBase
@@ -20,7 +19,7 @@ transform!(
     )
 )
 
-df2 = select(df, Not(:scores, :score, :path, :config))
+df2 = select(df, Not(:score, :path, :config))
 
 for p = filter(c -> c != "normalized_score", names(df2))
     npar = mean_and_std(df2[!, p], weights(df2[!, :normalized_score]))
