@@ -4,31 +4,37 @@ using DrWatson
 include(srcdir("DAS.jl"))
 
 using BayesianOptimization, GaussianProcesses, Distributions
+using DataFrames
+
+history = hcat(
+    [
+        [config[:σ0], config[:δ0], config[:β0], config[:e0], config[:e1], config[:ρH], config[:ay], config[:av], config[:ρC], config[:ρK], config[:ρF], config[:Θ], config[:k], config[:ρΠ], config[:ρQ], config[:λ], config[:ν0], config[:ν1], config[:ν2], config[:ν3], config[:ν4], config[:τF], config[:τT], config[:ϵ0], config[:ϵ1], config[:ζ], config[:b0], config[:b1], config[:b2], score] for (config, score) = Tuple.(
+            eachrow(
+                first(
+                    sort(
+                        select(
+                            collect_results(
+                                datadir("sims"),
+                                white_list=["config", "score"]
+                            ),
+                            Not(:path)
+                        ),
+                        "score",
+                        rev=true
+                    ),
+                    300
+                )
+            )
+        )
+    ]...
+)
 
 model = ElasticGPE(
     29,
-    mean=MeanConst(1.0),
-    kernel=SEArd(zeros(29), 5.0),
-    logNoise=0.0,
     capacity=300
 )
-set_priors!(model.mean, [Normal(1, 2)])
 
-history = hcat([[config.σ0, config.δ0, config.β0, config.e0, config.e1, config.ρH, config.ay, config.av, config.ρC, config.ρK, config.ρF, config.Θ, config.k, config.ρΠ, config.ρQ, config.λ, config.ν0, config.ν1, config.ν2, config.ν3, config.ν4, config.τF, config.τT, config.ϵ0, config.ϵ1, config.ζ, config.b0, config.b1, config.b2, score] for (config, score) = collect_results(datadir("sims"), white_list=["config", "score"])]...)
-
-append!(model, history[1:29, ;], history[end, :])
-
-kbl = -1 * ones(30)
-kbl[end] = 0
-kbu = 4 * ones(30)
-kbu[end] = 10
-
-modeloptimizer = MAPGPOptimizer(
-    every=50,
-    noisebounds=[-4, 3],
-    kernbounds=[kbl, kbu],
-    maxeval=40
-)
+modeloptimizer = MAPGPOptimizer()
 
 bounds = [
     0.0 5.0; # σ0 
@@ -75,11 +81,14 @@ opt = BOpt(
     acquisitionoptions=(
         method=:LD_LBFGS,
         restarts=5,
-        maxtime=0.1,
-        maxeval=1000
+        maxtime=1.0,
+        maxeval=5000
     ),
-    verbosity=Timings
+    initializer_iterations=10,
+    verbosity=Progress
 )
+
+BayesianOptimization.update!(opt.model, history[1:29, :], -history[30, :] ./ (21 * 300 * 4))
 
 result = boptimize!(opt)
 
