@@ -28,7 +28,7 @@ DAS.map_plot(m,
         s -> DAS.mapsum(f -> DAS.b(m, f), s.FCs),
         s -> DAS.mapsum(f -> length(f.employees), s.FCs)
     ],
-    ["H rc_" "H rc" "G rc" "F c_" "F c" "F b"]
+    ["H rc_" "H rc" "G rc" "F c_" "F c" "F b" "emp"]
 )
 
 DAS.map_plot(m,

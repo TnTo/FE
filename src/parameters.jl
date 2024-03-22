@@ -36,12 +36,16 @@ import Base.@kwdef
     χC::Int = 5
     χK::Int = 5
     χH::Int = 20
-    ρW::Float = 1.05
+    ρW::Float = 1.01
+    ρH::Float = 2.0
+    ν3::Float = 0.0
+    ν4::Float = 0.0
+    ν0::Float = 0.0
+    ν1::Float = 0.0
 
     # To calibrate
     e0::Float
     e1::Float
-    ρH::Float
     ay::Float
     av::Float
     ρC::Float
@@ -52,11 +56,7 @@ import Base.@kwdef
     ρΠ::Float
     ρQ::Float
     λ::Float
-    ν0::Float
-    ν1::Float
     ν2::Float
-    ν3::Float
-    ν4::Float
     τF::Float
     τT::Float
     ϵ0::Float

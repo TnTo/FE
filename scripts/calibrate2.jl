@@ -10,7 +10,7 @@ N_HIST = 500
 
 history = hcat(
     [
-        [config[:σ0], config[:δ0], config[:β0], config[:e0], config[:e1], config[:ρH], config[:ay], config[:av], config[:ρC], config[:ρK], config[:ρF], config[:Θ], config[:k], config[:ρΠ], config[:ρQ], config[:λ], config[:ν0], config[:ν1], config[:ν2], config[:ν3], config[:ν4], config[:τF], config[:τT], config[:ϵ0], config[:ϵ1], config[:ζ], config[:b0], config[:b1], config[:b2], score] for (config, score) = Tuple.(
+        [config[:σ0], config[:δ0], config[:β0], config[:e0], config[:e1], config[:ay], config[:av], config[:ρC], config[:ρK], config[:ρF], config[:Θ], config[:k], config[:ρΠ], config[:ρQ], config[:λ], config[:ν2], config[:τF], config[:τT], config[:ϵ0], config[:ϵ1], config[:ζ], config[:b0], config[:b1], config[:b2], score] for (config, score) = Tuple.(
             eachrow(
                 first(
                     sort(
@@ -32,7 +32,7 @@ history = hcat(
 )
 
 model = ElasticGPE(
-    29,
+    24,
     capacity=N_HIST + 50
 )
 
@@ -42,28 +42,23 @@ bounds = [
     0.0 5.0; # σ0 
     0.0 1.0; # δ0 
     0.0 5.0; # β0 
-    0.0 5.0; # e0 
-    0.0 1.0; # e1 
-    1.0 2.0; # ρH 
-    0.0 10.0; # ay 
+    0.0 10.0; # e0 
+    0.0 1.0; # e1
+    0.0 50.0; # ay 
     0.0 10.0; # av 
-    1.0 2.0; # ρC 
-    1.0 2.0; # ρK 
-    1.0 2.0; # ρF 
-    0.0 5.0; # Θ 
+    1.0 1.25; # ρC 
+    1.0 1.25; # ρK 
+    1.5 2.0; # ρF 
+    0.0 10.0; # Θ 
     1.0 10.0; # k 
     0.0 1.0; # ρΠ 
     0.0 1.0; # ρQ 
     0.0 1.0; # λ 
-    0.0 1.0; # ν0 
-    0.0 1.0; # ν1 
     0.0 1.0; # ν2 
-    0.0 1.0; # ν3 
-    0.0 1.0; # ν4 
     0.0 10.0; # τF 
     0.0 10.0; # τT 
     0.0 1.0; # ϵ0 
-    0.0 5.0; # ϵ1 
+    0.0 10.0; # ϵ1 
     0.0 5.0; # ζ 
     0.0 5.0; # b0 
     0.0 5.0; # b1 
@@ -90,7 +85,7 @@ opt = BOpt(
     verbosity=Progress
 )
 
-BayesianOptimization.update!(opt.model, history[1:29, :], -history[30, :] ./ (21 * 300 * 4))
+BayesianOptimization.update!(opt.model, history[1:24, :], -history[25, :] ./ (21 * 300 * 4))
 
 result = boptimize!(opt)
 
