@@ -24,7 +24,7 @@ set_save_file!(config, datadir("bayesopt_$(Dates.now()).dat"))
 bounds = [
     0.0 5.0; # σ0 
     0.0 1.0; # δ0 
-    0.0 5.0; # β0 
+    1.0 5.0; # β0 
     0.0 10.0; # e0 
     0.0 1.0; # e1
     0.0 50.0; # ay 
