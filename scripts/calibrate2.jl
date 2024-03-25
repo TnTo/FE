@@ -74,10 +74,10 @@ opt = BOpt(
     acquisitionoptions=(
         method=:LD_LBFGS,
         restarts=5,
-        maxtime=1.0,
+        maxtime=10.0,
         maxeval=5000
     ),
-    initializer_iterations=50,
+    initializer_iterations=100,
     verbosity=Progress
 )
 
