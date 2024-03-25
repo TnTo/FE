@@ -14,8 +14,11 @@ config.random_seed = 8686
 config.n_iterations = 5000
 config.n_iter_relearn = 50
 config.l_type = L_MCMC
-set_criteria!(config, "cEIa")
-config.epsilon = 0.1
+set_criteria!(config, "cHedge(cSum(cEI,cDistance),cLCB,cPOI,cOptimisticSampling)")
+set_surrogate!(config, "sStudentTProcessJef")
+set_kernel!(config, "kMaternARD5")
+config.epsilon = 0.25
+
 # config.verbose_level = 4
 # set_log_file!(config, datadir("bayesopt_$(Dates.now()).log"))
 config.load_save_flag = 2
