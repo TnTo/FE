@@ -38,6 +38,9 @@ import Base.@kwdef
     χH::Int = 20
     ρW::Float = 1.01
     ρH::Float = 2.0
+    ρC::Float = 1.1
+    ρK::Float = 1.05
+    ρF::Float = 1.5
     ν3::Float = 0.0
     ν4::Float = 0.0
     ν0::Float = 0.0
@@ -48,12 +51,8 @@ import Base.@kwdef
     e1::Float
     ay::Float
     av::Float
-    ρC::Float
-    ρK::Float
-    ρF::Float
     Θ::Float
     k::Float
-    ρΠ::Float
     ρQ::Float
     λ::Float
     ν2::Float
