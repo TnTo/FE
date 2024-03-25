@@ -13,7 +13,7 @@ function stepO!(m::Model)
                 Δ += h.wF
             end
         end
-        D_ = ρF * (f.wF + f.i)
+        D_ = ceil(Int, m.p.ρF * (f.wF + f.i))
         if D_ < f.D
             f.π = f.D - D_
             f.D -= f.π
@@ -34,7 +34,7 @@ function stepO!(m::Model)
                 Δ += h.wF
             end
         end
-        D_ = ρF * f.wF
+        D_ = ceil(Int, m.p.ρF * f.wF)
         if D_ < f.D
             f.π = f.D - D_
             f.D -= f.π
