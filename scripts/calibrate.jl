@@ -45,7 +45,7 @@ end
 
 df = collect_results(datadir("sims"), white_list=["config", "score"])
 
-if length(df) < eval_every
+if nrow(df) < eval_every
     res = []
     while length(res) < eval_every
         par = Dict((p, rand(Uniform(bounds[p]...))) for p in names(bounds))
