@@ -44,6 +44,8 @@ mutable struct Optim
 end
 
 df = collect_results(datadir("sims"), white_list=["config", "score"])
+df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
+df = df[df.normalized_score.>=min_score, :]
 
 if nrow(df) < eval_every
     res = []
@@ -56,9 +58,6 @@ if nrow(df) < eval_every
         @show score
     end
     global df = DataFrame(res)
-else
-    df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
-    global df = df[df.normalized_score.>=min_score, :]
 end
 
 df = hcat(df[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(df[!, :config])))[!, names(bounds)])
