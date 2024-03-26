@@ -3,50 +3,86 @@ using DrWatson
 
 include(srcdir("DAS.jl"))
 
-using Logging
-using BayesOpt
-using Dates
+using Distributions
+using DataFrames
+using Random
+using StatsBase
 
-# global_logger(ConsoleLogger(stderr, Logging.Debug))
+Random.seed!(8686)
 
-config = ConfigParameters()
-config.random_seed = 8686
-config.n_iterations = 5000
-config.n_iter_relearn = 50
-config.l_type = L_MCMC
-set_criteria!(config, "cHedge(cSum(cEI,cDistance),cLCB,cPOI,cOptimisticSampling)")
-set_surrogate!(config, "sStudentTProcessJef")
-set_kernel!(config, "kMaternARD5")
-config.epsilon = 0.25
+bounds = Dict(
+    :σ0 => (0.0, 5.0),
+    :δ0 => (0.0, 1.0),
+    :β0 => (1.0, 5.0),
+    :e0 => (0.0, 10.0),
+    :e1 => (0.0, 1.0),
+    :ay => (0.0, 50.0),
+    :av => (0.0, 10.0),
+    :Θ => (0.0, 10.0),
+    :k => (1.0, 10.0),
+    :ρQ => (0.0, 1.0),
+    :λ => (0.0, 1.0),
+    :ν2 => (0.0, 1.0),
+    :τF => (0.0, 10.0),
+    :τT => (0.0, 10.0),
+    :ϵ0 => (0.0, 1.0),
+    :ϵ1 => (0.0, 10.0),
+    :ζ => (0.0, 5.0),
+    :b0 => (0.0, 5.0),
+    :b1 => (0.0, 5.0),
+    :b2 => (0.0, 5.0)
+)
 
-# config.verbose_level = 4
-# set_log_file!(config, datadir("bayesopt_$(Dates.now()).log"))
-config.load_save_flag = 2
-set_save_file!(config, datadir("bayesopt_$(Dates.now()).dat"))
+min_score = 0.05
+degree = 1
+max_iter = 5000
+eval_every = 10
 
-bounds = [
-    0.0 5.0; # σ0 
-    0.0 1.0; # δ0 
-    1.0 5.0; # β0 
-    0.0 10.0; # e0 
-    0.0 1.0; # e1
-    0.0 50.0; # ay 
-    0.0 10.0; # av 
-    0.0 10.0; # Θ 
-    1.0 10.0; # k 
-    0.0 1.0; # ρQ 
-    0.0 1.0; # λ 
-    0.0 1.0; # ν2 
-    0.0 10.0; # τF 
-    0.0 10.0; # τT 
-    0.0 1.0; # ϵ0 
-    0.0 10.0; # ϵ1 
-    0.0 5.0; # ζ 
-    0.0 5.0; # b0 
-    0.0 5.0; # b1 
-    0.0 5.0 # b2 
-]
+mutable struct Optim
+    res
+    history
+end
 
-optimizer, optimum = bayes_optimization(DAS.run_or_load, bounds[:, 1], bounds[:, 2], config)
+#df = collect_results(datadir("sims"), white_list=["config", "score"])
+df = []
 
-DrWatson.tagsave(datadir("optimization.jld2"), Dict("optimizer" => optimizer, "optimum" => optimum), safe=true)
+if length(df) < eval_every
+    res = []
+    while length(res) < eval_every
+        par = Dict((p, rand(Uniform(bounds[p]...))) for p in names(bounds))
+        if (score = DAS.run_or_load(par)) >= min_score
+            push!(res, (config=par, normalized_score=score))
+        end
+        @show par
+        @show score
+    end
+    global df = DataFrame(res)
+else
+    df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
+    global df = df[df.normalized_score.>=min_score, :]
+end
+
+df = hcat(df[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(df[!, :config])))[!, names(bounds)])
+
+opt = Optim([], df)
+for _ = 1:max_iter
+    if length(opt.res) == eval_every
+        println("UPDATE DISTRIBUTIONS")
+        data = DataFrame(res)
+        data = hcat(data[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(data[!, :config])))[!, names(bounds)])
+        opt.history = vcat(opt.history, data)
+        opt.res = []
+    end
+    par = Dict(
+        (
+            p,
+            rand(TruncatedNormal(mean_and_std(opt.history[!, p], weights(opt.history[!, :normalized_score] .* degree))..., bounds[p]...))
+        )
+        for p in names(bounds)
+    )
+    if (score = DAS.run_or_load(par)) >= min_score
+        push!(opt.res, (config=par, normalized_score=score))
+    end
+    @show par
+    @show score
+end
