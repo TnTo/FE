@@ -43,8 +43,7 @@ mutable struct Optim
     history
 end
 
-#df = collect_results(datadir("sims"), white_list=["config", "score"])
-df = []
+df = collect_results(datadir("sims"), white_list=["config", "score"])
 
 if length(df) < eval_every
     res = []
