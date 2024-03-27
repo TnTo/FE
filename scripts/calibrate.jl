@@ -45,8 +45,10 @@ mutable struct Optim
 end
 
 df = collect_results(datadir("sims"), white_list=["config", "score"])
-df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
-df = df[df.normalized_score.>=min_score, :]
+if nrow(df) > 0
+    df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
+    df = df[df.normalized_score.>=min_score, :]
+end
 
 if nrow(df) < eval_every
     res = []
@@ -58,7 +60,7 @@ if nrow(df) < eval_every
         @show par
         @show score
     end
-    global df = DataFrame(res)
+    df = DataFrame(res)
 end
 
 df = hcat(df[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(df[!, :config])))[!, names(bounds)])
@@ -72,7 +74,10 @@ opt = Optim(
         for p = names(bounds)
     )
 )
-for _ = 1:max_iter
+
+println("INITIALIZATION CONCLUDED")
+
+for iter = 1:max_iter
     if length(opt.res) == eval_every
         println("UPDATE DISTRIBUTIONS")
         data = DataFrame(res)
@@ -91,6 +96,7 @@ for _ = 1:max_iter
     if (score = DAS.run_or_load(par)) >= min_score
         push!(opt.res, (config=par, normalized_score=score))
     end
+    @show iter
     @show par
     @show score
 end
