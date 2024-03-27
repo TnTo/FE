@@ -80,7 +80,7 @@ println("INITIALIZATION CONCLUDED")
 for iter = 1:max_iter
     if length(opt.res) == eval_every
         println("UPDATE DISTRIBUTIONS")
-        data = DataFrame(res)
+        data = DataFrame(opt.res)
         data = hcat(data[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(data[!, :config])))[!, names(bounds)])
         opt.history = vcat(opt.history, data)
         opt.res = []
