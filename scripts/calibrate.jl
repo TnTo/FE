@@ -33,7 +33,7 @@ bounds = Dict(
     :b2 => (0.0, 5.0)
 )
 
-min_score = 0.05
+min_score = 0.10
 degree = 1
 max_iter = 5000
 eval_every = 10
@@ -41,6 +41,8 @@ eval_every = 10
 mutable struct Optim
     res
     history
+    bounds
+    par
 end
 
 df = collect_results(datadir("sims"), white_list=["config", "score"])
@@ -62,7 +64,15 @@ end
 
 df = hcat(df[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(df[!, :config])))[!, names(bounds)])
 
-opt = Optim([], df)
+opt = Optim(
+    [],
+    df,
+    bounds,
+    Dict(
+        p => mean_and_std(df[!, p], weights(df[!, :normalized_score] .* degree))
+        for p = names(bounds)
+    )
+)
 for _ = 1:max_iter
     if length(opt.res) == eval_every
         println("UPDATE DISTRIBUTIONS")
@@ -70,11 +80,12 @@ for _ = 1:max_iter
         data = hcat(data[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(data[!, :config])))[!, names(bounds)])
         opt.history = vcat(opt.history, data)
         opt.res = []
+        opt.par = mean_and_std(opt.history[!, p], weights(opt.history[!, :normalized_score] .* degree))
     end
     par = Dict(
         (
             p,
-            rand(TruncatedNormal(mean_and_std(opt.history[!, p], weights(opt.history[!, :normalized_score] .* degree))..., bounds[p]...))
+            rand(TruncatedNormal(opt.par[p]..., opt.bounds[p]...))
         )
         for p in names(bounds)
     )
@@ -84,3 +95,5 @@ for _ = 1:max_iter
     @show par
     @show score
 end
+
+opt.par
