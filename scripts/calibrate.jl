@@ -84,7 +84,10 @@ for iter = 1:max_iter
         data = hcat(data[!, ["normalized_score"]], DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(data[!, :config])))[!, names(bounds)])
         opt.history = vcat(opt.history, data)
         opt.res = []
-        opt.par = mean_and_std(opt.history[!, p], weights(opt.history[!, :normalized_score] .* degree))
+        opt.par = Dict(
+            p => mean_and_std(opt.history[!, p], weights(opt.history[!, :normalized_score] .* degree))
+            for p = names(bounds)
+        )
     end
     par = Dict(
         (
