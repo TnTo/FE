@@ -8,7 +8,7 @@ using Statistics
 include(srcdir("DAS.jl"))
 
 p = DAS.Parameters()
-p.T = 100
+p.T = 50
 
 m = DAS.create_model(p)
 #try
@@ -99,3 +99,14 @@ DAS.map_plot(m,
 )
 
 scatter(map(h -> h.σ, m.s[end].Hs), map(h -> h.wF, m.s[end].Hs))
+
+DAS.map_plot(m,
+    [
+        s -> DAS.mapmean(f -> f.i, s.FCs),
+        s -> DAS.mapmean(f -> f.l_, s.FCs),
+        s -> DAS.mapmean(f -> f.wF, s.FCs),
+        s -> DAS.mapmean(f -> f.wF + f.i, s.FCs),
+        s -> DAS.mapmean(f -> f.D, s.FCs),
+    ],
+    ["i" "l_" "w" "w+i" "D"]
+)

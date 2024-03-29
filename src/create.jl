@@ -6,7 +6,7 @@ function create_household(m::Model, id::Int)::Household
 end
 
 function create_consumption_firm(m::Model, id::Int)
-    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), m.p.σ0, m.p.β0, nothing)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=m.p.p0, π=0, employees=Int[])
+    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), m.p.σ0, m.p.β0, nothing) for _ = 1:floor(Int, m.p.k0)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=m.p.p0, π=0, employees=Int[])
 end
 
 function create_capital_firm(m::Model, id::Int)
