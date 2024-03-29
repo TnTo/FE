@@ -45,6 +45,7 @@ import Base.@kwdef
     ν4::Float = 0.0
     ν0::Float = 0.0
     ν1::Float = 0.0
+    k::Float = 3.0
 
     # To calibrate
     e0::Float
@@ -52,7 +53,6 @@ import Base.@kwdef
     ay::Float
     av::Float
     Θ::Float
-    k::Float
     ρQ::Float
     λ::Float
     ν2::Float
@@ -74,7 +74,6 @@ Parameters() = Parameters(
     ay=1.5,
     av=2.0,
     Θ=1.0,
-    k=1.0,
     ρQ=0.1,
     λ=0.1,
     ν2=0.1,

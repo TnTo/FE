@@ -15,7 +15,7 @@ df[!, "normalized_score"] = df[!, "score"] / (300 * 21 * 4)
 
 df = hcat(df, DataFrame(Tables.dictrowtable(DrWatson.dict2ntuple.(df[!, :config]))))
 df = select(df, Not(:score, :path, :config))
-df2 = df[df.normalized_score.>=0.15, :]
+df2 = df[df.normalized_score.>=0.2, :]
 
 D = 1
 
