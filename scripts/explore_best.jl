@@ -31,8 +31,9 @@ for i = 1:4
 end
 
 for m = ms
-    DAS.display_matrices(m, m.t)
-
+    t = count(i -> isassigned(m.s, i), 1:m.p.T)
+    DAS.display_matrices(m, t)
+    m.s = m.s[1:t]
     DAS.map_plot(m,
         [
             s -> DAS.mapsum(h -> h.rc_, s.Hs),
