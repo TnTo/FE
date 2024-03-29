@@ -81,7 +81,7 @@ function stepE!(m::Model)
         f.k_ = max(1, ceil(Int, m.p.ρK * Es) + ceil(Int, max(0, f.Δb_) / f.β) - length(f.inv))
         f.μ = max(0.01, f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1)))
         wQF = avgwQF(m, m.t - 1, f)
-        f.q_ = min(m.p.NH, max(0, count(r -> r.operator !== nothing, f1.Q) + floor(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)))
+        f.q_ = min(m.p.NH, max(0, count(r -> r.operator !== nothing, f1.Q) + trunc(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)))
         if length(f.K) > 0
             if length(f.employees) > 0
                 EwF = max(f1.wF, ceil(Int, f.k_ / mean(k -> βF(m, f, k), f.K)) * mean(hid -> m.s[m.t-1].Hs[hid].wF, f.employees) + f.q_ * wQF)
