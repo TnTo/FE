@@ -31,7 +31,7 @@ bounds = Dict(
     :b2 => (0.0, 5.0)
 )
 
-min_score = 0.20
+min_score = 0.1
 degree = 1
 max_iter = 5000
 eval_every = 10
