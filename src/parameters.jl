@@ -4,7 +4,7 @@ import Base.@kwdef
     # Initialization
     seed::Int = 8686
     T::Int = 300
-    p0::Int = 100
+    p0::Int = 1000
     δ0::Float
     σ0::Float
     β0::Float = 1.05
@@ -60,9 +60,9 @@ import Base.@kwdef
     ϵ0::Float
     ϵ1::Float
     ζ::Float
-    b0::Float
-    b1::Float
-    b2::Float
+    Δβ::Float
+    Δσ::Float
+    σδ::Float
     k0::Float
     k::Float
 end
@@ -83,9 +83,9 @@ Parameters() = Parameters(
     ϵ0=0.5,
     ϵ1=5.0,
     ζ=3.0,
-    b0=2.0,
-    b1=3.0,
-    b2=2.0,
+    Δβ=1.01,
+    Δσ=1.0,
+    σδ=0.1,
     k0=3.0,
-    k=3.0
+    k=100.0
 )

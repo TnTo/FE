@@ -6,7 +6,7 @@ function create_household(m::Model, id::Int)::Household
 end
 
 function create_consumption_firm(m::Model, id::Int)
-    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), m.p.σ0, m.p.β0, nothing) for _ = 1:floor(Int, m.p.k0)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=m.p.p0, π=0, employees=Int[])
+    return ConsumptionFirm(id=id, D=0, L=Loan[], K=[CapitalGood(m.p.p0, rand(DiscreteUniform(0, m.p.NK - 1)), m.p.σ0, m.p.β0, nothing) for _ = 1:floor(Int, m.p.k0)], c_=1, Δb_=0, l_=0, c=1, s=1, Δb=0, i=0, wF=0, iL=0, μ=1, pF=ceil(Int, m.p.p0 / m.p.k), π=0, employees=Int[])
 end
 
 function create_capital_firm(m::Model, id::Int)
@@ -21,7 +21,7 @@ function create_model(p::Parameters)::Model
     Hs = OffsetArray([create_household(m, id) for id = (m.p.NFK+m.p.NFC+1):(m.p.NFK+m.p.NFC+m.p.NH)], m.p.NFK + m.p.NFC)
     FCs = OffsetArray([create_consumption_firm(m, id) for id = (m.p.NFK+1):(m.p.NFK+m.p.NFC)], m.p.NFK)
     FKs = OffsetArray([create_capital_firm(m, id) for id = 1:m.p.NFK], 0)
-    stats = Stats(ψ=m.p.ψ_, u=m.p.u_, ω=m.p.ω_, p=ceil(Int, 2 * m.p.p0), g=0, Y=m.p.p0, Ewσ=[ceil(Int, m.p.p0 * m.p.k / 2)])
+    stats = Stats(ψ=m.p.ψ_, u=m.p.u_, ω=m.p.ω_, p=ceil(Int, 2 * m.p.p0), g=0, Y=m.p.p0, Ewσ=[ceil(Int, m.p.p0 * m.p.β0 / 2)])
     m.s[0] = State(Hs, FCs, FKs, B, G, stats)
     return m
 end

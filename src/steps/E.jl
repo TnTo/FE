@@ -78,8 +78,16 @@ function stepE!(m::Model)
         Es = (1 + s.stats.g - s.stats.ψ) * f1.s
         b_ = max(1, m.p.ρF * Es / m.p.u_ - γ * b(m, f))
         f.Δb_ = b_ - b(m, f)
-        f.k_ = max(1, ceil(Int, m.p.ρK * Es) + ceil(Int, max(0, f.Δb_) / f.β) - length(f.inv))
-        f.μ = max(0.01, f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1)))
+        if length(f.inv) == 0
+            f.k_ = max(1, ceil(Int, m.p.ρK * Es) + ceil(Int, max(0, f.Δb_) / f.β))
+        else
+            f.k_ = max(0, ceil(Int, m.p.ρK * Es) + ceil(Int, max(0, f.Δb_) / f.β) - length(f.inv))
+        end
+        if f1.k_ == 0
+            f.μ = f1.μ
+        else
+            f.μ = max(0.01, f1.μ * (1 + m.p.Θ * (m.p.ρK * f1.s / f1.k_ - 1)))
+        end
         wQF = avgwQF(m, m.t - 1, f)
         f.q_ = min(m.p.NH, max(0, count(r -> r.operator !== nothing, f1.Q) + trunc(Int, m.p.ρQ * (f1.p * f1.s - f1.wF) / wQF)))
         if length(f.K) > 0

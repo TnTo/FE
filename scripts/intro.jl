@@ -8,7 +8,8 @@ using Statistics
 include(srcdir("DAS.jl"))
 
 p = DAS.Parameters()
-p.T = 50
+p.T = 100
+p.k = 5
 
 m = DAS.create_model(p)
 #try

@@ -1,4 +1,4 @@
-function age(h::Household)
+function age(m::Model, h::Household)
     return Household(
         id=h.id,
         D=h.D,
@@ -19,7 +19,7 @@ function age(h::Household)
     )
 end
 
-function age(f::ConsumptionFirm)
+function age(m::Model, f::ConsumptionFirm)
     return ConsumptionFirm(
         id=f.id,
         D=f.D,
@@ -47,7 +47,7 @@ function age(f::ConsumptionFirm)
     )
 end
 
-function age(f::CapitalFirm)
+function age(m::Model, f::CapitalFirm)
     return CapitalFirm(
         id=f.id,
         D=f.D,
@@ -76,7 +76,7 @@ function age(f::CapitalFirm)
         μ=0.0, # E
         p=0, #
         π=0,
-        σ=f.σ,
+        σ=max(0.0, f.σ - m.p.σδ),
         β=f.β,
         employees=copy(f.employees)
     )
@@ -107,9 +107,9 @@ function stepAlpha!(m::Model)::State
         iL=0,
         iS=0
     )
-    Hs = OffsetArray([age(m.s[m.t-1].Hs[id]) for id = (m.p.NFK+m.p.NFC+1):(m.p.NFK+m.p.NFC+m.p.NH)], m.p.NFK + m.p.NFC)
-    FCs = OffsetArray([age(m.s[m.t-1].FCs[id]) for id = (m.p.NFK+1):(m.p.NFK+m.p.NFC)], m.p.NFK)
-    FKs = OffsetArray([age(m.s[m.t-1].FKs[id]) for id = 1:m.p.NFK], 0)
+    Hs = OffsetArray([age(m, m.s[m.t-1].Hs[id]) for id = (m.p.NFK+m.p.NFC+1):(m.p.NFK+m.p.NFC+m.p.NH)], m.p.NFK + m.p.NFC)
+    FCs = OffsetArray([age(m, m.s[m.t-1].FCs[id]) for id = (m.p.NFK+1):(m.p.NFK+m.p.NFC)], m.p.NFK)
+    FKs = OffsetArray([age(m, m.s[m.t-1].FKs[id]) for id = 1:m.p.NFK], 0)
     stats = Stats(0, 0, 0, 0, 0, 0, Float[]) # A
     state = State(Hs, FCs, FKs, B, G, stats)
     m.s[m.t] = state

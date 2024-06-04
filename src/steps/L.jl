@@ -4,10 +4,8 @@ function stepL!(m::Model)
     for f = s.FKs
         Q = count(r -> r.operator !== nothing, f.Q)
         if rand(Bernoulli(1 - exp(-m.p.ζ * Q)))
-            Δβ = rand(Beta(1, m.p.b0))
-            Δσ = Δβ - m.p.b1 * rand(Beta(1, m.p.b2))
-            f.β += Δβ
-            f.σ = max(0.0, f.σ + Δσ)
+            f.β = f.β * m.p.Δβ
+            f.σ = f.σ + m.p.Δσ
         end
     end
 end
