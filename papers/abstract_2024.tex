@@ -1,0 +1,91 @@
+% !TeX spellcheck = en_GB
+\documentclass[a4paper, headings=standardclasses]{scrartcl}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{etoolbox}
+\usepackage{authblk}
+\renewcommand{\Affilfont}{\small}
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\usepackage[style=apa, backend=biber, sorting=nyt, useprefix=true]{biblatex}
+\usepackage[autostyle=false, style=english]{csquotes}
+\MakeOuterQuote{"}
+\usepackage[british]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{appendix}
+\usepackage[modulo]{lineno}
+\linenumbers
+\usepackage{framed}
+\usepackage{pdflscape}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{booktabs}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{cleveref}
+\usepackage{comment}
+\usepackage{endnotes}
+\counterwithin*{endnote}{section}
+\renewcommand*{\enoteheading}{}
+\makeatletter
+        \@addtoreset{endnote}{section}
+    \makeatother
+
+\newif\ifshow
+
+%%%%%%%%%
+% \showtrue
+%%%%%%%%%
+
+\ifshow
+	\newenvironment{enh}[1][]{\begin{framed}\noindent\textbf{Enhancement: #1}\par}{\end{framed}}
+\else
+	\excludecomment{enh}
+\fi
+
+\addbibresource{FE.bib}
+
+\newlist{steps}{enumerate}{1}
+\setlist[steps]{noitemsep,label=(\arabic*)}
+
+%opening
+\title{A Hybrid AB-SFC Macroeconomic Model with an explicit distribution of income and wealth \let\thefootnote\relax\footnotetext{
+	This version is intended to be submitted as a working paper to the 2024 EAEPE Conference.
+
+	An updated version of this paper and all the source code and the instructions required to replicate the paper will be available at \url{https://github.com/TnTo/FE/}
+  }}
+\subtitle{Working Notes}
+\author{Margherita Redigonda\thanks{m@orsorosso.net - \url{https://orcid.org/0000-0003-1485-1204}}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Recent developments in Post-Keynesian macroeconomics have found in Stock-Flow Consistent models a general framework to enforce the macroeconomic accounting identities in the models.
+    These models are sometimes extended to include microfoundations (or a microeconomic description) through the use of Agent-Based Models.
+    But despite the progress and the diffusion of AB-SFC models in the last ten years, very few models can replicate the fat-tail distribution of income and wealth observed empirically.
+    Instead, they usually rely on a Kaleckian distinction between workers and capitalists or a segmented labour market (for example low-, medium- and high-skilled workers).
+    This model aims to reproduce a fat-tail distribution in income and wealth, in addition to other stylized facts, by differentiating workers by their skills and the capital goods used in production by their productivity and the skills required to use them.
+    A realistic distribution of income and wealth allows bringing closer this strain of literature with the literature on income and wealth inequality since it makes measuring indexes like Gini or the top5/bottom50 ratio possible.
+    The model includes endogenous innovation and credit rationing as previous models in the literature.
+    Households' consumption is expressed in material terms (i.e. the amount of goods consumed), rather than in monetary value, to be able to differentiate the goods consumed and better characterize the behaviour of low-income households in a future version of the model.%, relying on empirical stylized fact and the interpretative framework of the Foundational Economy.
+    Furthermore, the model is designed to compare different welfare policies, like minimum wage, minimum income, Universal Basic Income, Universal Basic Services or Job Guarantee programs, and different political orientations in public policies, like the austerity principles of the '10s, a Keynesian demand-led public spending or an entrepreneur state.
+    At the time of writing this abstract, the model has been completely outlined on paper and implemented, but a proper calibration and results are missing.
+
+    \textbf{Keywords}: Agent-Based Model; Stock-Flow Consistent; Post-Keynesian Macroeconomics; Inequality
+
+    \textbf{JEL Codes}: D63, E21, E24, O11
+\end{abstract}
+
+\end{document}
